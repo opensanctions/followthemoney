@@ -82,7 +82,7 @@
     "prompt": "^1.3.0",
     "replace-in-file": "~8.3.0",
     "rimraf": "~6.0.1",
-    "rollup": "^4.30.1",
+    "rollup": "^4.44.1",
     "shelljs": "^0.9.1",
     "svgo": "~3.3.2",
     "ts-jest": "^29.2.5",
