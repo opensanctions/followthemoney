@@ -35,16 +35,57 @@ class EmailType(PropertyType):
     #     except:
     #         return False
 
+    def clean_domain_part(self, domain: str) -> Optional[str]:
+        """Clean and normalize the domain part of the email."""
+        if len(domain) < 4 or "." not in domain:
+            return None
+        domain = domain.replace(",", "")
+        domain = domain.lower()
+        if domain.endswith("."):
+            domain = domain[:-1]
+        # Check for single-letter TLDs (very rare, not currently valid)
+        if domain.count(".") >= 1:
+            tld = domain.rsplit(".", 1)[-1]
+            if len(tld) == 1:
+                return None
+        return domain
+
+    def clean_local_part(self, mailbox: str) -> Optional[str]:
+        """Clean and validate the local part of the email."""
+        mailbox = mailbox.strip()
+        if mailbox.startswith("mailto:") or mailbox.startswith("email:"):
+            mailbox = mailbox.split(":", 1)[-1]
+        if " " in mailbox:
+            return None
+        if mailbox.startswith("<") and mailbox.endswith(">"):
+            mailbox = mailbox[1:-1]
+        if mailbox.startswith('"') and mailbox.endswith('"'):
+            mailbox = mailbox[1:-1]
+        if "?" in mailbox:
+            return None
+        if "(" in mailbox or ")" in mailbox:
+            return None
+        # `!` is technically valid in quoted local parts, but flag if needed.
+        return mailbox
+
     def validate(
         self, value: str, fuzzy: bool = False, format: Optional[str] = None
     ) -> bool:
         """Check to see if this is a valid email address."""
         # TODO: adopt email.utils.parseaddr
-        email = sanitize_text(value)
+        cleaned_value = self.clean_text(value, fuzzy=fuzzy, format=format)
+        if cleaned_value is None:
+            return False
+        email = sanitize_text(cleaned_value)
         if email is None or not self.REGEX.match(email):
             return False
-        _, domain = email.rsplit("@", 1)
-        if len(domain) < 4 or "." not in domain:
+        if "@" not in email:
+            return False
+        mailbox, domain = email.rsplit("@", 1)
+        mailbox = self.clean_local_part(mailbox)
+        domain = self.clean_domain_part(domain)
+
+        if mailbox is None or domain is None:
             return False
         return True
 
