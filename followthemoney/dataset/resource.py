@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, computed_field
 
 from followthemoney.dataset.util import Url, DateTimeISO
 from followthemoney.types import registry
@@ -23,6 +23,7 @@ class DataResource(BaseModel):
             raise ValueError(f"Invalid MIME type: {value!r}")
         return value
 
+    @computed_field
     @property
     def mime_type_label(self) -> Optional[str]:
         if self.mime_type is None:
