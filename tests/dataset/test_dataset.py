@@ -28,6 +28,18 @@ def test_donations_base(catalog_data: Dict[str, Any]):
     with pytest.raises(ValueError):
         ds.get_resource("donations.dbf")
 
+def test_donations_export(catalog_data: Dict[str, Any]):
+    export = DataCatalog(Dataset, catalog_data).get("donations").to_dict()
+    assert "publisher" not in export
+
+    assert export["resources"][0]["name"] == "donations.csv"
+    assert export["resources"][0]["mime_type"] == "text/csv"
+    assert export["resources"][0]["mime_type_label"] == "Comma-separated table"
+
+    assert export["resources"][1]["name"] == "donations.ijson"
+    assert export["resources"][1].get("mime_type") is None
+    assert export["resources"][1].get("mime_type_label") is None
+
 
 def test_company_dataset(catalog_data: Dict[str, Any]):
     catalog = DataCatalog(Dataset, catalog_data)
