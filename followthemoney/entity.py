@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Set, TypeVar
+from typing import Any, Dict, List, Optional, Self, Set, TypeVar
 
 from rigour.names import pick_name
 
@@ -44,15 +44,20 @@ class ValueEntity(EntityProxy):
             if stmt_data["prop"] != BASE_ID:
                 self.add(stmt_data["prop"], stmt_data["value"])
 
-    def merge(self: "ValueEntity", other: "ValueEntity") -> "ValueEntity":
+    def merge(self: Self, other: EntityProxy) -> Self:
         merged = super().merge(other)
-        merged._caption = pick_name(_defined(self._caption, other._caption))
-        merged.referents.update(other.referents)
-        merged.datasets.update(other.datasets)
-        self.first_seen = min(_defined(self.first_seen, other.first_seen), default=None)
-        self.last_seen = max(_defined(self.last_seen, other.last_seen), default=None)
-        changed = _defined(self.last_change, other.last_change)
-        self.last_change = max(changed, default=None)
+        if isinstance(other, ValueEntity):
+            merged._caption = pick_name(_defined(self._caption, other._caption))
+            merged.referents.update(other.referents)
+            merged.datasets.update(other.datasets)
+            merged.first_seen = min(
+                _defined(self.first_seen, other.first_seen), default=None
+            )
+            merged.last_seen = max(
+                _defined(self.last_seen, other.last_seen), default=None
+            )
+            changed = _defined(self.last_change, other.last_change)
+            merged.last_change = max(changed, default=None)
         return merged
 
     def to_dict(self) -> Dict[str, Any]:

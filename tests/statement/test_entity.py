@@ -143,6 +143,22 @@ def test_example_entity():
     assert sorted(stmts)[0].prop == Statement.BASE
 
 
+def test_entity_merge():
+    dx = Dataset.make({"name": "test", "title": "Test"})
+    sp1 = StatementEntity.from_data(dx, EXAMPLE_2)
+    sp2 = StatementEntity.from_data(dx, EXAMPLE_2)
+    assert sp1.id == sp2.id
+    assert sp1.schema.name == sp2.schema.name
+    assert len(sp1) == len(sp2)
+
+    sp1.add("alias", "Ralph")
+    assert len(sp1.get_statements("alias")) == 1
+    assert len(sp2.get_statements("alias")) == 0
+
+    sp1.merge(sp2)
+    assert len(sp1.get_statements("alias")) == 1
+
+
 def test_other_entity():
     dx = Dataset.make({"name": "test", "title": "Test"})
     smt = Statement(
