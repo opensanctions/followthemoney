@@ -37,18 +37,23 @@ class EmailType(PropertyType):
 
     def clean_domain_part(self, domain: str) -> Optional[str]:
         """Clean and normalize the domain part of the email."""
-        if len(domain) < 4 or "." not in domain:
+
+        if not domain or len(domain) < 4 or "." not in domain:
             return None
         if "," in domain:
             return None
+        # Normalize and lowercase
         domain = urlparse(domain).hostname or domain
-        domain = domain.lower()
-        domain = domain.rstrip(".")
-        # Validate IDNA encoding on the transliterated domain
+        domain = domain.lower().rstrip(".")
+        # Validate the domain using IDNA encoding.
+        # If the domain contains non-ASCII characters (e.g., Cyrillic),
+        # it will be converted to its punycode representation (e.g., "почта@орг.ру" → "почта@xn--c1avg.xn--p1ag").
+        # We discard the result since we're only validating that encoding succeeds.
         try:
-            domain = domain.encode("idna").decode(ENCODING)
+            _ = domain.encode("idna").decode(ENCODING)
         except UnicodeError:
             return None
+        # Reject TLDs shorter than 2 characters (e.g., "a.b")
         tld = domain.rsplit(".", 1)[-1]
         if len(tld) < 2:
             return None
@@ -56,21 +61,17 @@ class EmailType(PropertyType):
 
     def clean_local_part(self, mailbox: str) -> Optional[str]:
         """Clean and validate the local part of the email."""
-        mailbox = mailbox.strip()
-        if mailbox.lower().startswith("mailto:") or mailbox.lower().startswith(
-            "email:"
-        ):
-            mailbox = mailbox.split(":", 1)[-1]
-        mailbox = mailbox.strip()
-        if " " in mailbox:
+        if not mailbox or not isinstance(mailbox, str):
             return None
+        mailbox = mailbox.strip()
+        # Remove prefixes like "mailto:" or "email:"
+        if mailbox.lower().startswith(("mailto:", "email:")):
+            mailbox = mailbox.split(":", 1)[-1].strip()
+        # Remove enclosing angle brackets
         if mailbox.startswith("<") and mailbox.endswith(">"):
-            mailbox = mailbox[1:-1]
-        if ")" in mailbox or "(" in mailbox:
-            return None
-        if "?" in mailbox:
-            return None
-        if "(" in mailbox or ")" in mailbox:
+            mailbox = mailbox[1:-1].strip()
+        # Reject if it contains invalid characters
+        if any(char in mailbox for char in (" ", "(", ")", "?")):
             return None
         return mailbox
 
