@@ -6,6 +6,8 @@ emails = registry.email
 def test_email_parse():
     assert emails.clean("foo@pudo.org") == "foo@pudo.org"
     assert emails.clean('"foo@pudo.org"') == "foo@pudo.org"
+    assert emails.clean("<foo@pudo.org>") == "foo@pudo.org"
+    assert emails.clean("почта@орг.ру") == "počta@org.ru"
     assert emails.clean("pudo.org") is None
     assert emails.clean("@pudo.org") is None
     assert emails.clean("foo@") is None
@@ -18,6 +20,11 @@ def test_email_parse():
             "foo@0123456789012345678901234567890123456789012345678901234567890.example.com"
         )
         == "foo@0123456789012345678901234567890123456789012345678901234567890.example.com"
+    )
+    print(
+        emails.clean(
+            "foo@0123456789012345678901234567890123456789012345678901234567890123.example.com"
+        )
     )
     assert (
         emails.clean(

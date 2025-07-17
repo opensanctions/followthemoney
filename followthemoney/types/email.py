@@ -35,6 +35,14 @@ class EmailType(PropertyType):
     #     except:
     #         return False
 
+    def latinize_non_latin(self, text: str) -> str:
+        """Transliterate non-Latin characters to Latin."""
+        # Check if the domain contains only ASCII characters
+        if not text.isascii():
+            # If the text contains non-ASCII characters, transliterate it
+            return latinize_text(text)
+        return text
+
     def clean_domain_part(self, domain: str) -> Optional[str]:
         """Clean and normalize the domain part of the email."""
         if len(domain) < 4 or "." not in domain:
@@ -44,7 +52,7 @@ class EmailType(PropertyType):
         domain = urlparse(domain).hostname or domain
         domain = domain.lower()
         domain = domain.rstrip(".")
-        # Check for single-letter TLDs (very rare)
+        domain = self.latinize_non_latin(domain)
         tld = domain.rsplit(".", 1)[-1]
         if len(tld) == 1:
             return None
@@ -57,17 +65,21 @@ class EmailType(PropertyType):
             "email:"
         ):
             mailbox = mailbox.split(":", 1)[-1]
+        mailbox = mailbox.strip()
         if " " in mailbox:
             return None
+        mailbox = self.latinize_non_latin(mailbox)
         if mailbox.startswith("<") and mailbox.endswith(">"):
             mailbox = mailbox[1:-1]
-        if mailbox.startswith('"') and mailbox.endswith('"'):
-            mailbox = mailbox[1:-1]
+        if ")" in mailbox or "(" in mailbox:
+            return None
         if "?" in mailbox:
+            return None
+        if "!" in mailbox:
+            # `!` is technically valid in quoted local parts, but we don't allow it.
             return None
         if "(" in mailbox or ")" in mailbox:
             return None
-        # `!` is technically valid in quoted local parts, but flag if needed.
         return mailbox
 
     def validate(
@@ -96,14 +108,18 @@ class EmailType(PropertyType):
 
         Returns None if this is not an email address.
         """
+        if text is None or not isinstance(text, str) or not len(text):
+            return None
         email = text.strip().strip('"')
+        if email.startswith("<") and email.endswith(">"):
+            email = email[1:-1]
         if email is None or not self.REGEX.match(email):
             return None
         mailbox, domain = email.rsplit("@", 1)
         mailbox = self.clean_local_part(mailbox)
         domain = self.clean_domain_part(domain)
         # TODO: https://pypi.python.org/pypi/publicsuffix/
-        # handle URLs by extracting the domain name
+        # handle URLs by extracting the domain names
         if domain is not None and mailbox is not None:
             return "@".join((mailbox, domain))
         return None
