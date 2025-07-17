@@ -44,7 +44,7 @@ class EmailType(PropertyType):
             return None
         # Normalize and lowercase
         domain = urlparse(domain).hostname or domain
-        domain = domain.lower().rstrip(".")
+        domain = domain.lower()
         # Validate the domain using IDNA encoding.
         # If the domain contains non-ASCII characters (e.g., Cyrillic),
         # it will be converted to its punycode representation (e.g., "почта@орг.ру" → "почта@xn--c1avg.xn--p1ag").
@@ -103,6 +103,7 @@ class EmailType(PropertyType):
             return None
 
         email = email.strip().strip('"')
+        email = email.rstrip(".")
         if email.startswith("<") and email.endswith(">"):
             email = email[1:-1]
 
