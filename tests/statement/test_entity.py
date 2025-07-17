@@ -51,6 +51,9 @@ def test_parse_proxy():
         assert stmt.prop in sp.schema.properties
         assert stmt.value in sp.get(stmt.prop)
 
+    with pytest.raises(InvalidData):
+        EntityProxy.from_dict({"id": "test", "schema": "Banana"})
+
 
 def test_example_entity():
     dx = Dataset.make({"name": "test", "title": "Test"})
@@ -60,6 +63,7 @@ def test_example_entity():
     assert idstmt.value == "836baf194d59a68c4092e208df30134800c732cc"
     assert sp.caption == "John Doe"
     assert "John Doe", sp.get_type_values(registry.name)
+    assert len(list(sp.iterprops())) == 2
     sp.add("country", "us")
     assert len(sp) == 4
     idstmt = list(sp.statements)[-1]
@@ -72,6 +76,7 @@ def test_example_entity():
     assert len(sp) == 5
     sp.set("country", "gb")
     assert len(sp) == 4
+    assert len(list(sp.iterprops())) == 3
     data = sp.to_dict()
     assert data["id"] == sp.id, data
     idstmt = list(sp.statements)[-1]
@@ -97,6 +102,10 @@ def test_example_entity():
 
     sp.add("alias", "Banana Boy")
     assert len(sp.get_statements("alias")) == 1
+
+    with pytest.raises(InvalidData):
+        sp.get_statements("banana")
+    assert len(sp.get_statements("banana", quiet=True)) == 0
 
     sp.add("nationality", "Germany")
     claim = sp.get_statements("nationality")[0]
@@ -126,6 +135,8 @@ def test_example_entity():
     assert len(sp.get("nationality")) == 2
     sp.pop("nationality")
     assert len(sp.get("nationality")) == 0
+
+    assert len(sp.pop("banana", quiet=True)) == 0
 
     stmts = list(sp.statements)
     assert len(stmts) == len(sp), stmts
