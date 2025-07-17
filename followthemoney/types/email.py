@@ -7,6 +7,10 @@ from rigour.env import ENCODING
 from followthemoney.types.common import PropertyType
 from followthemoney.util import sanitize_text, defer as _
 
+
+# Regex to filter out invalid emails from a CSV file:
+# csvgrep -c value -r '^(?![a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)' contrib/statements_emails.csv > contrib/test_invalid_emails.csv
+
 log = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
