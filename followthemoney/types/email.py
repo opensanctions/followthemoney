@@ -2,7 +2,7 @@ import re
 import logging
 from typing import Optional, TYPE_CHECKING
 from urllib.parse import urlparse
-from normality.cleaning import strip_quotes
+from normality import latinize_text
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import sanitize_text, defer as _
@@ -39,21 +39,23 @@ class EmailType(PropertyType):
         """Clean and normalize the domain part of the email."""
         if len(domain) < 4 or "." not in domain:
             return None
-        domain = domain.replace(",", "")
+        if "," in domain:
+            return None
+        domain = urlparse(domain).hostname or domain
         domain = domain.lower()
-        if domain.endswith("."):
-            domain = domain[:-1]
-        # Check for single-letter TLDs (very rare, not currently valid)
-        if domain.count(".") >= 1:
-            tld = domain.rsplit(".", 1)[-1]
-            if len(tld) == 1:
-                return None
+        domain = domain.rstrip(".")
+        # Check for single-letter TLDs (very rare)
+        tld = domain.rsplit(".", 1)[-1]
+        if len(tld) == 1:
+            return None
         return domain
 
     def clean_local_part(self, mailbox: str) -> Optional[str]:
         """Clean and validate the local part of the email."""
         mailbox = mailbox.strip()
-        if mailbox.startswith("mailto:") or mailbox.startswith("email:"):
+        if mailbox.lower().startswith("mailto:") or mailbox.lower().startswith(
+            "email:"
+        ):
             mailbox = mailbox.split(":", 1)[-1]
         if " " in mailbox:
             return None
@@ -81,12 +83,6 @@ class EmailType(PropertyType):
             return False
         if "@" not in email:
             return False
-        mailbox, domain = email.rsplit("@", 1)
-        mailbox = self.clean_local_part(mailbox)
-        domain = self.clean_domain_part(domain)
-
-        if mailbox is None or domain is None:
-            return False
         return True
 
     def clean_text(
@@ -100,20 +96,14 @@ class EmailType(PropertyType):
 
         Returns None if this is not an email address.
         """
-        email = strip_quotes(text)
+        email = text.strip().strip('"')
         if email is None or not self.REGEX.match(email):
             return None
         mailbox, domain = email.rsplit("@", 1)
+        mailbox = self.clean_local_part(mailbox)
+        domain = self.clean_domain_part(domain)
         # TODO: https://pypi.python.org/pypi/publicsuffix/
         # handle URLs by extracting the domain name
-        domain = urlparse(domain).hostname or domain
-        domain = domain.lower()
-        domain = domain.rstrip(".")
-        # handle unicode
-        try:
-            domain = domain.encode("idna").decode("ascii")
-        except UnicodeError:
-            return None
         if domain is not None and mailbox is not None:
             return "@".join((mailbox, domain))
         return None
