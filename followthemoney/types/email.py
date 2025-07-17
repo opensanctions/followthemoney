@@ -2,7 +2,7 @@ import re
 import logging
 from typing import Optional, TYPE_CHECKING
 from urllib.parse import urlparse
-from normality import latinize_text
+from rigour.env import ENCODING
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import sanitize_text, defer as _
@@ -35,14 +35,6 @@ class EmailType(PropertyType):
     #     except:
     #         return False
 
-    def latinize_non_latin(self, text: str) -> str:
-        """Transliterate non-Latin characters to Latin."""
-        # Check if the domain contains only ASCII characters
-        if not text.isascii():
-            # If the text contains non-ASCII characters, transliterate it
-            return latinize_text(text)
-        return text
-
     def clean_domain_part(self, domain: str) -> Optional[str]:
         """Clean and normalize the domain part of the email."""
         if len(domain) < 4 or "." not in domain:
@@ -52,9 +44,13 @@ class EmailType(PropertyType):
         domain = urlparse(domain).hostname or domain
         domain = domain.lower()
         domain = domain.rstrip(".")
-        domain = self.latinize_non_latin(domain)
+        # Validate IDNA encoding on the transliterated domain
+        try:
+            domain = domain.encode("idna").decode(ENCODING)
+        except UnicodeError:
+            return None
         tld = domain.rsplit(".", 1)[-1]
-        if len(tld) == 1:
+        if len(tld) < 2:
             return None
         return domain
 
@@ -68,15 +64,11 @@ class EmailType(PropertyType):
         mailbox = mailbox.strip()
         if " " in mailbox:
             return None
-        mailbox = self.latinize_non_latin(mailbox)
         if mailbox.startswith("<") and mailbox.endswith(">"):
             mailbox = mailbox[1:-1]
         if ")" in mailbox or "(" in mailbox:
             return None
         if "?" in mailbox:
-            return None
-        if "!" in mailbox:
-            # `!` is technically valid in quoted local parts, but we don't allow it.
             return None
         if "(" in mailbox or ")" in mailbox:
             return None
@@ -87,15 +79,7 @@ class EmailType(PropertyType):
     ) -> bool:
         """Check to see if this is a valid email address."""
         # TODO: adopt email.utils.parseaddr
-        cleaned_value = self.clean_text(value, fuzzy=fuzzy, format=format)
-        if cleaned_value is None:
-            return False
-        email = sanitize_text(cleaned_value)
-        if email is None or not self.REGEX.match(email):
-            return False
-        if "@" not in email:
-            return False
-        return True
+        return self.clean_text(value, fuzzy=fuzzy, format=format) is not None
 
     def clean_text(
         self,
@@ -108,20 +92,28 @@ class EmailType(PropertyType):
 
         Returns None if this is not an email address.
         """
-        if text is None or not isinstance(text, str) or not len(text):
-            return None
-        email = text.strip().strip('"')
-        if email.startswith("<") and email.endswith(">"):
-            email = email[1:-1]
-        if email is None or not self.REGEX.match(email):
-            return None
-        mailbox, domain = email.rsplit("@", 1)
-        mailbox = self.clean_local_part(mailbox)
-        domain = self.clean_domain_part(domain)
         # TODO: https://pypi.python.org/pypi/publicsuffix/
         # handle URLs by extracting the domain names
-        if domain is not None and mailbox is not None:
-            return "@".join((mailbox, domain))
+        if not isinstance(text, str) or not text:
+            return None
+
+        email = sanitize_text(text)
+        if not email:
+            return None
+
+        email = email.strip().strip('"')
+        if email.startswith("<") and email.endswith(">"):
+            email = email[1:-1]
+
+        if not self.REGEX.match(email) or "@" not in email:
+            return None
+
+        mailbox, domain = email.rsplit("@", 1)
+        mailbox_clean = self.clean_local_part(mailbox)
+        domain_clean = self.clean_domain_part(domain)
+
+        if domain_clean and mailbox_clean:
+            return "@".join((mailbox_clean, domain_clean))
         return None
 
     # def country_hint(self, value)
