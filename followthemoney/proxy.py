@@ -57,7 +57,7 @@ class EntityProxy(object):
         #: A unique identifier for this entity, usually a hashed natural key,
         #: a UUID, or a very simple slug. Can be signed using a
         #: :class:`~followthemoney.namespace.Namespace`.
-        self.id = str(data["id"]) if "id" in data else None
+        self.id = str(data["id"]) if data.get("id") else None
         if not cleaned:
             self.id = sanitize_text(self.id)
 
