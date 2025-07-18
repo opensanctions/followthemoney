@@ -26,9 +26,9 @@ the server without compromising isolation.
 import hmac
 from typing import Any, Optional, Tuple, Union
 
-from followthemoney.types import registry
 from followthemoney.proxy import E
-from followthemoney.util import key_bytes, get_entity_id
+from followthemoney.types import registry
+from followthemoney.util import get_entity_id, key_bytes
 
 
 class Namespace(object):
@@ -69,7 +69,7 @@ class Namespace(object):
         digest.update(key_bytes(entity_id))
         return digest.hexdigest()
 
-    def sign(self, entity_id: Union[str, None]) -> Optional[str]:
+    def sign(self, entity_id: Optional[str]) -> Optional[str]:
         """Apply a namespace signature to an entity ID, removing any
         previous namespace marker."""
         if entity_id is None:
