@@ -69,9 +69,11 @@ class Namespace(object):
         digest.update(key_bytes(entity_id))
         return digest.hexdigest()
 
-    def sign(self, entity_id: str) -> Optional[str]:
+    def sign(self, entity_id: Union[str, None]) -> Optional[str]:
         """Apply a namespace signature to an entity ID, removing any
         previous namespace marker."""
+        if entity_id is None:
+            return None
         parsed_id, _ = self.parse(entity_id)
         if not len(self.bname):
             return parsed_id
