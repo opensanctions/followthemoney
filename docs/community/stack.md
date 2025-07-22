@@ -12,12 +12,12 @@ These applications are probably the reason why you ended up here. Most of the sm
 
 Tools and frameworks for _creating_ FollowTheMoney data with scrapers or custom applications.
 
-- [followthemoney](https://github.com/alephdata/followthemoney) – core ontology and data validation system, includes CSV/SQL to FtM mapper.
+- [followthemoney](https://github.com/opensanctions/followthemoney) – core ontology and data validation system, includes CSV/SQL to FtM mapper.
 - [memorious](https://github.com/alephdata/memorious) – light-weight web scraping toolkit for scrapers that collect structured or un-structured data
     * A more recent [fork of memorious](https://docs.investigraph.dev/lib/memorious/)
 - [zavod](https://zavod.opensanctions.org/) – Data processing framework as part of OpenSanctions
 - [investigraph](https://docs.investigraph.dev/) – Framework to create FollowTheMoney data
-- [ingest-file](https://github.com/alephdata/ingest-file) – Create document graphs out of source data for Aleph applications
+- [ingest-file](https://github.com/openaleph/ingest-file) – Create document graphs out of source data for Aleph applications
 
 Specialised data importers:
 
@@ -46,7 +46,7 @@ Tools and frameworks for _analyzing_ FollowTheMoney data, for example transcribi
 - [ftm-transcribe](https://github.com/openaleph/ftm-transcribe) – Extract text from Video and Audio
 - [followthemoney-compare](https://github.com/alephdata/followthemoney-compare) – pre-process and train models to power a cross-reference system for FollowTheMoney data, includes a model based on regression and word frequency analysis in names.
 - [juditha](https://github.com/dataresearchcenter/juditha) – Compare and resolve NER results to actual known FtM Entities
-- [ingest-file.analysis](https://github.com/alephdata/ingest-file) – Part of the document ingestion is a comprehensive _analysis_ phase used for Aleph applications
+- [ingest-file.analysis](https://github.com/openaleph/ingest-file) – Part of the document ingestion is a comprehensive _analysis_ phase used for Aleph applications
 
 ## Store entity data
 
