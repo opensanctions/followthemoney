@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+import unicodedata
 from hashlib import sha1
 from babel import Locale
 from gettext import translation
@@ -8,7 +9,6 @@ from gettext import translation
 from threading import local
 from typing import cast, Dict, Any, List, Optional, TypeVar, Union
 from normality import stringify
-from normality.cleaning import compose_nfc
 from normality.cleaning import remove_unsafe_chars
 from normality.encoding import DEFAULT_ENCODING
 from banal import is_mapping, unique_list, ensure_list
@@ -69,9 +69,7 @@ def sanitize_text(value: Any, encoding: str = DEFAULT_ENCODING) -> Optional[str]
     if text is None:
         return None
     try:
-        text = compose_nfc(text)
-        if text is None:
-            return None
+        text = unicodedata.normalize("NFC", text)
     except (SystemError, Exception) as ex:
         log.warning("Cannot NFC text: %s", ex)
         return None

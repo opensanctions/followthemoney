@@ -1,7 +1,8 @@
 import math
 from itertools import islice, product
 from typing import Dict, Generator, Iterable, List, Optional
-from normality import normalize
+from normality import ascii_text
+from rigour.text.scripts import can_latinize
 from rigour.names import tokenize_name, remove_person_prefixes
 from rigour.names import replace_org_types_compare
 from followthemoney.exc import InvalidData
@@ -91,7 +92,7 @@ def _normalize_names(
     can_person = schema.is_a("LegalEntity") and not schema.is_a("Organization")
     can_org = schema.is_a("LegalEntity") and not schema.is_a("Person")
     for name in names:
-        plain = normalize(name, ascii=True)
+        plain = name.lower().strip()
         if plain is not None and plain not in seen:
             seen.add(plain)
             yield plain
@@ -102,6 +103,9 @@ def _normalize_names(
         if can_org:
             name = replace_org_types_compare(name)
         tokens = tokenize_name(name.lower())
+        for token in tokens:
+            if can_latinize(token):
+                token = ascii_text(token) or token
         fp = " ".join(sorted(tokens))
         if fp is not None and len(fp) > 6 and fp not in seen:
             seen.add(fp)

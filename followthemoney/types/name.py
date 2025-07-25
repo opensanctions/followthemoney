@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Optional, Sequence
-from normality import slugify
+from normality import slugify_text
 from normality.cleaning import collapse_spaces, strip_quotes
 from rigour.env import MAX_NAME_LENGTH
 from rigour.names import pick_name, tokenize_name
@@ -63,7 +63,7 @@ class NameType(PropertyType):
         )
 
     def node_id(self, value: str) -> Optional[str]:
-        slug = slugify(value)
+        slug = slugify_text(value)
         if slug is None:
             return None
         return f"name:{slug}"

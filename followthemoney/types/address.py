@@ -1,7 +1,6 @@
 import re
 from typing import Optional, TYPE_CHECKING
-from normality import slugify
-from normality.cleaning import collapse_spaces
+from normality import slugify_text, collapse_spaces
 from rigour.addresses import normalize_address
 from rigour.text.distance import levenshtein_similarity
 
@@ -54,7 +53,10 @@ class AddressType(PropertyType):
         return dampen(10, 60, value)
 
     def node_id(self, value: str) -> Optional[str]:
-        slug = slugify(normalize_address(value))
+        normalized = normalize_address(value)
+        if normalized is None:
+            return None
+        slug = slugify_text(normalized)
         if slug is None:
             return None
-        return f"addr:{value}"
+        return f"addr:{slug}"
