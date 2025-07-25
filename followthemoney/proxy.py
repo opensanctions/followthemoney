@@ -57,7 +57,7 @@ class EntityProxy(object):
         #: A unique identifier for this entity, usually a hashed natural key,
         #: a UUID, or a very simple slug. Can be signed using a
         #: :class:`~followthemoney.namespace.Namespace`.
-        self.id = str(data["id"]) if "id" in data else None
+        self.id = str(data["id"]) if data.get("id") else None
         if not cleaned:
             self.id = sanitize_text(self.id)
 
@@ -421,7 +421,7 @@ class EntityProxy(object):
         """Make a deep copy of the current entity proxy."""
         return self.__class__.from_dict(self.to_dict())
 
-    def merge(self: E, other: E) -> E:
+    def merge(self: E, other: "EntityProxy") -> E:
         """Merge another entity proxy into this one. This will try and find
         the common schema between both entities and then add all property
         values from the other entity into this one."""

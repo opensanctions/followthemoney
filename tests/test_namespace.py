@@ -46,3 +46,15 @@ def test_apply():
     out = ns.apply(proxy)
     assert out.id == ns.sign(proxy.id), out
     # assert proxy.id in out.get('sameAs'), out
+
+    # no id
+    entity = {
+        "schema": "LegalEntity",
+        "properties": {"sameAs": ["kumkwat"], "parent": ["pretzel"]},
+    }
+    proxy = model.get_proxy(entity)
+    assert proxy.id is None, proxy.id
+    ns = Namespace("fruit")
+    out = ns.apply(proxy)
+    assert ns.sign(None) is None
+    assert out.id is None
