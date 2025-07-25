@@ -39,7 +39,7 @@ class AddressType(PropertyType):
         address = self.LINE_BREAKS.sub(", ", text)
         address = self.COMMATA.sub(", ", address)
         collapsed = collapse_spaces(address)
-        if collapsed is None or not len(collapsed):
+        if collapsed is None:
             return None
         return collapsed
 

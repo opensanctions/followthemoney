@@ -38,6 +38,8 @@ class NameType(PropertyType):
     ) -> Optional[str]:
         """Basic clean-up."""
         name = strip_quotes(text)
+        if name is None:
+            return None
         return collapse_spaces(name)
 
     def pick(self, values: Sequence[str]) -> Optional[str]:

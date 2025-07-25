@@ -204,9 +204,10 @@ class PropertyType(object):
         return data
 
     def __eq__(self, other: Any) -> bool:
-        if not isinstance(other, PropertyType):
+        try:
+            return self.name == other.name  # type: ignore
+        except AttributeError:
             return False
-        return self.name == other.name
 
     def __hash__(self) -> int:
         return hash(self.name)
