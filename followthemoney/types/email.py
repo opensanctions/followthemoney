@@ -1,11 +1,14 @@
 import re
 import logging
 from typing import Optional, TYPE_CHECKING
-from urllib.parse import urlparse
-from normality.cleaning import strip_quotes
+from rigour.env import ENCODING
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import sanitize_text, defer as _
+from followthemoney.util import defer as _
+
+
+# Regex to filter out invalid emails from a CSV file:
+# csvgrep -c value -r '^(?![a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)' contrib/statements_emails.csv > contrib/test_invalid_emails.csv
 
 log = logging.getLogger(__name__)
 
@@ -17,8 +20,9 @@ class EmailType(PropertyType):
     """Internet mail address (e.g. user@example.com). These are notoriously hard
     to validate, but we use an irresponsibly simple rule and hope for the best."""
 
-    REGEX_RAW = r"^[^@\s]+@[^@\s]+\.\w+$"
-    REGEX = re.compile(REGEX_RAW)
+    DOMAIN_RE = re.compile(r"^(?!-)(?:[a-z0-9-]{1,63}(?<!-)\.)+[a-z0-9-]{2,}$", re.U)
+    LOCAL_RE = re.compile(r"^[^<>()\[\]\,;:\?\s@\"]{1,64}$", re.U)
+
     name = "email"
     group = "emails"
     label = _("E-Mail Address")
@@ -35,18 +39,29 @@ class EmailType(PropertyType):
     #     except:
     #         return False
 
+    def clean_domain_part(self, domain: str) -> Optional[str]:
+        """Clean and normalize the domain part of the email."""
+        domain = domain.rstrip(".").lower()
+        try:
+            # Convert domain to IDNA encoding if it contains non-ASCII characters. This should
+            # be idempotent for domains that are already IDNA-encoded.
+            domain = domain.encode("idna").decode(ENCODING)
+
+            # Check if the domain matches the regex pattern, which requires labels to be
+            # alphanumeric and hyphenated, and the TLD to be at least two characters long.
+            if self.DOMAIN_RE.match(domain) is None:
+                return None
+
+            domain = domain.encode(ENCODING).decode("idna")
+            return domain
+        except UnicodeError:
+            return None
+
     def validate(
         self, value: str, fuzzy: bool = False, format: Optional[str] = None
     ) -> bool:
         """Check to see if this is a valid email address."""
-        # TODO: adopt email.utils.parseaddr
-        email = sanitize_text(value)
-        if email is None or not self.REGEX.match(email):
-            return False
-        _, domain = email.rsplit("@", 1)
-        if len(domain) < 4 or "." not in domain:
-            return False
-        return True
+        return self.clean_text(value, fuzzy=fuzzy, format=format) is not None
 
     def clean_text(
         self,
@@ -59,23 +74,24 @@ class EmailType(PropertyType):
 
         Returns None if this is not an email address.
         """
-        email = strip_quotes(text)
-        if email is None or not self.REGEX.match(email):
-            return None
-        mailbox, domain = email.rsplit("@", 1)
         # TODO: https://pypi.python.org/pypi/publicsuffix/
-        # handle URLs by extracting the domain name
-        domain = urlparse(domain).hostname or domain
-        domain = domain.lower()
-        domain = domain.rstrip(".")
-        # handle unicode
-        try:
-            domain = domain.encode("idna").decode("ascii")
-        except UnicodeError:
-            return None
-        if domain is not None and mailbox is not None:
-            return "@".join((mailbox, domain))
-        return None
+        # handle URLs by extracting the domain names
+        # or TODO: adopt email.utils.parseaddr
 
-    # def country_hint(self, value)
-    # TODO: do we want to use TLDs as country evidence?
+        # Remove mailto: prefix if present
+        email = text.strip()
+        if email.startswith("mailto:"):
+            email = email[7:]
+
+        try:
+            local, domain = email.rsplit("@", 1)
+            """Clean and validate the local part of the email."""
+            if self.LOCAL_RE.match(local) is None:
+                return None
+
+            domain_clean = self.clean_domain_part(domain)
+            if domain_clean is None:
+                return None
+            return f"{local}@{domain_clean}"
+        except ValueError:
+            return None
