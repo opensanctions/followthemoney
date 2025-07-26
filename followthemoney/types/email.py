@@ -1,11 +1,10 @@
 import re
 import logging
 from typing import Optional, TYPE_CHECKING
-from urllib.parse import urlparse
 from rigour.env import ENCODING
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import sanitize_text, defer as _
+from followthemoney.util import defer as _
 
 
 # Regex to filter out invalid emails from a CSV file:
@@ -21,8 +20,8 @@ class EmailType(PropertyType):
     """Internet mail address (e.g. user@example.com). These are notoriously hard
     to validate, but we use an irresponsibly simple rule and hope for the best."""
 
-    REGEX_RAW = r"^[^@\s]+@[^@\s]+\.\w+$"
-    REGEX = re.compile(REGEX_RAW)
+    DOMAIN_RE = re.compile(r"^(?!-)(?:[a-z0-9-]{1,63}(?<!-)\.)+[a-z0-9-]{2,}$")
+
     name = "email"
     group = "emails"
     label = _("E-Mail Address")
@@ -41,36 +40,27 @@ class EmailType(PropertyType):
 
     def clean_domain_part(self, domain: str) -> Optional[str]:
         """Clean and normalize the domain part of the email."""
-
-        if not domain or len(domain) < 4 or "." not in domain:
-            return None
-        if "," in domain:
-            return None
-        # Normalize and lowercase
-        domain = urlparse(domain).hostname or domain
-        domain = domain.lower()
-        # Validate the domain using IDNA encoding.
-        # If the domain contains non-ASCII characters (e.g., Cyrillic),
-        # it will be converted to its punycode representation (e.g., "почта@орг.ру" → "почта@xn--c1avg.xn--p1ag").
-        # We discard the result since we're only validating that encoding succeeds.
+        domain = domain.rstrip(".").lower()
         try:
-            _ = domain.encode("idna").decode(ENCODING)
+            # Convert domain to IDNA encoding if it contains non-ASCII characters. This should
+            # be idempotent for domains that are already IDNA-encoded.
+            domain = domain.encode("idna").decode(ENCODING)
+
+            # Check if the domain matches the regex pattern, which requires labels to be
+            # alphanumeric and hyphenated, and the TLD to be at least two characters long.
+            if self.DOMAIN_RE.match(domain) is None:
+                return None
+
+            domain = domain.encode(ENCODING).decode("idna")
+            return domain
         except UnicodeError:
             return None
-        # Reject TLDs shorter than 2 characters (e.g., "a.b")
-        tld = domain.rsplit(".", 1)[-1]
-        if len(tld) < 2:
-            return None
-        return domain
 
     def clean_local_part(self, mailbox: str) -> Optional[str]:
         """Clean and validate the local part of the email."""
-        if not mailbox or not isinstance(mailbox, str):
+        if not 64 > len(mailbox) > 1:
             return None
-        mailbox = mailbox.strip()
-        # Remove prefixes like "mailto:" or "email:"
-        if mailbox.lower().startswith(("mailto:", "email:")):
-            mailbox = mailbox.split(":", 1)[-1].strip()
+
         # Remove enclosing angle brackets
         if mailbox.startswith("<") and mailbox.endswith(">"):
             mailbox = mailbox[1:-1].strip()
@@ -83,7 +73,6 @@ class EmailType(PropertyType):
         self, value: str, fuzzy: bool = False, format: Optional[str] = None
     ) -> bool:
         """Check to see if this is a valid email address."""
-        # TODO: adopt email.utils.parseaddr
         return self.clean_text(value, fuzzy=fuzzy, format=format) is not None
 
     def clean_text(
@@ -99,28 +88,20 @@ class EmailType(PropertyType):
         """
         # TODO: https://pypi.python.org/pypi/publicsuffix/
         # handle URLs by extracting the domain names
-        if not isinstance(text, str) or not text:
+        # or TODO: adopt email.utils.parseaddr
+
+        # Remove mailto: prefix if present
+        email = text.strip()
+        if email.startswith("mailto:"):
+            email = email[7:]
+
+        try:
+            local, domain = email.rsplit("@", 1)
+            local_clean = self.clean_local_part(local)
+            domain_clean = self.clean_domain_part(domain)
+
+            if domain_clean is None or local_clean is None:
+                return None
+            return f"{local_clean}@{domain_clean}"
+        except ValueError:
             return None
-
-        email = sanitize_text(text)
-        if not email:
-            return None
-
-        email = email.strip().strip('"')
-        email = email.rstrip(".")
-        if email.startswith("<") and email.endswith(">"):
-            email = email[1:-1]
-
-        if not self.REGEX.match(email) or "@" not in email:
-            return None
-
-        mailbox, domain = email.rsplit("@", 1)
-        mailbox_clean = self.clean_local_part(mailbox)
-        domain_clean = self.clean_domain_part(domain)
-
-        if domain_clean and mailbox_clean:
-            return "@".join((mailbox_clean, domain_clean))
-        return None
-
-    # def country_hint(self, value)
-    # TODO: do we want to use TLDs as country evidence?
