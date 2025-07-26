@@ -26,9 +26,10 @@ def test_email_parse():
     assert emails.clean("foo?bar@pudo.org") is None
     # Local part with `mailto:` prefix
     assert emails.clean("mailto:foo@pudo.org") == "foo@pudo.org"
-    # Email enclosed in angle brackets and includes a valid email
+    # Email enclosed in angle brackets
     assert emails.clean("<mailto:foo@pudo.org>") is None
-    # Strip surrounding quotes and whitespace
+    assert emails.clean("<foo@pudo.org>") is None
+    # Surrounding quotes
     assert emails.clean('   "foo@pudo.org"   ') is None
     assert emails.clean("foo@pudo.org") == "foo@pudo.org"
     assert emails.clean('"foo@pudo.org"') is None

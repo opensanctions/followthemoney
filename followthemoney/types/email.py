@@ -20,7 +20,8 @@ class EmailType(PropertyType):
     """Internet mail address (e.g. user@example.com). These are notoriously hard
     to validate, but we use an irresponsibly simple rule and hope for the best."""
 
-    DOMAIN_RE = re.compile(r"^(?!-)(?:[a-z0-9-]{1,63}(?<!-)\.)+[a-z0-9-]{2,}$")
+    DOMAIN_RE = re.compile(r"^(?!-)(?:[a-z0-9-]{1,63}(?<!-)\.)+[a-z0-9-]{2,}$", re.U)
+    LOCAL_RE = re.compile(r"^[^<>()\[\]\,;:\?\s@\"]{1,64}$", re.U)
 
     name = "email"
     group = "emails"
@@ -56,19 +57,6 @@ class EmailType(PropertyType):
         except UnicodeError:
             return None
 
-    def clean_local_part(self, mailbox: str) -> Optional[str]:
-        """Clean and validate the local part of the email."""
-        if not 64 > len(mailbox) > 1:
-            return None
-
-        # Remove enclosing angle brackets
-        if mailbox.startswith("<") and mailbox.endswith(">"):
-            mailbox = mailbox[1:-1].strip()
-        # Reject if it contains invalid characters
-        if any(char in mailbox for char in (" ", "(", ")", "?")):
-            return None
-        return mailbox
-
     def validate(
         self, value: str, fuzzy: bool = False, format: Optional[str] = None
     ) -> bool:
@@ -97,11 +85,13 @@ class EmailType(PropertyType):
 
         try:
             local, domain = email.rsplit("@", 1)
-            local_clean = self.clean_local_part(local)
-            domain_clean = self.clean_domain_part(domain)
-
-            if domain_clean is None or local_clean is None:
+            """Clean and validate the local part of the email."""
+            if self.LOCAL_RE.match(local) is None:
                 return None
-            return f"{local_clean}@{domain_clean}"
+
+            domain_clean = self.clean_domain_part(domain)
+            if domain_clean is None:
+                return None
+            return f"{local}@{domain_clean}"
         except ValueError:
             return None
