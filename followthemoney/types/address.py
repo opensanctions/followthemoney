@@ -1,6 +1,6 @@
 import re
 from typing import Optional, TYPE_CHECKING
-from normality import slugify_text, collapse_spaces
+from normality import slugify_text, squash_spaces
 from rigour.addresses import normalize_address
 from rigour.text.distance import levenshtein_similarity
 
@@ -37,8 +37,8 @@ class AddressType(PropertyType):
         """Basic clean-up."""
         address = self.LINE_BREAKS.sub(", ", text)
         address = self.COMMATA.sub(", ", address)
-        collapsed = collapse_spaces(address)
-        if collapsed is None:
+        collapsed = squash_spaces(address)
+        if len(collapsed) < 1:
             return None
         return collapsed
 
