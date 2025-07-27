@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional, Sequence
 from normality import slugify_text
-from normality.cleaning import collapse_spaces, strip_quotes
+from normality.cleaning import squash_spaces, strip_quotes
 from rigour.env import MAX_NAME_LENGTH
 from rigour.names import pick_name, tokenize_name
 from rigour.text.distance import levenshtein_similarity
@@ -40,7 +40,10 @@ class NameType(PropertyType):
         name = strip_quotes(text)
         if name is None:
             return None
-        return collapse_spaces(name)
+        name = squash_spaces(name)
+        if len(name) == 0:
+            return None
+        return name
 
     def pick(self, values: Sequence[str]) -> Optional[str]:
         """From a set of names, pick the most plausible user-facing one."""

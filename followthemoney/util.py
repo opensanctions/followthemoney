@@ -74,10 +74,11 @@ def sanitize_text(value: Any, encoding: str = DEFAULT_ENCODING) -> Optional[str]
         log.warning("Cannot NFC text: %s", ex)
         return None
     text = remove_unsafe_chars(text)
-    if text is None:
-        return None
     byte_text = text.encode(DEFAULT_ENCODING, "replace")
-    return byte_text.decode(DEFAULT_ENCODING, "replace")
+    text = byte_text.decode(DEFAULT_ENCODING, "replace")
+    if len(text) == 0:
+        return None
+    return text
 
 
 def key_bytes(key: Any) -> bytes:
