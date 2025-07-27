@@ -363,39 +363,49 @@ class StatementEntity(EntityProxy):
         self.extra_referents.update(other.extra_referents)
         return self
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_context_dict(self) -> Dict[str, Any]:
+        """Return a dictionary representation of the entity for context."""
         data: Dict[str, Any] = {
             "id": self.id,
             "caption": self.caption,
             "schema": self.schema.name,
-            "properties": self.properties,
-            "referents": list(self.referents),
-            "datasets": list(self.datasets),
         }
-        if self.first_seen is not None:
-            data["first_seen"] = self.first_seen
-        if self.last_seen is not None:
-            data["last_seen"] = self.last_seen
+        referents: Set[Optional[str]] = set(self.extra_referents)
+        datasets = set(self.datasets)
+        first_seen = None
+        last_seen = None
+        for stmts in self._statements.values():
+            for stmt in stmts:
+                if stmt.first_seen is not None:
+                    if first_seen is None or stmt.first_seen < first_seen:
+                        first_seen = stmt.first_seen
+                if stmt.last_seen is not None:
+                    if last_seen is None or stmt.last_seen > last_seen:
+                        last_seen = stmt.last_seen
+                if stmt.entity_id is not None and stmt.entity_id != self.id:
+                    referents.add(stmt.entity_id)
+                datasets.add(stmt.dataset)
+
+        data["referents"] = list(referents)
+        data["datasets"] = list(datasets)
+
+        if first_seen is not None:
+            data["first_seen"] = first_seen
+        if last_seen is not None:
+            data["last_seen"] = last_seen
         if self.last_change is not None:
             data["last_change"] = self.last_change
         return data
 
+    def to_dict(self) -> Dict[str, Any]:
+        data = self.to_context_dict()
+        data["properties"] = self.properties
+        return data
+
     def to_statement_dict(self) -> Dict[str, Any]:
         """Return a dictionary representation of the entity's statements."""
-        data: Dict[str, Any] = {
-            "id": self.id,
-            "caption": self.caption,
-            "schema": self.schema.name,
-            "statements": [stmt.to_dict() for stmt in self.statements],
-            "referents": list(self.referents),
-            "datasets": list(self.datasets),
-        }
-        if self.first_seen is not None:
-            data["first_seen"] = self.first_seen
-        if self.last_seen is not None:
-            data["last_seen"] = self.last_seen
-        if self.last_change is not None:
-            data["last_change"] = self.last_change
+        data = self.to_context_dict()
+        data["statements"] = [stmt.to_dict() for stmt in self.statements]
         return data
 
     def __len__(self) -> int:
