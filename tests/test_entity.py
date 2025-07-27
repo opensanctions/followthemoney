@@ -57,3 +57,13 @@ def test_value_entity():
     assert se.referents == {"jane1"}
     assert se.datasets == {"other", "test"}
     assert se.caption == "Jane Doe"
+
+
+def test_statement_entity():
+    ds = Dataset({"name": "test", "title": "Test"})
+    se = StatementEntity.from_data(ds, EXAMPLE)
+    assert se.id == "jane"
+    exported = se.to_statement_dict()
+    assert "statements" in exported
+    se = ValueEntity.from_dict(exported)
+    assert se.get("name") == ["Jane Doe"]

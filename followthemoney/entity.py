@@ -4,7 +4,7 @@ from rigour.names import pick_name
 
 from followthemoney.proxy import EntityProxy
 from followthemoney.schema import Schema
-from followthemoney.statement.util import BASE_ID
+from followthemoney.statement import BASE_ID, Statement
 
 VE = TypeVar("VE", bound="ValueEntity")
 
@@ -38,11 +38,14 @@ class ValueEntity(EntityProxy):
         # add data from statement dict if present.
         # this updates the dataset and referents set
         for stmt_data in data.pop("statements", []):
-            self.datasets.add(stmt_data["dataset"])
-            if stmt_data["entity_id"] != self.id:
-                self.referents.add(stmt_data["entity_id"])
-            if stmt_data["prop"] != BASE_ID:
-                self.add(stmt_data["prop"], stmt_data["value"])
+            stmt = Statement.from_dict(stmt_data)
+            self.datasets.add(stmt.dataset)
+            if stmt.schema != self.schema.name:
+                self.schema = schema.model.common_schema(self.schema, stmt.schema)
+            if stmt.entity_id != self.id:
+                self.referents.add(stmt.entity_id)
+            if stmt.prop != BASE_ID:
+                self.add(stmt.prop, stmt.value)
 
     def merge(self: VE, other: EntityProxy) -> VE:
         merged = super().merge(other)
