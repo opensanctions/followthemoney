@@ -29,6 +29,7 @@ class StatementEntity(EntityProxy):
         "extra_referents",
         "dataset",
         "last_change",
+        "origin",
         "_statements",
     )
 
@@ -372,6 +373,7 @@ class StatementEntity(EntityProxy):
         }
         referents: Set[Optional[str]] = set(self.extra_referents)
         datasets = set(self.datasets)
+        origins: Set[str] = set()
         first_seen = None
         last_seen = None
         for stmts in self._statements.values():
@@ -385,9 +387,13 @@ class StatementEntity(EntityProxy):
                 if stmt.entity_id is not None and stmt.entity_id != self.id:
                     referents.add(stmt.entity_id)
                 datasets.add(stmt.dataset)
+                if stmt.origin is not None:
+                    origins.add(stmt.origin)
 
         data["referents"] = list(referents)
         data["datasets"] = list(datasets)
+        if origins:
+            data["origin"] = list(origins)
 
         if first_seen is not None:
             data["first_seen"] = first_seen
