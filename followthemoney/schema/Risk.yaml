@@ -14,7 +14,8 @@ Risk:
   required:
     - entity
   caption:
-    - program
+    - reason
+    - status
   properties:
     entity:
       label: "Entity"
