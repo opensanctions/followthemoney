@@ -30,7 +30,6 @@ Specialised data importers:
 Tools and frameworks for _cleaning_ and _validating_ FollowTheMoney data.
 
 - [rigour](https://opensanctions.github.io/rigour/) – Data cleaning and validation functions for processing various types of text emanating and describing the business world, base to `followthemoney`.
-- [countrynames](https://github.com/opensanctions/countrynames/) – This library helps with the mapping of country names to their respective two or three letter codes
 - [prefixdate](https://github.com/pudo/prefixdate) – a helper class to parse dates with varied degrees of precision
 - [datapatch](https://github.com/opensanctions/datapatch) – A Python library for defining rule-based overrides on messy data
 - [normality](https://github.com/pudo/normality/) – a Python micro-package that contains a small set of text normalization functions for easier re-use
@@ -90,5 +89,6 @@ These libraries have been discontinued or merged with others:
 - [pantomime](https://github.com/alephdata/pantomime) – parsing and normalisation of internet MIME types in Python (discontinued, now in [rigour.mime][])
 - [fingerprints](https://github.com/opensanctions/fingerprints) – Name handling utilities for person and organisation names (discontinued, now in [rigour.names][])
 - [languagecodes](https://github.com/alephdata/languagecodes) – normalise the ISO 639 codes used to describe languages from two-letter codes to three letters, and vice versa (discontinued, now in [rigour.langs][])
+- [countrynames](https://github.com/opensanctions/countrynames/) – This library helps with the mapping of country names to their respective two or three letter codes (now in [rigour.territories][])
 - [addressformatting](https://github.com/pudo-attic/addressformatting) – address formatter that can format addresses in multiple formats that are common in different countries (discontinued, now in [rigour.addresses][])
 - [followthemoney-predict](https://github.com/alephdata/followthemoney-predict) - previous entity comparison/linkage codebase.

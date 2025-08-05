@@ -1,7 +1,6 @@
-import countrynames
 from typing import Optional, TYPE_CHECKING
 from babel.core import Locale
-from rigour.territories import get_territory, get_ftm_countries
+from rigour.territories import get_ftm_countries, lookup_territory
 
 from followthemoney.types.common import EnumType, EnumValues
 from followthemoney.util import const, defer as _
@@ -37,16 +36,11 @@ class CountryType(EnumType):
 
         The input may be a country code, a country name, etc.
         """
-        territory = get_territory(text)
+        territory = lookup_territory(text, fuzzy=fuzzy)
         if territory is not None:
             ftm_country = territory.ftm_country
             if ftm_country is not None:
                 return ftm_country
-        code = countrynames.to_code(text, fuzzy=fuzzy)
-        if code is not None:
-            territory = get_territory(code)
-            if territory is not None:
-                return territory.ftm_country
         return None
 
     def country_hint(self, value: str) -> str:
