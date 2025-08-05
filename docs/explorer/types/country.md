@@ -1,13 +1,21 @@
+---
+hide:
+  - toc
+---
+
 {% set type = select_type('country') %}
 # {{ type.plural }}
 
-FtM's model of political geography is an evolving part of the toolkit. After first modeling UN member states as *countries*, the supported codelist quickly grew to include contested territories and breakaway regions for practical reasons. Referencing controversial places is a key feature of FtM data.
-
-The model has now matured to distinguish several concepts:
+FtM's model of political geography is an evolving part of the toolkit. The model has now matured to distinguish several concepts:
 
 * **Territories** are units of political geography. They can overlap or contradict each other in terms of the physical space they occupy. As long as someone claims to hold political power in a place, this can be reason for FtM to model it.
 * **Jurisdictions** are territories which impose their own legal regime, often with regards to the formation of companies. Most countries are jurisdictions, but some countries are subdivided into smaller jurisdictions - think Dubai as part of the UAE, Delaware as part of the US.
-* **Countries** are UN member states. Beyond that, certain territories are countries in practice (think Kosovo). To go with the old adage: A country is a territory [with an army and a navy](https://en.wikipedia.org/wiki/A_language_is_a_dialect_with_an_army_and_navy).
+* **Countries** are UN member states. Beyond that, certain territories are countries in practice (think Kosovo). To go with the old adage, a country is a territory [with an army and a navy](https://en.wikipedia.org/wiki/A_language_is_a_dialect_with_an_army_and_navy).
+
+After first modeling UN member states as *countries*, the supported codelist quickly grew to include contested territories and breakaway regions for practical reasons. Referencing controversial places (and the people who govern them) is a key feature of FtM data.
+
+If the presence of a country in this list is offensive to you, we invite you to reflect on the mental health impact of being angry at tables on the internet.
+
 
 {% include 'templates/type.md' %}
 

@@ -9,9 +9,10 @@ def generate_schemata():
     assert base_path.exists(), f"Base path {base_path} does not exist."
     for name, schema in model.schemata.items():
         schema_path = base_path / f"{name}.md"
-        if not schema_path.exists():
-            with open(schema_path, "w", encoding="utf-8") as fh:
-                fh.write("{% include 'templates/schema.md' %}\n")
+        # if not schema_path.exists():
+        with open(schema_path, "w", encoding="utf-8") as fh:
+            fh.write("---\nhide:\n  - toc\n---\n\n")
+            fh.write("{% include 'templates/schema.md' %}\n")
 
 
 def generate_types():

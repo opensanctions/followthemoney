@@ -4,5 +4,5 @@ Each property in FtM has a type, which represents its semantic structure. Types 
 
 | Name | Label | Matchable | Pivot |
 | ---- | ----- | --------- | ----- |
-{% for type in registry.types %}| {{ type_ref(type.name) }} | {{ type.label }} | {{ bool_icon(type.matchable) }} | {{ bool_icon(type.pivot) }} |
+{% for type in registry.types | sort(attribute='name') %}| {{ type_ref(type.name) }} | {{ type.label }} | {{ bool_icon(type.matchable) }} | {{ bool_icon(type.pivot) }} |
 {% endfor %}
