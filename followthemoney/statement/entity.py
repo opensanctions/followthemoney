@@ -29,7 +29,6 @@ class StatementEntity(EntityProxy):
         "extra_referents",
         "dataset",
         "last_change",
-        "origin",
         "_statements",
     )
 
