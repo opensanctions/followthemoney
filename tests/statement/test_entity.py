@@ -227,3 +227,15 @@ def test_statement_dict():
     assert sp2.last_change == sp.last_change
     assert sp2.get("name") == sp.get("name")
     assert sp2.get("birthDate") == sp.get("birthDate")
+
+
+def test_entity_origin():
+    dx = Dataset.make({"name": "test", "title": "Test"})
+    sp = StatementEntity.from_data(dx, EXAMPLE)
+    data = sp.to_dict()
+    assert "origin" not in data
+    stmt = next(sp.statements)
+    stmt.origin = "space"
+    sp.add_statement(stmt)
+    data = sp.to_dict()
+    assert data["origin"] == ["space"]
