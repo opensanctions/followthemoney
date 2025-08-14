@@ -7,7 +7,7 @@
 # probably be the first place to break.
 from os.path import splitext
 from typing import Iterable, List, Optional, Set
-from normality import safe_filename
+from normality import safe_filename, squash_spaces
 from mimetypes import guess_extension
 from itertools import product
 from datetime import datetime, timedelta
@@ -148,23 +148,21 @@ def inline_names(entity: E, related: E) -> None:
 
 
 def combine_names(entity: E) -> E:
-    """This function will try to build names from name parts provided as part
-    of a person entity. This is of course impossible to do culturally correctly
-    for the whole planet at once, so it should be mostly used for internal-facing
-    (e.g. matching) processes."""
+    """Build a full names from name parts of a Person entity and add them as aliases.
+
+    This is of course impossible to do culturally correctly for the whole planet at
+    once, so it should be mostly used for internal-facing (e.g. matching) processes."""
     if entity.schema.is_a("Person"):
         first_names = entity.get("firstName")
-        second_names = entity.get("secondName")
-        second_names.append("")
-        middle_names = entity.get("middleName")
-        middle_names.append("")
-        father_names = entity.get("fatherName")
-        father_names.append("")
+        second_names = entity.get("secondName") + [""]
+        middle_names = entity.get("middleName") + [""]
+        father_names = entity.get("fatherName") + [""]
+        mother_names = entity.get("motherName") + [""]
         last_names = entity.get("lastName")
-        for (first, second, middle, father, last) in product(
-            first_names, second_names, middle_names, father_names, last_names
+        for (first, second, middle, father, mother, last) in product(
+            first_names, second_names, middle_names, father_names, mother_names, last_names
         ):
-            name = join_text(first, second, middle, father, last)
+            name = squash_spaces(" ".join([first, second, middle, father, mother, last]))
             if name is not None:
                 entity.add("alias", name)
 
