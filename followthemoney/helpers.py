@@ -7,7 +7,7 @@
 # probably be the first place to break.
 from os.path import splitext
 from typing import Iterable, List, Optional, Set
-from normality import safe_filename
+from normality import safe_filename, squash_spaces
 from mimetypes import guess_extension
 from itertools import product
 from datetime import datetime, timedelta
@@ -162,7 +162,7 @@ def combine_names(entity: E) -> E:
         for (first, second, middle, father, mother, last) in product(
             first_names, second_names, middle_names, father_names, mother_names, last_names
         ):
-            name = join_text(first, second, middle, father, mother, last)
+            name = squash_spaces(" ".join([first, second, middle, father, mother, last]))
             if name is not None:
                 entity.add("alias", name)
 
