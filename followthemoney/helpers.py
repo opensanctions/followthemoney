@@ -157,11 +157,12 @@ def combine_names(entity: E) -> E:
         second_names = entity.get("secondName") + [""]
         middle_names = entity.get("middleName") + [""]
         father_names = entity.get("fatherName") + [""]
+        mother_names = entity.get("motherName") + [""]
         last_names = entity.get("lastName")
-        for (first, second, middle, father, last) in product(
-            first_names, second_names, middle_names, father_names, last_names
+        for (first, second, middle, father, mother, last) in product(
+            first_names, second_names, middle_names, father_names, mother_names, last_names
         ):
-            name = join_text(first, second, middle, father, last)
+            name = join_text(first, second, middle, father, mother, last)
             if name is not None:
                 entity.add("alias", name)
 
