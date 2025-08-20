@@ -20,6 +20,21 @@ class ValueEntity(EntityProxy):
     applications should use this entity class as the base class.
     """
 
+    __slots__ = [
+        "schema",
+        "id",
+        "key_prefix",
+        "context",
+        "_properties",
+        "_size",
+        "_caption",
+        "datasets",
+        "referents",
+        "first_seen",
+        "last_seen",
+        "last_change",
+    ]
+
     def __init__(
         self,
         schema: Schema,

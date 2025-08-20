@@ -1,3 +1,4 @@
+import pickle
 from followthemoney.dataset.dataset import Dataset
 from followthemoney.statement.entity import StatementEntity
 from followthemoney.entity import ValueEntity
@@ -67,3 +68,11 @@ def test_statement_entity():
     assert "statements" in exported
     se = ValueEntity.from_dict(exported)
     assert se.get("name") == ["Jane Doe"]
+
+
+def test_value_entity_pickle():
+    original = ValueEntity.from_dict({"id": "1", "schema": "Person"})
+    pickled = pickle.dumps(original)
+    unpickled = pickle.loads(pickled) 
+    assert unpickled == original
+    assert unpickled.to_dict()["caption"] == "Person"
