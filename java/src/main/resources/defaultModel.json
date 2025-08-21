@@ -5986,6 +5986,97 @@
         ]
       }
     },
+    "Risk": {
+      "caption": [
+        "reason",
+        "status"
+      ],
+      "description": "A risk associated with an entity",
+      "extends": [
+        "Interval"
+      ],
+      "featured": [
+        "entity",
+        "country",
+        "reason",
+        "status",
+        "startDate"
+      ],
+      "label": "Risk",
+      "plural": "Risks",
+      "properties": {
+        "country": {
+          "label": "Country",
+          "matchable": true,
+          "maxLength": 16,
+          "name": "country",
+          "qname": "Risk:country",
+          "type": "country"
+        },
+        "duration": {
+          "label": "Duration",
+          "maxLength": 250,
+          "name": "duration",
+          "qname": "Risk:duration",
+          "type": "number"
+        },
+        "entity": {
+          "label": "Entity",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "entity",
+          "qname": "Risk:entity",
+          "range": "Thing",
+          "reverse": "risks",
+          "type": "entity"
+        },
+        "listingDate": {
+          "label": "Listing date",
+          "matchable": true,
+          "maxLength": 32,
+          "name": "listingDate",
+          "qname": "Risk:listingDate",
+          "type": "date"
+        },
+        "reason": {
+          "label": "Reason",
+          "maxLength": 65000,
+          "name": "reason",
+          "qname": "Risk:reason",
+          "type": "text"
+        },
+        "status": {
+          "label": "Status",
+          "maxLength": 1024,
+          "name": "status",
+          "qname": "Risk:status",
+          "type": "string"
+        },
+        "topics": {
+          "label": "Topics",
+          "maxLength": 64,
+          "name": "topics",
+          "qname": "Risk:topics",
+          "type": "topic"
+        }
+      },
+      "required": [
+        "entity"
+      ],
+      "schemata": [
+        "Interval",
+        "Risk"
+      ],
+      "temporalExtent": {
+        "end": [
+          "endDate"
+        ],
+        "start": [
+          "startDate",
+          "date"
+        ]
+      }
+    },
     "Sanction": {
       "caption": [
         "program"
@@ -6732,6 +6823,17 @@
           "name": "retrievedAt",
           "qname": "Thing:retrievedAt",
           "type": "date"
+        },
+        "risks": {
+          "label": "Risks",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "risks",
+          "qname": "Thing:risks",
+          "range": "Risk",
+          "reverse": "entity",
+          "stub": true,
+          "type": "entity"
         },
         "sanctions": {
           "label": "Sanctions",
