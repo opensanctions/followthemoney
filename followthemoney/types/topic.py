@@ -55,6 +55,7 @@ class TopicType(EnumType):
         "gov.judicial": _("Judicial branch of government"),
         "gov.security": _("Security services"),
         "gov.financial": _("Central banking and financial integrity"),
+        "gov.religion": _("Religious leadership"),
         "fin": _("Financial services"),
         "fin.bank": _("Bank"),
         "fin.fund": _("Fund"),
@@ -86,6 +87,32 @@ class TopicType(EnumType):
         "debarment": _("Debarred entity"),
         "poi": _("Person of interest"),
     }
+
+    RISKS = {
+        "corp.disqual",
+        "crime.boss",
+        "crime.fin",
+        "crime.fraud",
+        "crime.terror",
+        "crime.theft",
+        "crime.traffick",
+        "crime.war",
+        "crime",
+        "debarment",
+        "export.control",
+        "export.risk",
+        "poi",
+        "reg.action",
+        "reg.warn",
+        "role.oligarch",
+        "role.pep",
+        "role.rca",
+        "sanction.counter",
+        "sanction.linked",
+        "sanction",
+        "wanted",
+    }
+    """A set of topics that imply a counterparty risk in business dealings."""
 
     def _locale_names(self, locale: Locale) -> EnumValues:
         return {k: gettext(v) for (k, v) in self._TOPICS.items()}
