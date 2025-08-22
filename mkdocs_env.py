@@ -20,6 +20,7 @@ def define_env(env):
     env.variables["rigour_mime_types"] = LABELS
     env.variables["rigour_territories"] = get_territories()
     env.variables["rigour_id_formats"] = get_identifier_formats()
+    env.variables["risk_topics"] = registry.topic.RISKS
     env.variables["NULL"] = "-"
 
     @env.macro
