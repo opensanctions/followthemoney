@@ -38,6 +38,9 @@ Vessel:
     grossRegisteredTonnage:
       label: Gross Registered Tonnage
       type: number
+    deadweightTonnage:
+      label: Deadweight Tonnage
+      type: number
     nameChangeDate:
       label: Date of Name Change
       type: date
