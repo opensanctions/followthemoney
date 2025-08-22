@@ -7360,6 +7360,13 @@
           "qname": "Vessel:crsNumber",
           "type": "identifier"
         },
+        "deadweightTonnage": {
+          "label": "Deadweight Tonnage",
+          "maxLength": 250,
+          "name": "deadweightTonnage",
+          "qname": "Vessel:deadweightTonnage",
+          "type": "number"
+        },
         "flag": {
           "label": "Flag",
           "matchable": true,
@@ -8073,6 +8080,9 @@
         "gov.security": "Security services",
         "gov.soe": "State-owned enterprise",
         "gov.state": "State government",
+        "mare.detained": "Maritime detention",
+        "mare.shadow": "Shadow fleet",
+        "mare.sts": "Ship-to-ship transfer",
         "mil": "Military",
         "poi": "Person of interest",
         "pol.party": "Political party",
