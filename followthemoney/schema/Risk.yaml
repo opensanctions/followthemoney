@@ -1,0 +1,43 @@
+Risk:
+  label: Risk
+  plural: Risks
+  description: "A risk associated with an entity"
+  extends:
+    - Interval
+  matchable: false
+  featured:
+    - entity
+    - country
+    - reason
+    - status
+    - startDate
+  required:
+    - entity
+  caption:
+    - reason
+    - status
+  properties:
+    entity:
+      label: "Entity"
+      reverse:
+        name: risks
+        label: "Risks"
+      type: entity
+      range: Thing
+    topics:
+      label: Topics
+      type: topic
+    status:
+      label: "Status"
+    duration:
+      label: "Duration"
+      type: number
+    reason:
+      label: "Reason"
+      type: text
+    country:
+      label: "Country"
+      type: country
+    listingDate:
+      label: "Listing date"
+      type: date
