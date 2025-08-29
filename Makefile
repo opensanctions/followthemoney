@@ -24,6 +24,8 @@ docs: default-model ontology
 
 build: default-model ontology
 
+check: typecheck test
+
 ontology:
 	mkdir -p site/ns
 	python followthemoney/ontology.py site/ns/

@@ -1,3 +1,4 @@
+import re
 from banal import is_mapping, as_bool
 from typing import TYPE_CHECKING, Any, List, Optional, TypedDict
 
@@ -8,6 +9,18 @@ from followthemoney.util import gettext, get_entity_id, const
 if TYPE_CHECKING:
     from followthemoney.schema import Schema
     from followthemoney.model import Model
+
+# Invalid property names.
+RESERVED = ["id", "caption", "schema", "schemata", "referents", "datasets"]
+PROP_NAME_RE = re.compile("^[a-z][a-zA-Z0-9]*$")
+
+
+def check_property_name(name: str) -> bool:
+    if name in RESERVED:
+        return False
+    if not PROP_NAME_RE.match(name):
+        return False
+    return True
 
 
 class ReverseSpec(TypedDict, total=False):
@@ -66,9 +79,6 @@ class Property:
         "reverse",
     )
 
-    #: Invalid property names.
-    RESERVED = ["id", "caption", "schema", "schemata"]
-
     def __init__(self, schema: "Schema", name: str, data: PropertySpec) -> None:
         #: The schema which the property is defined for. This is always the
         #: most abstract schema that has this property, not the possible
@@ -77,11 +87,11 @@ class Property:
 
         #: Machine-readable name for this property.
         self.name = const(name)
+        if not check_property_name(self.name):
+            raise InvalidModel("Invalid name: %s" % self.name)
 
         #: Qualified property name, which also includes the schema name.
         self.qname = const("%s:%s" % (schema.name, self.name))
-        if self.name in self.RESERVED:
-            raise InvalidModel("Reserved name: %s" % self.name)
 
         self._hash = hash("<Property(%r)>" % self.qname)
 
