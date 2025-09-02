@@ -299,7 +299,7 @@ class StatementEntity(EntityProxy):
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None or prop_name not in self._statements:
             return []
-        if prop_name in self.caption:
+        if prop_name in self.schema.caption:
             self._caption = None
         return list({s.value for s in self._statements.pop(prop_name, [])})
 
@@ -308,7 +308,7 @@ class StatementEntity(EntityProxy):
         if prop_name is not None and prop_name in self._statements:
             stmts = {s for s in self._statements[prop_name] if s.value != value}
             self._statements[prop_name] = stmts
-            if prop_name in self.caption:
+            if prop_name in self.schema.caption:
                 self._caption = None
 
     def itervalues(self) -> Generator[Tuple[Property, str], None, None]:
@@ -366,7 +366,9 @@ class StatementEntity(EntityProxy):
                     for stmt in sorted(stmts):
                         self._caption = stmt.value
                         break
-        return self._caption or self.schema.label
+            if self._caption is None:
+                self._caption = self.schema.label
+        return self._caption
 
     def iterprops(self) -> List[Property]:
         return [self.schema.properties[p] for p in self._statements.keys()]
