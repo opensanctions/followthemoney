@@ -9,6 +9,8 @@ theme:
     primary: custom
     accent: custom
   custom_dir: docs/overrides
+  features:
+    - navigation.sections
 extra_css: [stylesheets/extra.css]
 
 extra:
@@ -64,27 +66,34 @@ nav:
       - Introduction: docs/index.md
       - Command line: docs/cli.md
       - Mappings: docs/mappings.md
-      - Fragments & aggregation: docs/fragments.md
-      - Namespaces: docs/namespace.md
+      - Fragments: docs/fragments.md
       - Statements: docs/statements.md
-      - Matching: docs/matching.md
-      - Datasets & catalogs: docs/metadata.md
-      - Graph exports: docs/graphs.md
-      - Custom schema: docs/custom.md
+      - Datasets: docs/metadata.md
+      - In-depth:
+          - Matching: docs/matching.md
+          - Namespaces: docs/namespace.md
+          - Graph exports: docs/graphs.md
+          - Custom schema: docs/custom.md
+      - FAQ: docs/faq.md
+
   - Reference:
       - Entity schemata: explorer/schemata/index.md
       - Property types: explorer/types/index.md
-  - Python API:
-      - Introduction: python/index.md
-      - Model: python/model.md
-      - Schema: python/schema.md
-      - Entity: python/entity.md
-      - Property: python/property.md
-      - Statements: python/statements.md
-      - Type registry: python/registry.md
-      - Other functions: python/lib.md
-  - Other bindings: libraries.md
-  - FAQ: docs/faq.md
+      - Python API:
+          - Introduction: python/index.md
+          - Model: python/model.md
+          - Schema: python/schema.md
+          - Entity: python/entity.md
+          - Property: python/property.md
+          - Statements: python/statements.md
+          - Type registry: python/registry.md
+          - Other functions: python/lib.md
+      - Other bindings: libraries.md
+  - Toolchain:
+      - rigour: https://rigour.followthemoney.tech/
+      - yente: https://yente.followthemoney.tech/
+      - OpenAleph: https://openaleph.org/docs/
+      - OpenSanctions: https://www.opensanctions.org/docs/
   - Community:
       - Users of FtM: community/projects.md
       - Tools and applications: community/stack.md
