@@ -73,7 +73,7 @@
     "cross-env": "~10.0.0",
     "eslint": "^9.32.0",
     "jest": "^30.0.5",
-    "jest-config": "~30.0.5",
+    "jest-config": "~30.1.2",
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
     "prompt": "^1.3.0",
