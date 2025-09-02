@@ -2,6 +2,8 @@ from hashlib import sha1
 from collections.abc import Mapping
 from typing import Any, Dict, List, Optional, Set, Type
 from typing import Generator, Iterable, Tuple, TypeVar
+from rigour.langs import LangStr
+from rigour.names.pick import pick_lang_name
 
 from followthemoney.model import Model
 from followthemoney.exc import InvalidData
@@ -163,6 +165,7 @@ class StatementEntity(EntityProxy):
                 else:
                     self.last_change = max(self.last_change, stmt.first_seen)
         else:
+            self._caption = None
             if stmt.prop not in self._statements:
                 self._statements[stmt.prop] = set()
             self._statements[stmt.prop].add(stmt)
@@ -296,13 +299,17 @@ class StatementEntity(EntityProxy):
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None or prop_name not in self._statements:
             return []
+        if prop_name in self.schema.caption:
+            self._caption = None
         return list({s.value for s in self._statements.pop(prop_name, [])})
 
     def remove(self, prop: P, value: str, quiet: bool = True) -> None:
         prop_name = self._prop_name(prop, quiet=quiet)
-        if prop_name is not None and prop_name in self._properties:
+        if prop_name is not None and prop_name in self._statements:
             stmts = {s for s in self._statements[prop_name] if s.value != value}
             self._statements[prop_name] = stmts
+            if prop_name in self.schema.caption:
+                self._caption = None
 
     def itervalues(self) -> Generator[Tuple[Property, str], None, None]:
         for name, statements in self._statements.items():
@@ -335,6 +342,34 @@ class StatementEntity(EntityProxy):
     def properties(self) -> Dict[str, List[str]]:
         return {p: list({s.value for s in vs}) for p, vs in self._statements.items()}
 
+    @property
+    def caption(self) -> str:
+        """The user-facing label to be used for this entity. This checks a list
+        of properties defined by the schema (caption) and returns the first
+        available value. If no caption is available, return the schema label.
+
+        This implementation prefers statements where the language property is that
+        of the preferred system language."""
+        if self._caption is None:
+            for prop_ in self.schema.caption:
+                stmts = self._statements.get(prop_)
+                if stmts is None:
+                    continue
+                prop = self.schema.properties[prop_]
+                if prop.type == registry.name and len(stmts) > 1:
+                    values = [LangStr(s.value, lang=s.lang) for s in stmts]
+                    name = pick_lang_name(values)
+                    if name is not None:
+                        self._caption = name
+                        break
+                else:
+                    for stmt in sorted(stmts):
+                        self._caption = stmt.value
+                        break
+            if self._caption is None:
+                self._caption = self.schema.label
+        return self._caption
+
     def iterprops(self) -> List[Property]:
         return [self.schema.properties[p] for p in self._statements.keys()]
 
@@ -353,8 +388,8 @@ class StatementEntity(EntityProxy):
             raise InvalidData(msg % (self.id, e))
 
         if not isinstance(other, StatementEntity):
-            for prop, values in other._properties.items():
-                self.add(prop, values, cleaned=True, quiet=True)
+            for prop, value in other.itervalues():
+                self.unsafe_add(prop, value, cleaned=True, quiet=True)
             return self
         for stmt in other._iter_stmt():
             if self.id is not None:
