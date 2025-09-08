@@ -12,7 +12,7 @@ DAIMLER = "66ce9f62af8c7d329506da41cb7c36ba058b3d28"
 EXAMPLE = {
     "id": "bla",
     "schema": "Person",
-    "properties": {"name": ["John Doe"], "birthDate": ["1976"]},
+    "properties": {"name": ["John Doe"], "lastName": ["Doe"], "birthDate": ["1976"]},
 }
 
 EXAMPLE_2 = {
@@ -58,25 +58,25 @@ def test_parse_proxy():
 def test_example_entity():
     dx = Dataset.make({"name": "test", "title": "Test"})
     sp = StatementEntity.from_data(dx, EXAMPLE)
-    assert len(sp) == 3
+    assert len(sp) == 4
     idstmt = list(sp.statements)[-1]
-    assert idstmt.value == "836baf194d59a68c4092e208df30134800c732cc"
+    assert idstmt.value == "c23bd2254b243c438a12525f7d1ab8f8887927d8"
     assert sp.caption == "John Doe"
     assert "John Doe", sp.get_type_values(registry.name)
-    assert len(list(sp.iterprops())) == 2
-    sp.add("country", "us")
-    assert len(sp) == 4
-    idstmt = list(sp.statements)[-1]
-    assert idstmt.value == "c3aec8e1fcd86bc55171917db7c993d6f3ad5fe0"
-    sp.add("country", {"gb"})
-    assert len(sp) == 5
-    sp.add("country", ("gb", "us"))
-    assert len(sp) == 5
-    sp.add("country", ["gb", "us"])
-    assert len(sp) == 5
-    sp.set("country", "gb")
-    assert len(sp) == 4
     assert len(list(sp.iterprops())) == 3
+    sp.add("country", "us")
+    assert len(sp) == 5
+    idstmt = list(sp.statements)[-1]
+    assert idstmt.value == "5f88a482d141d99c1b749f80cfbb3a038d743d50"
+    sp.add("country", {"gb"})
+    assert len(sp) == 6
+    sp.add("country", ("gb", "us"))
+    assert len(sp) == 6
+    sp.add("country", ["gb", "us"])
+    assert len(sp) == 6
+    sp.set("country", "gb")
+    assert len(sp) == 5
+    assert len(list(sp.iterprops())) == 4
     data = sp.to_dict()
     assert data["id"] == sp.id, data
     idstmt = list(sp.statements)[-1]
