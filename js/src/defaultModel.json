@@ -1110,7 +1110,7 @@
           "type": "string"
         },
         "caemCode": {
-          "description": "(RO) What kind of activity a legal entity is allowed to develop",
+          "description": "Romanian classifier used to identify the types of economic activities that a business can provide in Romania",
           "label": "COD CAEM",
           "maxLength": 1024,
           "name": "caemCode",
@@ -1200,7 +1200,7 @@
           "type": "country"
         },
         "kppCode": {
-          "description": "(RU, КПП) in addition to INN for orgs; reason for registration at FNS",
+          "description": "Russian code issued by the tax authority, identifies the reason for registration at the Federal Tax Service (Russian: КПП). A company may have multiple KPP codes (e.g. for different branches), and the codes are not unique across companies.",
           "label": "KPP",
           "maxLength": 64,
           "name": "kppCode",
@@ -1216,7 +1216,7 @@
           "type": "identifier"
         },
         "okopfCode": {
-          "description": "(RU, ОКОПФ) What kind of business entity",
+          "description": "Russian classifier that that categorizes different types of legal entities in Russia based on their organizational and legal structure (Russian: ОКОПФ)",
           "label": "OKOPF",
           "maxLength": 1024,
           "name": "okopfCode",
@@ -1232,7 +1232,7 @@
           "type": "string"
         },
         "okvedCode": {
-          "description": "(RU, ОКВЭД) Economical activity classifier. OKVED2 is the same but newer",
+          "description": "Russian classifier that that categorizes businesses by their (primary and secondary) economic activities (Russian: ОКВЭД)",
           "label": "OKVED(2) Classifier",
           "maxLength": 1024,
           "name": "okvedCode",
@@ -3646,7 +3646,7 @@
           "type": "string"
         },
         "idNumber": {
-          "description": "ID number of any applicable ID",
+          "description": "ID of any applicable personal identification document. Used mainly for people and their national ID cards.",
           "label": "ID Number",
           "matchable": true,
           "maxLength": 64,
@@ -3675,7 +3675,7 @@
           "type": "date"
         },
         "innCode": {
-          "description": "Russian company ID",
+          "description": "Russian tax identification number (Russian: ИНН). Issued to businesses and individuals in Russia",
           "format": "inn",
           "label": "INN",
           "matchable": true,
@@ -3773,7 +3773,7 @@
           "type": "entity"
         },
         "npiCode": {
-          "description": "National Provider Identifier",
+          "description": "National Provider Identifier, issued to health care providers in the United States",
           "format": "npi",
           "label": "NPI",
           "matchable": true,
@@ -3783,7 +3783,7 @@
           "type": "identifier"
         },
         "ogrnCode": {
-          "description": "Major State Registration Number",
+          "description": "Identification number used in Russia's Unified State Register of Legal Entities (EGRUL) (Russian: ОГРН)",
           "format": "ogrn",
           "label": "OGRN",
           "matchable": true,
