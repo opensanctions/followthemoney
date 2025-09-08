@@ -3646,7 +3646,7 @@
           "type": "string"
         },
         "idNumber": {
-          "description": "ID number of any applicable personal identification document. Should be used for people only — for companies, prefer the `registrationNumber` property",
+          "description": "ID of any applicable personal identification document. Used mainly for people and their national ID cards.",
           "label": "ID Number",
           "matchable": true,
           "maxLength": 64,

@@ -74,7 +74,7 @@ LegalEntity:
     idNumber:
       label: ID Number
       type: identifier
-      description: "ID number of any applicable personal identification document. Should be used for people only — for companies, prefer the `registrationNumber` property"
+      description: "ID of any applicable personal identification document. Used mainly for people and their national ID cards."
     taxNumber:
       label: Tax Number
       type: identifier
