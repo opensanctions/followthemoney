@@ -74,7 +74,7 @@ LegalEntity:
     idNumber:
       label: ID Number
       type: identifier
-      description: "ID number of any applicable ID"
+      description: "ID number of any applicable personal identification document. Should be used for people only — for companies, prefer the `registrationNumber` property"
     taxNumber:
       label: Tax Number
       type: identifier
@@ -118,13 +118,13 @@ LegalEntity:
       matchable: false
     innCode:
       label: "INN"
-      description: "Russian company ID"
+      description: "Russian tax identification number (Russian: ИНН). Issued to businesses and individuals in Russia"
       type: identifier
       format: inn
       maxLength: 32
     ogrnCode:
       label: "OGRN"
-      description: "Major State Registration Number"
+      description: "Identification number used in Russia's Unified State Register of Legal Entities (EGRUL) (Russian: ОГРН)"
       type: identifier
       format: ogrn
       maxLength: 32
@@ -148,7 +148,7 @@ LegalEntity:
       maxLength: 32
     npiCode:
       label: "NPI"
-      description: "National Provider Identifier"
+      description: "National Provider Identifier, issued to health care providers in the United States"
       type: identifier
       format: npi
       maxLength: 16

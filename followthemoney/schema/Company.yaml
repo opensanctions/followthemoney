@@ -58,20 +58,20 @@ Company:
       type: identifier
     caemCode:
       label: "COD CAEM"
-      description: "(RO) What kind of activity a legal entity is allowed to develop"
+      description: "Romanian classifier used to identify the types of economic activities that a business can provide in Romania"
       matchable: false
     kppCode:
       label: "KPP"
-      description: "(RU, КПП) in addition to INN for orgs; reason for registration at FNS"
+      description: "Russian code issued by the tax authority, identifies the reason for registration at the Federal Tax Service (Russian: КПП). A company may have multiple KPP codes (e.g. for different branches), and the codes are not unique across companies."
       type: identifier
       matchable: false
     okvedCode:
       label: "OKVED(2) Classifier"
-      description: "(RU, ОКВЭД) Economical activity classifier. OKVED2 is the same but newer"
+      description: "Russian classifier that that categorizes businesses by their (primary and secondary) economic activities (Russian: ОКВЭД)"
       matchable: false
     okopfCode:
       label: "OKOPF"
-      description: "(RU, ОКОПФ) What kind of business entity"
+      description: "Russian classifier that that categorizes different types of legal entities in Russia based on their organizational and legal structure (Russian: ОКОПФ)"
       matchable: false
     fnsCode:
       label: "Federal tax service code"
