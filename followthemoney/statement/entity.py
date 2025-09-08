@@ -361,11 +361,11 @@ class StatementEntity(EntityProxy):
                     name = pick_lang_name(values)
                     if name is not None:
                         self._caption = name
-                        break
-                else:
-                    for stmt in sorted(stmts):
-                        self._caption = stmt.value
-                        break
+                        return self._caption
+
+                for stmt in sorted(stmts):
+                    self._caption = stmt.value
+                    return self._caption
             if self._caption is None:
                 self._caption = self.schema.label
         return self._caption
