@@ -5338,6 +5338,7 @@
           "type": "entity"
         },
         "fatherName": {
+          "description": "The part of a name based on the given name of one's father",
           "label": "Patronymic",
           "maxLength": 1024,
           "name": "fatherName",
@@ -5345,6 +5346,7 @@
           "type": "string"
         },
         "firstName": {
+          "description": "The part of a name that indicates the person, also often called given name or forename",
           "label": "First name",
           "maxLength": 1024,
           "name": "firstName",
@@ -5384,6 +5386,7 @@
           "type": "entity"
         },
         "lastName": {
+          "description": "The part of a name that indicates one's family, also often called surname or family name",
           "label": "Last name",
           "maxLength": 1024,
           "name": "lastName",
@@ -5391,6 +5394,7 @@
           "type": "string"
         },
         "middleName": {
+          "description": "The part of name written between a person's given name and family name. Often abbreviated as a middle initial.",
           "label": "Middle name",
           "maxLength": 1024,
           "name": "middleName",
@@ -5398,6 +5402,7 @@
           "type": "string"
         },
         "motherName": {
+          "description": "The part of a name based on the given name of one's mother",
           "label": "Matronymic",
           "maxLength": 1024,
           "name": "motherName",
@@ -5471,6 +5476,8 @@
           "type": "string"
         },
         "secondName": {
+          "deprecated": true,
+          "description": "Deprecated, use one of the other more specific name properties instead.",
           "label": "Second name",
           "maxLength": 1024,
           "name": "secondName",
