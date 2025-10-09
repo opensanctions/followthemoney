@@ -102,6 +102,17 @@ LegalEntity:
     bvdId:
       label: Bureau van Dijk ID
       type: identifier
+    sayariId:
+      label: Sayari Entity ID
+      type: identifier
+    brightQueryId:
+      label: BrightQuery ID
+      type: identifier
+    brightQueryOrgId:
+      label: BrightQuery Organization ID
+      type: identifier
+      hidden: true
+      matchable: false
     uscCode:
       # cf. https://en.wikipedia.org/wiki/Unified_Social_Credit_Identifier
       label: "USCC"

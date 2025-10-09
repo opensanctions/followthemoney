@@ -1104,10 +1104,11 @@
         "bikCode": {
           "description": "Russian bank account code",
           "label": "BIK",
-          "maxLength": 1024,
+          "matchable": true,
+          "maxLength": 64,
           "name": "bikCode",
           "qname": "Company:bikCode",
-          "type": "string"
+          "type": "identifier"
         },
         "caemCode": {
           "description": "Romanian classifier used to identify the types of economic activities that a business can provide in Romania",
@@ -3397,6 +3398,22 @@
           "stub": true,
           "type": "entity"
         },
+        "brightQueryId": {
+          "label": "BrightQuery ID",
+          "matchable": true,
+          "maxLength": 64,
+          "name": "brightQueryId",
+          "qname": "LegalEntity:brightQueryId",
+          "type": "identifier"
+        },
+        "brightQueryOrgId": {
+          "hidden": true,
+          "label": "BrightQuery Organization ID",
+          "maxLength": 64,
+          "name": "brightQueryOrgId",
+          "qname": "LegalEntity:brightQueryOrgId",
+          "type": "identifier"
+        },
         "bvdId": {
           "label": "Bureau van Dijk ID",
           "matchable": true,
@@ -3913,6 +3930,14 @@
           "maxLength": 64,
           "name": "registrationNumber",
           "qname": "LegalEntity:registrationNumber",
+          "type": "identifier"
+        },
+        "sayariId": {
+          "label": "Sayari Entity ID",
+          "matchable": true,
+          "maxLength": 64,
+          "name": "sayariId",
+          "qname": "LegalEntity:sayariId",
           "type": "identifier"
         },
         "sector": {

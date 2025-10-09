@@ -84,6 +84,7 @@ Company:
     bikCode:
       label: "BIK"
       description: "Russian bank account code"
+      type: identifier
     pfrNumber:
       label: "PFR Number"
       description: "(RU, ПФР) Pension Fund Registration number. AAA-BBB-CCCCCC, where AAA is organisation region, BBB is district, CCCCCC number at a specific branch"
