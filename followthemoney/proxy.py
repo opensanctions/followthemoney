@@ -323,7 +323,7 @@ class EntityProxy(object):
     @property
     def countries(self) -> List[str]:
         """Get the set of all country-type values set of the entity."""
-        return self.get_type_values(registry.country)
+        return self.get_type_values(registry.country, matchable=True)
 
     @property
     def temporal_start(self) -> Optional[Tuple[Property, str]]:
@@ -386,6 +386,8 @@ class EntityProxy(object):
         countries = set(self.countries)
         if not len(countries):
             for prop, value in self.itervalues():
+                if not prop.matchable:
+                    continue
                 hint = prop.type.country_hint(value)
                 if hint is not None:
                     countries.add(hint)
