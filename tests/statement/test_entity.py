@@ -1,5 +1,5 @@
 import pytest
-from rigour.time import utc_now
+from rigour.time import utc_now, datetime_iso
 
 from followthemoney.statement.util import BASE_ID
 from followthemoney.types import registry
@@ -141,6 +141,30 @@ def test_example_entity():
     stmts = list(sp.statements)
     assert len(stmts) == len(sp), stmts
     assert sorted(stmts)[0].prop == Statement.BASE
+
+
+def test_advanced_props():
+    dx = Dataset.make({"name": "test", "title": "Test"})
+    sp = StatementEntity.from_data(dx, EXAMPLE_2)
+    assert sp.last_seen is None
+    now = datetime_iso(utc_now())
+    assert now is not None
+    for stmt in sp.statements:
+        stmt.last_seen = now
+    assert sp.last_seen == now
+
+    assert len(sp.referents) == 0
+    sp.extra_referents.add("banana")
+    assert len(sp.referents) == 1
+
+    assert sp.caption == "Ralph Tester"
+    assert sp.pop("name") == ["Ralph Tester"]
+    assert sp.caption == "info@ralphtester.me"
+    sp.pop("email")
+    sp.pop("phone")
+    assert sp.caption == sp.schema.name
+    sp.add("name", "Ralph Tester")
+    assert sp.caption == "Ralph Tester"
 
 
 def test_entity_merge():
