@@ -31,16 +31,23 @@ Person:
     # too many false positives.
     firstName:
       label: First name
+      description: "The part of a name that indicates the person, also often called given name or forename"
     secondName:
       label: Second name
+      description: "Deprecated, use one of the other more specific name properties instead."
+      deprecated: true
     middleName:
       label: Middle name
+      description: "The part of name written between a person's given name and family name. Often abbreviated as a middle initial."
     fatherName:
       label: Patronymic
+      description: "The part of a name based on the given name of one's father"
     motherName:
       label: Matronymic
+      description: "The part of a name based on the given name of one's mother"
     lastName:
       label: Last name
+      description: "The part of a name that indicates one's family, also often called surname or family name"
     nameSuffix:
       label: Name suffix
     birthDate:
