@@ -92,6 +92,8 @@ Person:
       label: Religion
     political:
       label: Political association
+    profession:
+      label: Profession
     education:
       label: Education
     spokenLanguage:
