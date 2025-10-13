@@ -166,8 +166,9 @@ def test_combine_names():
         }
     )
     combine_names(proxy)
-    assert "Vladimir Putin" in proxy.get("alias"), proxy.get("alias")
+    assert "Vladimir Putin" not in proxy.get("alias"), proxy.get("alias")
     assert "Vladimir Vladimirovitch Putin" in proxy.get("alias"), proxy.get("alias")
+    assert "Wladimir Vladimirovitch Putin" in proxy.get("alias"), proxy.get("alias")
     proxy = model.get_proxy(
         {
             "id": "banana",
