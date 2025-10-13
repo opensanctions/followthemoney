@@ -47,7 +47,9 @@ class AddressType(PropertyType):
         right_norm = normalize_address(right)
         if left_norm is None or right_norm is None:
             return 0.0
-        return levenshtein_similarity(left_norm, right_norm, max_edits=3)
+        base_len = min(len(left_norm), len(right_norm))
+        max_edits = int(base_len * 0.33)
+        return levenshtein_similarity(left_norm, right_norm, max_edits=max_edits)
 
     def _specificity(self, value: str) -> float:
         return dampen(10, 60, value)
