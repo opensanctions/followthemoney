@@ -5436,6 +5436,13 @@
           "stub": true,
           "type": "entity"
         },
+        "profession": {
+          "label": "Profession",
+          "maxLength": 1024,
+          "name": "profession",
+          "qname": "Person:profession",
+          "type": "string"
+        },
         "religion": {
           "label": "Religion",
           "maxLength": 1024,
