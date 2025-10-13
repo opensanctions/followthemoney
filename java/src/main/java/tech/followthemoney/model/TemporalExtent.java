@@ -6,6 +6,12 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class TemporalExtent {
+    /*
+     * TemporalExtent represents a temporal range for an entity type in the data model.
+     * It defines a start and end time for the entity, which can be used in temporal
+     * queries. The start and end times are defined as lists of property names, which
+     * are expected to be of type "date".
+     */
     private final Schema schema;
     private final List<String> start;
     private final List<String> end;

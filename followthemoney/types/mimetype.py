@@ -3,8 +3,7 @@ from rigour.mime import normalize_mimetype, parse_mimetype
 from rigour.mime import DEFAULT
 
 from followthemoney.types.common import PropertyType
-from followthemoney.rdf import URIRef, Identifier
-from followthemoney.util import defer as _
+from followthemoney.util import const, defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -19,8 +18,8 @@ class MimeType(PropertyType):
     MIME type properties do not contain parameters as used in HTTP headers,
     like `charset=UTF-8`."""
 
-    name = "mimetype"
-    group = "mimetypes"
+    name = const("mimetype")
+    group = const("mimetypes")
     label = _("MIME-Type")
     plural = _("MIME-Types")
     matchable = False
@@ -37,8 +36,5 @@ class MimeType(PropertyType):
             return text
         return None
 
-    def rdf(self, value: str) -> Identifier:
-        return URIRef(f"urn:mimetype:{value}")
-
-    def caption(self, value: str) -> str:
+    def caption(self, value: str, format: Optional[str] = None) -> str:
         return parse_mimetype(value).label or value

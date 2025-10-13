@@ -22,12 +22,13 @@ that the combined ID is specific to a dataset, without needing an (expensive)
 index look up of each ID first. It can also be generated on the client or
 the server without compromising isolation.
 """
+
 import hmac
 from typing import Any, Optional, Tuple, Union
 
-from followthemoney.types import registry
 from followthemoney.proxy import E
-from followthemoney.util import key_bytes, get_entity_id
+from followthemoney.types import registry
+from followthemoney.util import get_entity_id, key_bytes
 
 
 class Namespace(object):
@@ -68,9 +69,11 @@ class Namespace(object):
         digest.update(key_bytes(entity_id))
         return digest.hexdigest()
 
-    def sign(self, entity_id: str) -> Optional[str]:
+    def sign(self, entity_id: Optional[str]) -> Optional[str]:
         """Apply a namespace signature to an entity ID, removing any
         previous namespace marker."""
+        if entity_id is None:
+            return None
         parsed_id, _ = self.parse(entity_id)
         if not len(self.bname):
             return parsed_id
@@ -95,7 +98,8 @@ class Namespace(object):
         """Rewrite an entity proxy so all IDs mentioned are limited to
         the namespace."""
         signed = proxy.clone()
-        signed.id = self.sign(proxy.id)
+        if proxy.id is not None:
+            signed.id = self.sign(proxy.id)
         if not shallow:
             for prop in proxy.iterprops():
                 if prop.type != registry.entity:

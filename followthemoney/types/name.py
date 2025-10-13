@@ -1,14 +1,13 @@
 from typing import TYPE_CHECKING, Optional, Sequence
-from normality import slugify
-from normality.cleaning import collapse_spaces, strip_quotes
+from normality import slugify_text
+from normality.cleaning import squash_spaces, strip_quotes
 from rigour.env import MAX_NAME_LENGTH
-from rigour.names import pick_name
+from rigour.names import pick_name, tokenize_name
 from rigour.text.distance import levenshtein_similarity
-from fingerprints.cleanup import clean_name_light
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import dampen
-from followthemoney.util import defer as _
+from followthemoney.util import const, defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -22,8 +21,8 @@ class NameType(PropertyType):
     No validation rules apply, and things having multiple names must be considered
     a perfectly ordinary case."""
 
-    name = "name"
-    group = "names"
+    name = const("name")
+    group = const("names")
     label = _("Name")
     plural = _("Names")
     matchable = True
@@ -39,7 +38,12 @@ class NameType(PropertyType):
     ) -> Optional[str]:
         """Basic clean-up."""
         name = strip_quotes(text)
-        return collapse_spaces(name)
+        if name is None:
+            return None
+        name = squash_spaces(name)
+        if len(name) == 0:
+            return None
+        return name
 
     def pick(self, values: Sequence[str]) -> Optional[str]:
         """From a set of names, pick the most plausible user-facing one."""
@@ -51,9 +55,9 @@ class NameType(PropertyType):
 
     def compare(self, left: str, right: str) -> float:
         """Compare two names for similarity."""
-        left_clean = clean_name_light(left)
-        right_clean = clean_name_light(right)
-        if left_clean is None or right_clean is None:
+        left_clean = " ".join(tokenize_name(left.lower()))
+        right_clean = " ".join(tokenize_name(right.lower()))
+        if not len(left_clean) or not len(right_clean):
             return 0.0
         return levenshtein_similarity(
             left_clean,
@@ -62,7 +66,7 @@ class NameType(PropertyType):
         )
 
     def node_id(self, value: str) -> Optional[str]:
-        slug = slugify(value)
+        slug = slugify_text(value)
         if slug is None:
             return None
         return f"name:{slug}"

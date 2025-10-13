@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Optional;
 
 public class Catalog {
+    /*
+     * Catalog represents a collection of datasets, each identified by a unique name.
+     */
     private final Map<String, Dataset> datasets;
 
     public Catalog() {

@@ -3,8 +3,7 @@ import logging
 from uuid import uuid4
 from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Union, cast
 from banal import ensure_list, is_listish, keys_values
-from sqlalchemy import MetaData, func
-from sqlalchemy.future import select
+from sqlalchemy import MetaData, func, select
 from sqlalchemy.engine import Engine, create_engine
 from sqlalchemy.sql.elements import Label
 from sqlalchemy.pool import NullPool
@@ -68,7 +67,7 @@ class SQLSource(Source):
                 return table.refs[ref]
         raise InvalidMapping("Missing reference: %s" % ref)
 
-    def apply_filters(self, q: Select) -> Select:
+    def apply_filters(self, q: Select[Any]) -> Select[Any]:
         for col, val in self.filters:
             if is_listish(val):
                 q = q.where(self.get_column(col).in_(val))
@@ -88,7 +87,7 @@ class SQLSource(Source):
             q = q.where(left == right)
         return q
 
-    def compose_query(self) -> Select:
+    def compose_query(self) -> Select[Any]:
         columns = [self.get_column(r) for r in self.query.refs]
         q = select(*columns)
         q = q.select_from(*[t.alias for t in self.tables])

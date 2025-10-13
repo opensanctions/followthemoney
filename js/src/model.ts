@@ -1,9 +1,9 @@
-import { Schema, ISchemaDatum } from './schema'
-import { Entity, IEntityDatum } from './entity'
-import { Property } from './property'
-import { PropertyType, IPropertyTypeDatum } from './type'
-import { Namespace } from './namespace';
 import { v4 as uuidv4 } from 'uuid';
+import { Entity, IEntityDatum } from './entity';
+import { Namespace } from './namespace';
+import { Property } from './property';
+import { ISchemaDatum, Schema } from './schema';
+import { IPropertyTypeDatum, PropertyType } from './type';
 
 
 export interface IModelDatum {
@@ -98,9 +98,9 @@ export class Model {
    *
    * @param schema Schema name or object
    */
-  createEntity(schema: string | Schema, namespace?: Namespace): Entity {
+  async createEntity(schema: string | Schema, namespace?: Namespace): Promise<Entity> {
     const rawId = uuidv4();
-    const id = namespace ? namespace.sign(rawId) : rawId;
+    const id = namespace ? await namespace.sign(rawId) : rawId;
     return this.getEntity({
       id,
       schema: schema,

@@ -20,6 +20,7 @@ public class StatementEntityTest {
     private static final String ENTITY_ID = "entity1";
     private static final String CANONICAL_ID = "canon1";
     private static final String DATASET = "test";
+    private static final String ORIGIN = "unit-test";
 
     @BeforeAll
     public static void setUp() throws IOException {
@@ -30,13 +31,13 @@ public class StatementEntityTest {
     public void testEntityFromStatements() throws SchemaException {
         Schema schema = model.getSchema("Person");
         Statement stmt1 = new Statement("a1", ENTITY_ID, CANONICAL_ID, schema, 
-            "name", DATASET, "Harry Smith", "", "", false, 100L, 200L);
+            "name", DATASET, ORIGIN, "Harry Smith", "", "", false, 100L, 200L);
         Statement stmt1b = new Statement("aaa", ENTITY_ID, CANONICAL_ID, schema, 
-            "name", DATASET, "Harry M. Smith", "", "", false, 100L, 200L);
+            "name", DATASET, ORIGIN, "Harry M. Smith", "", "", false, 100L, 200L);
         Statement stmt2 = new Statement("aab", ENTITY_ID, CANONICAL_ID, schema, 
-            "country", DATASET, "gb", null, null, false, 100L, 200L);
+            "country", DATASET,ORIGIN,  "gb", null, null, false, 100L, 200L);
         Statement stmt3 = new Statement("deadbeef", ENTITY_ID, CANONICAL_ID, schema, 
-            "birthDate", DATASET, "1980-01-15", null, null, false, 100L, 200L);
+            "birthDate", DATASET, ORIGIN, "1980-01-15", null, null, false, 100L, 200L);
         List<Statement> stmts = new ArrayList<>();
         stmts.add(stmt1);
         stmts.add(stmt1b);

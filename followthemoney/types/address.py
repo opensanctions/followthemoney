@@ -1,13 +1,12 @@
 import re
 from typing import Optional, TYPE_CHECKING
-from normality import slugify
-from normality.cleaning import collapse_spaces
+from normality import slugify_text, squash_spaces
 from rigour.addresses import normalize_address
 from rigour.text.distance import levenshtein_similarity
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
-from followthemoney.util import dampen
+from followthemoney.util import dampen, const
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -21,8 +20,8 @@ class AddressType(PropertyType):
 
     LINE_BREAKS = re.compile(r"(\r\n|\n|<BR/>|<BR>|\t|ESQ\.,|ESQ,|;)")
     COMMATA = re.compile(r"(,\s?[,\.])")
-    name = "address"
-    group = "addresses"
+    name = const("address")
+    group = const("addresses")
     label = _("Address")
     plural = _("Addresses")
     matchable = True
@@ -38,8 +37,8 @@ class AddressType(PropertyType):
         """Basic clean-up."""
         address = self.LINE_BREAKS.sub(", ", text)
         address = self.COMMATA.sub(", ", address)
-        collapsed = collapse_spaces(address)
-        if collapsed is None or not len(collapsed):
+        collapsed = squash_spaces(address)
+        if len(collapsed) < 1:
             return None
         return collapsed
 
@@ -48,13 +47,18 @@ class AddressType(PropertyType):
         right_norm = normalize_address(right)
         if left_norm is None or right_norm is None:
             return 0.0
-        return levenshtein_similarity(left_norm, right_norm, max_edits=3)
+        base_len = min(len(left_norm), len(right_norm))
+        max_edits = int(base_len * 0.33)
+        return levenshtein_similarity(left_norm, right_norm, max_edits=max_edits)
 
     def _specificity(self, value: str) -> float:
         return dampen(10, 60, value)
 
     def node_id(self, value: str) -> Optional[str]:
-        slug = slugify(normalize_address(value))
+        normalized = normalize_address(value)
+        if normalized is None:
+            return None
+        slug = slugify_text(normalized)
         if slug is None:
             return None
-        return f"addr:{value}"
+        return f"addr:{slug}"

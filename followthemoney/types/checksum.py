@@ -1,6 +1,5 @@
-from followthemoney.rdf import URIRef, Identifier
 from followthemoney.types.common import PropertyType
-from followthemoney.util import defer as _
+from followthemoney.util import const, defer as _
 
 
 class ChecksumType(PropertyType):
@@ -13,13 +12,10 @@ class ChecksumType(PropertyType):
     of this type are scrubbed when submitted via the normal API. Checksums can only
     be defined by uploading a document to be ingested."""
 
-    name = "checksum"
-    group = "checksums"
+    name = const("checksum")
+    group = const("checksums")
     label = _("Checksum")
     plural = _("Checksums")
     matchable = True
     pivot = True
     max_length = 40
-
-    def rdf(self, value: str) -> Identifier:
-        return URIRef(f"hash:{value}")

@@ -3,7 +3,7 @@ from typing import Any, Optional, Sequence, TYPE_CHECKING
 from banal import ensure_list
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import sanitize_text, defer as _
+from followthemoney.util import const, sanitize_text, defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -14,7 +14,7 @@ class JsonType(PropertyType):
     and some other edge cases. It's a really bad idea and we should try to get rid
     of JSON properties."""
 
-    name = "json"
+    name = const("json")
     group = None
     label = _("Nested data")
     plural = _("Nested data")

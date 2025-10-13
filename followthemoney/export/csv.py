@@ -1,21 +1,19 @@
 import csv
-
-try:
-    from _csv import _writer as csv_writer
-except ImportError:
-    # Python 3.8/3.9 work-around:
-    from _csv import writer as csv_writer  # type: ignore
-
-from io import TextIOWrapper
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from io import TextIOWrapper
+from typing import Any, Dict, List, Optional, Protocol, Tuple
 
-from followthemoney.proxy import E
+from followthemoney.proxy import EntityProxy
 from followthemoney.export.common import Exporter
 from followthemoney.schema import Schema
 from followthemoney.util import PathLike
 
-CSVWriter = csv_writer
+
+class CSVWriter(Protocol):
+    @property
+    def dialect(self) -> Any: ...
+    def writerow(self, row: Any) -> Any: ...
+    def writerows(self, rows: Any) -> None: ...
 
 
 class CSVMixin(object):
@@ -69,7 +67,7 @@ class CSVExporter(Exporter, CSVMixin):
             headers.append(prop.name)
         writer.writerow(headers)
 
-    def write(self, proxy: E, extra: Optional[List[str]] = None) -> None:
+    def write(self, proxy: EntityProxy, extra: Optional[List[str]] = None) -> None:
         writer = self._get_writer(proxy.schema)
         cells = [proxy.id]
         cells.extend(extra or [])

@@ -1,0 +1,101 @@
+site_name: followthemoney
+repo_url: https://github.com/opensanctions/followthemoney
+
+theme:
+  name: material
+  logo: /public/logo.svg
+  favicon: /public/favicon.png
+  palette:
+    primary: custom
+    accent: custom
+  custom_dir: docs/overrides
+  features:
+    - navigation.sections
+extra_css: [stylesheets/extra.css]
+
+extra:
+  social:
+    - icon: material/forum
+      link: https://discuss.opensanctions.org/
+    - icon: material/github
+      link: https://github.com/opensanctions/followthemoney
+    - icon: material/web
+      link: https://www.followthemoney.tech
+
+validation:
+  links:
+    absolute_links: relative_to_docs
+
+plugins:
+  - search
+  - autorefs
+  # - social
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_root_heading: true
+            show_object_full_path: false
+          inventories:
+            - http://rigour.followthemoney.tech/objects.inv
+  - macros:
+      module_name: mkdocs_env
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.blocks.caption
+  - tables
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Home: index.md
+  - Learning:
+      - Introduction: docs/index.md
+      - Command line: docs/cli.md
+      - Mappings: docs/mappings.md
+      - Fragments: docs/fragments.md
+      - Statements: docs/statements.md
+      - Datasets: docs/metadata.md
+      - In-depth:
+          - Matching: docs/matching.md
+          - Namespaces: docs/namespace.md
+          - Graph exports: docs/graphs.md
+          - Custom schema: docs/custom.md
+      - FAQ: docs/faq.md
+
+  - Reference:
+      - Entity schemata: explorer/schemata/index.md
+      - Property types: explorer/types/index.md
+      - Python API:
+          - Introduction: python/index.md
+          - Model: python/model.md
+          - Schema: python/schema.md
+          - Entity: python/entity.md
+          - Property: python/property.md
+          - Statements: python/statements.md
+          - Type registry: python/registry.md
+          - Other functions: python/lib.md
+      - Other bindings: libraries.md
+  - Toolchain:
+      - rigour: https://rigour.followthemoney.tech/
+      - yente: https://yente.followthemoney.tech/
+      - OpenAleph: https://openaleph.org/docs/
+      - OpenSanctions: https://www.opensanctions.org/docs/
+  - Community:
+      - Users of FtM: community/projects.md
+      - Tools and applications: community/stack.md
+      - Data catalogs: community/catalogs.md
+      - Credits: community/credits.md

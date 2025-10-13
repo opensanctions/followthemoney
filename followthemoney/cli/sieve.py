@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Iterable, Optional
 
 from followthemoney import model
-from followthemoney.proxy import E, EntityProxy
+from followthemoney.proxy import EntityProxy
 from followthemoney.types import registry
 from followthemoney.cli.cli import cli
 from followthemoney.cli.util import InPath, OutPath, path_entities

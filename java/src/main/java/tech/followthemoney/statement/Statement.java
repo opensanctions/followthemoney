@@ -10,6 +10,9 @@ import tech.followthemoney.model.Property;
 import tech.followthemoney.model.Schema;
 
 public class Statement {
+    /* 
+     * Statement represents a single value of a property related to an entity in the data model.
+     */
     // private static final String DEFAULT_LANG = "und";
     private static final String EMPTY = "".intern();
     public static final String ID_PROP = "id".intern();
@@ -20,6 +23,7 @@ public class Statement {
     private final Schema schema;
     private final String propertyName;
     private final String dataset;
+    private final String origin;
     private final String value;
     private final String lang;
     private final String originalValue;
@@ -27,7 +31,7 @@ public class Statement {
     private final long firstSeen;
     private final long lastSeen;
 
-    public Statement(String id, String entityId, String canonicalId, Schema schema, String propertyName, String dataset, String value, String lang, String originalValue, boolean external, long firstSeen, long lastSeen) {
+    public Statement(String id, String entityId, String canonicalId, Schema schema, String propertyName, String dataset, String origin, String value, String lang, String originalValue, boolean external, long firstSeen, long lastSeen) {
         // this.id = parseId(id);
         this.id = id;
         this.entityId = entityId;
@@ -35,6 +39,7 @@ public class Statement {
         this.schema = schema;
         this.propertyName = propertyName; // .intern();
         this.dataset = dataset; // .intern();
+        this.origin = origin == null || origin.length() == 0 ? EMPTY : origin;
         // Property property = schema.getProperty(propertyName);
         // this.value = (property != null && property.isEnum()) ? value.intern() : value;
         this.value = value;
@@ -79,6 +84,10 @@ public class Statement {
         return dataset;
     }
 
+    public String getOrigin() {
+        return origin;
+    }
+
     public String getValue() {
         return value;
     }
@@ -119,14 +128,14 @@ public class Statement {
 
     @Override
     public String toString() {
-        return String.format("Statement(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", id, entityId, canonicalId, schema, propertyName, dataset, value, lang, originalValue, external, firstSeen, lastSeen);
+        return String.format("Statement(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", id, entityId, canonicalId, schema, propertyName, dataset, origin, value, lang, originalValue, external, firstSeen, lastSeen);
     }
 
     public Statement withCanonicalId(String canonicalId) {
         if (canonicalId.equals(getCanonicalId())) {
             return this;
         }
-        return new Statement(this.getId(), entityId, canonicalId, schema, propertyName, dataset, value, lang, originalValue, external, firstSeen, lastSeen);
+        return new Statement(this.getId(), entityId, canonicalId, schema, propertyName, dataset, origin, value, lang, originalValue, external, firstSeen, lastSeen);
     }
 
     // public static BigInteger parseId(String id) {

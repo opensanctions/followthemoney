@@ -60,22 +60,24 @@ def run_mapping(outfile: Path, mapping_yaml: Path, sign: bool = True) -> None:
 def stream_mapping(
     infile: Path, outfile: Path, mapping_yaml: Path, sign: bool = True
 ) -> None:
-    queries: List[Tuple[str, QueryMapping]] = []
+    queries: List[Tuple[str, QueryMapping, CSVSource]] = []
     config = load_mapping_file(mapping_yaml)
     for dataset, meta in config.items():
         for data in keys_values(meta, "queries", "query"):
             data.pop("database", None)
             data["csv_url"] = "/dev/null"
             query = model.make_mapping(data, key_prefix=dataset)
-            queries.append((dataset, query))
+            source = query.source
+            assert isinstance(source, CSVSource)
+            queries.append((dataset, query, source))
 
     try:
         with path_writer(outfile) as outfh:
             with input_file(infile) as fh:
                 for record in CSVSource.read_csv(fh):
-                    for (dataset, query) in queries:
+                    for dataset, query, source in queries:
                         ns = Namespace(dataset)
-                        if query.source.check_filters(record):  # type: ignore
+                        if source.check_filters(record):
                             entities = query.map(record)
                             for entity in entities.values():
                                 if sign:

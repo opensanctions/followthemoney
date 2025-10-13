@@ -8,6 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Dataset {
+    /*
+     * A dataset is a set of entities that share a common context, such as a data
+     * source. Some datasets - called collections - are used to specify groups of datasets.
+     */
     private final static Logger log = LoggerFactory.getLogger(Dataset.class);
 
     private final Catalog catalog;

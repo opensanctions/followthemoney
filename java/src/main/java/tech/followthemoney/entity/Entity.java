@@ -5,13 +5,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import tech.followthemoney.model.Property;
 import tech.followthemoney.model.PropertyType;
 import tech.followthemoney.model.Schema;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 public abstract class Entity {
+    /*
+     * Entity represents a single instance of a schema in the data model. Each entity has a unique ID,
+     * a schema it belongs to, property values, and a caption selected from its properties.
+     */
     protected String id;
     protected Schema schema;
     protected String caption;

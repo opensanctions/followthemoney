@@ -7,6 +7,13 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class PropertyType {
+    /*
+     * PropertyType represents a type of a property that can be associated with entities. All property
+     * values are stored as strings, and property types serve to define the semantics of these strings,
+     * e.g. describing a name, country, identifier, etc. Property types can also define a set of
+     * allowed values (for example, a country code).
+     */
+
     private final String name;
     private final String label;
     private final String plural;
@@ -65,10 +72,16 @@ public class PropertyType {
     }
 
     public boolean isMatchable() {
+        /* 
+         * Matchable properties are those that can be used to match entities with other entities.
+         */
         return matchable;
     }
 
     public boolean isPivot() {
+        /*
+         * Pivot properties are candidates for graph reification as nodes, e.g. a country or a name.
+         */
         return pivot;
     }
 

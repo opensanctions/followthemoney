@@ -1,12 +1,12 @@
-import { Model } from '../src/model'
-import { Schema } from '../src/schema'
 import { Entity } from '../src'
 import modelData from '../src/defaultModel.json'
+import { Model } from '../src/model'
+import { Schema } from '../src/schema'
 
 
 describe('ftm/Model class', () => {
   it('should be instantiable', () => {
-    const model = {schemata: {}, types: {}}
+    const model = { schemata: {}, types: {} }
     expect(new Model(model)).toBeInstanceOf(Model)
   })
   describe('getSchema method', () => {
@@ -40,9 +40,9 @@ describe('ftm/Model class', () => {
     it('should exist', () => {
       expect(modelInstance).toHaveProperty('createEntity')
     })
-    it('should return a instance of Entity', function() {
-      expect(modelInstance.createEntity('Person'))
-        .toBeInstanceOf(Entity);
+    it('should return a instance of Entity', async function () {
+      const entity = await modelInstance.createEntity('Person');
+      expect(entity).toBeInstanceOf(Entity);
     })
   })
   describe('method getEntity', () => {
@@ -53,7 +53,7 @@ describe('ftm/Model class', () => {
     it('should exist', () => {
       expect(modelInstance).toHaveProperty('getEntity')
     })
-    it('should return a instance of Entity', function() {
+    it('should return a instance of Entity', function () {
       const data = {
         id: 'banana',
         schema: 'Person',

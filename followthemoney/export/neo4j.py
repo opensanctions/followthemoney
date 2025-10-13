@@ -150,7 +150,7 @@ class CypherGraphExporter(GraphExporter):
                 labels = list(node.schema.names)
             else:
                 labels = [node.type.name]
-            cypher = "MERGE (p { %(id)s }) " "SET p += { %(map)s } SET p :%(label)s;\n"
+            cypher = "MERGE (p { %(id)s }) SET p += { %(map)s } SET p :%(label)s;\n"
             self.fh.write(
                 cypher
                 % {

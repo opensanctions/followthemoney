@@ -2,8 +2,7 @@ from typing import Optional, TYPE_CHECKING
 from rigour.urls import clean_url, compare_urls
 
 from followthemoney.types.common import PropertyType
-from followthemoney.rdf import URIRef, Identifier
-from followthemoney.util import dampen, defer as _
+from followthemoney.util import const, dampen, defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -17,8 +16,8 @@ class UrlType(PropertyType):
     SCHEMES = ("http", "https", "ftp", "mailto")
     DEFAULT_SCHEME = "http"
 
-    name = "url"
-    group = "urls"
+    name = const("url")
+    group = const("urls")
     label = _("URL")
     plural = _("URLs")
     matchable = True
@@ -37,13 +36,9 @@ class UrlType(PropertyType):
         return clean_url(text)
 
     def compare(self, left: str, right: str) -> float:
+        """Compare two URLs and return a float indicating how similar they are. This ignores
+        fragments and peforms hard URL normalisation."""
         return compare_urls(left, right)
 
     def _specificity(self, value: str) -> float:
         return dampen(10, 120, value)
-
-    def rdf(self, value: str) -> Identifier:
-        return URIRef(value)
-
-    def node_id(self, value: str) -> Optional[str]:
-        return f"url:{value}"

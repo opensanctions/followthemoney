@@ -1,22 +1,12 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    Optional,
-    Set,
-    TypedDict,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, cast
+from typing import Dict, List, Optional, Set, TypedDict, Union
 from banal import ensure_list, ensure_dict, as_bool
-from functools import lru_cache
+from functools import cache
 
 from followthemoney.property import Property, PropertySpec, PropertyToDict, ReverseSpec
 from followthemoney.types import registry
 from followthemoney.exc import InvalidData, InvalidModel
-from followthemoney.rdf import URIRef, NS
-from followthemoney.util import gettext
+from followthemoney.util import gettext, const
 
 if TYPE_CHECKING:
     from followthemoney.model import Model
@@ -47,7 +37,6 @@ class SchemaSpec(TypedDict, total=False):
     edge: EdgeSpec
     temporalExtent: TemporalExtentSpec
     description: Optional[str]
-    rdf: Optional[str]
     abstract: bool
     hidden: bool
     generated: bool
@@ -90,7 +79,6 @@ class Schema:
         "_plural",
         "_description",
         "_hash",
-        "uri",
         "abstract",
         "hidden",
         "generated",
@@ -118,15 +106,12 @@ class Schema:
 
     def __init__(self, model: "Model", name: str, data: SchemaSpec) -> None:
         #: Machine-readable name of the schema, used for identification.
-        self.name = name
+        self.name = const(name)
         self.model = model
         self._label = data.get("label", name)
         self._plural = data.get("plural", self.label)
         self._description = data.get("description")
-        self._hash = hash("<Schema(%r)>" % name)
-
-        #: RDF identifier for this schema when it is transformed to a triple term.
-        self.uri = URIRef(cast(str, data.get("rdf", NS[name])))
+        self._hash = hash("<Schema(%r)>" % self.name)
 
         #: Do not store or emit entities of this type, it is used only for
         #: inheritance.
@@ -152,17 +137,17 @@ class Schema:
         #: Mark a set of properties as important, i.e. they should be shown
         #: first, or in an abridged view of the entity. In Aleph, these properties
         #: are included in tabular entity listings.
-        self.featured = ensure_list(data.get("featured", []))
+        self.featured = [const(f) for f in data.get("featured", [])]
 
         #: Mark a set of properties as required. This is applied only when
         #: an entity is created by the user - bulk created entities will
         #: slip through even if it is technically invalid.
-        self.required = ensure_list(data.get("required", []))
+        self.required = [const(r) for r in data.get("required", [])]
 
         #: Mark a set of properties to be used for the entity's caption.
         #: They will be checked in order and the first existent value will
         #: be used.
-        self.caption = ensure_list(data.get("caption", []))
+        self.caption = [const(s) for s in data.get("caption", [])]
 
         # A transform of the entity into an edge for its representation in
         # the context of a property graph representation like Neo4J/Gephi.
@@ -173,7 +158,7 @@ class Schema:
         #: Flag to indicate if this schema should be represented by an edge (rather than
         #: a node) when the data is converted into a property graph.
         self.edge: bool = self.edge_source is not None and self.edge_target is not None
-        self.edge_caption = ensure_list(edge.get("caption", []))
+        self.edge_caption = [const(p) for p in edge.get("caption", [])]
         self._edge_label = edge.get("label", self._label)
 
         #: Flag to indicate if the edge should be presented as directed to the user,
@@ -183,16 +168,16 @@ class Schema:
         #: Specify which properties should be used to represent this schema in a
         #: timeline.
         temporal_extent = data.get("temporalExtent", {})
-        self._temporal_start = ensure_list(temporal_extent.get("start", []))
-        self._temporal_end = ensure_list(temporal_extent.get("end", []))
+        self._temporal_start = [const(s) for s in temporal_extent.get("start", [])]
+        self._temporal_end = [const(e) for e in temporal_extent.get("end", [])]
 
         #: Direct parent schemata of this schema.
-        self._extends = ensure_list(data.get("extends", []))
+        self._extends = [const(s) for s in data.get("extends", [])]
         self.extends: Set["Schema"] = set()
 
         #: All parents of this schema (including indirect parents and the schema
         #: itself).
-        self.schemata = set([self])
+        self.schemata: Set[Schema] = set([self])
 
         #: All names of :attr:`~schemata`.
         self.names = set([self.name])
@@ -205,8 +190,8 @@ class Schema:
         #: The full list of properties defined for the entity, including those
         #: inherited from parent schemata.
         self.properties: Dict[str, Property] = {}
-        for name, prop in data.get("properties", {}).items():
-            self.properties[name] = Property(self, name, prop)
+        for pname, prop in data.get("properties", {}).items():
+            self.properties[pname] = Property(self, pname, prop)
 
     def generate(self, model: "Model") -> None:
         """While loading the schema, this function will validate and
@@ -317,12 +302,18 @@ class Schema:
 
     @property
     def source_prop(self) -> Optional[Property]:
-        """The entity property to be used as an edge source."""
+        """The entity property to be used as an edge source when the schema is
+        considered as a relationship."""
+        if self.edge_source is None:
+            return None
         return self.get(self.edge_source)
 
     @property
     def target_prop(self) -> Optional[Property]:
-        """The entity property to be used as an edge target."""
+        """The entity property to be used as an edge target when the schema is transformed
+        into a relationship."""
+        if self.edge_target is None:
+            return None
         return self.get(self.edge_target)
 
     @property
@@ -391,11 +382,12 @@ class Schema:
                         self._matchable_schemata.add(schema)
         return self._matchable_schemata
 
+    @cache
     def can_match(self, other: "Schema") -> bool:
         """Check if an schema can match with another schema."""
         return other in self.matchable_schemata
 
-    @lru_cache(maxsize=None)
+    @cache
     def is_a(self, other: Union[str, "Schema"]) -> bool:
         """Check if the schema or one of its parents is the same as the given
         candidate ``other``."""
@@ -403,13 +395,13 @@ class Schema:
             other = other.name
         return other in self.names
 
-    def get(self, name: Optional[str]) -> Optional[Property]:
+    def get(self, name: str) -> Optional[Property]:
         """Retrieve a property defined for this schema by its name."""
         if name is None:
             return None
         return self.properties.get(name)
 
-    def validate(self, data: Any) -> Optional[str]:
+    def validate(self, data: Dict[str, Any]) -> Optional[str]:
         """Validate a dictionary against the given schema.
         This will also drop keys which are not valid as properties.
         """
@@ -477,7 +469,7 @@ class Schema:
     def __eq__(self, other: Any) -> bool:
         """Compare two schemata (via hash)."""
         try:
-            return self._hash == hash(other)
+            return self._hash == other._hash  # type: ignore
         except AttributeError:
             return False
 
@@ -485,10 +477,7 @@ class Schema:
         return self.name.__lt__(other.name)
 
     def __hash__(self) -> int:
-        try:
-            return self._hash
-        except AttributeError:
-            return super().__hash__()
+        return self._hash
 
     def __repr__(self) -> str:
         return "<Schema(%r)>" % self.name

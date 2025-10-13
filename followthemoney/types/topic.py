@@ -1,8 +1,7 @@
 from babel.core import Locale
 
 from followthemoney.types.common import EnumType, EnumValues
-from followthemoney.rdf import URIRef, Identifier
-from followthemoney.util import gettext, defer as _
+from followthemoney.util import const, gettext, defer as _
 
 
 class TopicType(EnumType):
@@ -16,8 +15,8 @@ class TopicType(EnumType):
     enable queries such as _find all paths between a government procurement
     award and a politician_."""
 
-    name = "topic"
-    group = "topics"
+    name = const("topic")
+    group = const("topics")
     label = _("Topic")
     plural = _("Topics")
     matchable = False
@@ -36,6 +35,8 @@ class TopicType(EnumType):
         "crime.traffick": _("Trafficking"),
         "crime.traffick.drug": _("Drug trafficking"),
         "crime.traffick.human": _("Human trafficking"),
+        "forced.labor": _("Forced labor"),
+        "asset.frozen": _("Frozen asset"),
         "wanted": _("Wanted"),
         "corp.offshore": _("Offshore"),
         "corp.shell": _("Shell company"),
@@ -54,10 +55,14 @@ class TopicType(EnumType):
         "gov.judicial": _("Judicial branch of government"),
         "gov.security": _("Security services"),
         "gov.financial": _("Central banking and financial integrity"),
+        "gov.religion": _("Religious leadership"),
         "fin": _("Financial services"),
         "fin.bank": _("Bank"),
         "fin.fund": _("Fund"),
         "fin.adivsor": _("Financial advisor"),
+        "mare.detained": _("Maritime detention"),
+        "mare.shadow": _("Shadow fleet"),
+        "mare.sts": _("Ship-to-ship transfer"),
         "reg.action": _("Regulator action"),
         "reg.warn": _("Regulator warning"),
         "role.pep": _("Politician"),
@@ -77,7 +82,6 @@ class TopicType(EnumType):
         "pol.union": _("Union"),
         "rel": _("Religion"),
         "mil": _("Military"),
-        "asset.frozen": _("Frozen asset"),
         "sanction": _("Sanctioned entity"),
         "sanction.linked": _("Sanction-linked entity"),
         "sanction.counter": _("Counter-sanctioned entity"),
@@ -87,8 +91,33 @@ class TopicType(EnumType):
         "poi": _("Person of interest"),
     }
 
+    RISKS = {
+        "corp.disqual",
+        "crime.boss",
+        "crime.fin",
+        "crime.fraud",
+        "crime.terror",
+        "crime.theft",
+        "crime.traffick",
+        "crime.war",
+        "crime",
+        "debarment",
+        "export.control",
+        "export.risk",
+        "poi",
+        "mare.detained",
+        "mare.shadow",
+        "reg.action",
+        "reg.warn",
+        "role.oligarch",
+        "role.pep",
+        "role.rca",
+        "sanction.counter",
+        "sanction.linked",
+        "sanction",
+        "wanted",
+    }
+    """A set of topics that imply a counterparty risk in business dealings."""
+
     def _locale_names(self, locale: Locale) -> EnumValues:
         return {k: gettext(v) for (k, v) in self._TOPICS.items()}
-
-    def rdf(self, value: str) -> Identifier:
-        return URIRef(f"ftm:topic:{value}")

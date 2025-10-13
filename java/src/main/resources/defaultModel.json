@@ -272,13 +272,14 @@
           "type": "email"
         },
         "ibanMentioned": {
+          "format": "iban",
           "hidden": true,
           "label": "Detected IBANs",
           "matchable": true,
           "maxLength": 64,
           "name": "ibanMentioned",
           "qname": "Analyzable:ibanMentioned",
-          "type": "iban"
+          "type": "identifier"
         },
         "ipMentioned": {
           "hidden": true,
@@ -359,61 +360,6 @@
           "date",
           "authoredAt",
           "publishedAt"
-        ]
-      }
-    },
-    "Assessment": {
-      "caption": [
-        "name"
-      ],
-      "extends": [
-        "Thing"
-      ],
-      "featured": [
-        "name",
-        "publishDate",
-        "author"
-      ],
-      "label": "Assessment",
-      "plural": "Assessments",
-      "properties": {
-        "assessmentId": {
-          "label": "Assessment ID",
-          "maxLength": 1024,
-          "name": "assessmentId",
-          "qname": "Assessment:assessmentId",
-          "type": "string"
-        },
-        "author": {
-          "label": "Author",
-          "matchable": true,
-          "maxLength": 200,
-          "name": "author",
-          "qname": "Assessment:author",
-          "range": "LegalEntity",
-          "reverse": "authoredAssessments",
-          "type": "entity"
-        },
-        "publishDate": {
-          "label": "Date of publishing",
-          "matchable": true,
-          "maxLength": 32,
-          "name": "publishDate",
-          "qname": "Assessment:publishDate",
-          "type": "date"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "schemata": [
-        "Assessment",
-        "Thing"
-      ],
-      "temporalExtent": {
-        "end": [],
-        "start": [
-          "publishDate"
         ]
       }
     },
@@ -684,12 +630,13 @@
           "type": "entity"
         },
         "iban": {
+          "format": "iban",
           "label": "IBAN",
           "matchable": true,
           "maxLength": 64,
           "name": "iban",
           "qname": "BankAccount:iban",
-          "type": "iban"
+          "type": "identifier"
         },
         "maxBalance": {
           "label": "Maximum balance",
@@ -1157,13 +1104,14 @@
         "bikCode": {
           "description": "Russian bank account code",
           "label": "BIK",
-          "maxLength": 1024,
+          "matchable": true,
+          "maxLength": 64,
           "name": "bikCode",
           "qname": "Company:bikCode",
-          "type": "string"
+          "type": "identifier"
         },
         "caemCode": {
-          "description": "(RO) What kind of activity a legal entity is allowed to develop",
+          "description": "Romanian classifier used to identify the types of economic activities that a business can provide in Romania",
           "label": "COD CAEM",
           "maxLength": 1024,
           "name": "caemCode",
@@ -1210,15 +1158,6 @@
           "qname": "Company:fssCode",
           "type": "string"
         },
-        "ibcRuc": {
-          "deprecated": true,
-          "label": "ibcRUC",
-          "matchable": true,
-          "maxLength": 64,
-          "name": "ibcRuc",
-          "qname": "Company:ibcRuc",
-          "type": "identifier"
-        },
         "ipoCode": {
           "label": "IPO",
           "maxLength": 64,
@@ -1262,7 +1201,7 @@
           "type": "country"
         },
         "kppCode": {
-          "description": "(RU, КПП) in addition to INN for orgs; reason for registration at FNS",
+          "description": "Russian code issued by the tax authority, identifies the reason for registration at the Federal Tax Service (Russian: КПП). A company may have multiple KPP codes (e.g. for different branches), and the codes are not unique across companies.",
           "label": "KPP",
           "maxLength": 64,
           "name": "kppCode",
@@ -1278,7 +1217,7 @@
           "type": "identifier"
         },
         "okopfCode": {
-          "description": "(RU, ОКОПФ) What kind of business entity",
+          "description": "Russian classifier that that categorizes different types of legal entities in Russia based on their organizational and legal structure (Russian: ОКОПФ)",
           "label": "OKOPF",
           "maxLength": 1024,
           "name": "okopfCode",
@@ -1294,7 +1233,7 @@
           "type": "string"
         },
         "okvedCode": {
-          "description": "(RU, ОКВЭД) Economical activity classifier. OKVED2 is the same but newer",
+          "description": "Russian classifier that that categorizes businesses by their (primary and secondary) economic activities (Russian: ОКВЭД)",
           "label": "OKVED(2) Classifier",
           "maxLength": 1024,
           "name": "okvedCode",
@@ -1893,11 +1832,11 @@
           "reverse": "cryptoWallets",
           "type": "entity"
         },
-        "mangingExchange": {
+        "managingExchange": {
           "label": "Managing exchange",
           "maxLength": 1024,
-          "name": "mangingExchange",
-          "qname": "CryptoWallet:mangingExchange",
+          "name": "managingExchange",
+          "qname": "CryptoWallet:managingExchange",
           "type": "string"
         },
         "privateKey": {
@@ -2264,6 +2203,17 @@
           "name": "proven",
           "qname": "Document:proven",
           "range": "Thing",
+          "reverse": "proof",
+          "stub": true,
+          "type": "entity"
+        },
+        "provenIntervals": {
+          "label": "Derived relationships",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "provenIntervals",
+          "qname": "Document:provenIntervals",
+          "range": "Interval",
           "reverse": "proof",
           "stub": true,
           "type": "entity"
@@ -3331,6 +3281,16 @@
           "qname": "Interval:namesMentioned",
           "type": "name"
         },
+        "proof": {
+          "label": "Source document",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "proof",
+          "qname": "Interval:proof",
+          "range": "Document",
+          "reverse": "provenIntervals",
+          "type": "entity"
+        },
         "publisher": {
           "label": "Publishing source",
           "maxLength": 1024,
@@ -3438,16 +3398,21 @@
           "stub": true,
           "type": "entity"
         },
-        "authoredAssessments": {
-          "label": "Assessments authored",
+        "brightQueryId": {
+          "label": "BrightQuery ID",
           "matchable": true,
-          "maxLength": 200,
-          "name": "authoredAssessments",
-          "qname": "LegalEntity:authoredAssessments",
-          "range": "Assessment",
-          "reverse": "author",
-          "stub": true,
-          "type": "entity"
+          "maxLength": 64,
+          "name": "brightQueryId",
+          "qname": "LegalEntity:brightQueryId",
+          "type": "identifier"
+        },
+        "brightQueryOrgId": {
+          "hidden": true,
+          "label": "BrightQuery Organization ID",
+          "maxLength": 64,
+          "name": "brightQueryOrgId",
+          "qname": "LegalEntity:brightQueryOrgId",
+          "type": "identifier"
         },
         "bvdId": {
           "label": "Bureau van Dijk ID",
@@ -3698,7 +3663,7 @@
           "type": "string"
         },
         "idNumber": {
-          "description": "ID number of any applicable ID",
+          "description": "ID of any applicable personal identification document. Used mainly for people and their national ID cards.",
           "label": "ID Number",
           "matchable": true,
           "maxLength": 64,
@@ -3727,7 +3692,7 @@
           "type": "date"
         },
         "innCode": {
-          "description": "Russian company ID",
+          "description": "Russian tax identification number (Russian: ИНН). Issued to businesses and individuals in Russia",
           "format": "inn",
           "label": "INN",
           "matchable": true,
@@ -3825,7 +3790,7 @@
           "type": "entity"
         },
         "npiCode": {
-          "description": "National Provider Identifier",
+          "description": "National Provider Identifier, issued to health care providers in the United States",
           "format": "npi",
           "label": "NPI",
           "matchable": true,
@@ -3835,7 +3800,7 @@
           "type": "identifier"
         },
         "ogrnCode": {
-          "description": "Major State Registration Number",
+          "description": "Identification number used in Russia's Unified State Register of Legal Entities (EGRUL) (Russian: ОГРН)",
           "format": "ogrn",
           "label": "OGRN",
           "matchable": true,
@@ -3967,6 +3932,14 @@
           "qname": "LegalEntity:registrationNumber",
           "type": "identifier"
         },
+        "sayariId": {
+          "label": "Sayari Entity ID",
+          "matchable": true,
+          "maxLength": 64,
+          "name": "sayariId",
+          "qname": "LegalEntity:sayariId",
+          "type": "identifier"
+        },
         "sector": {
           "label": "Sector",
           "maxLength": 1024,
@@ -4061,6 +4034,16 @@
           "qname": "LegalEntity:uniqueEntityId",
           "type": "identifier"
         },
+        "uscCode": {
+          "description": "Unified Social Credit Identifier",
+          "format": "uscc",
+          "label": "USCC",
+          "matchable": true,
+          "maxLength": 64,
+          "name": "uscCode",
+          "qname": "LegalEntity:uscCode",
+          "type": "identifier"
+        },
         "userAccounts": {
           "label": "User accounts",
           "matchable": true,
@@ -4126,11 +4109,12 @@
       "plural": "Licenses",
       "properties": {
         "area": {
+          "description": "Spatial area of the license or concession",
           "label": "Area",
-          "maxLength": 1024,
+          "maxLength": 250,
           "name": "area",
           "qname": "License:area",
-          "type": "string"
+          "type": "number"
         },
         "commodities": {
           "label": "Commodities",
@@ -5457,16 +5441,12 @@
           "stub": true,
           "type": "entity"
         },
-        "posts": {
-          "label": "Posts held",
-          "matchable": true,
-          "maxLength": 200,
-          "name": "posts",
-          "qname": "Person:posts",
-          "range": "Post",
-          "reverse": "holder",
-          "stub": true,
-          "type": "entity"
+        "profession": {
+          "label": "Profession",
+          "maxLength": 1024,
+          "name": "profession",
+          "qname": "Person:profession",
+          "type": "string"
         },
         "religion": {
           "label": "Religion",
@@ -5648,72 +5628,6 @@
         ],
         "start": [
           "inceptionDate"
-        ]
-      }
-    },
-    "Post": {
-      "caption": [
-        "summary",
-        "organization",
-        "role"
-      ],
-      "deprecated": true,
-      "description": "A post, role or position held by an individual within an organization or body. This describes the period for which the position is held, not the abstract concept of the post.\n",
-      "extends": [
-        "Interest"
-      ],
-      "featured": [
-        "holder",
-        "organization",
-        "role",
-        "startDate",
-        "endDate"
-      ],
-      "label": "Post",
-      "plural": "Posts",
-      "properties": {
-        "holder": {
-          "label": "Holder",
-          "matchable": true,
-          "maxLength": 200,
-          "name": "holder",
-          "qname": "Post:holder",
-          "range": "Person",
-          "reverse": "posts",
-          "type": "entity"
-        },
-        "organization": {
-          "label": "Organization",
-          "maxLength": 1024,
-          "name": "organization",
-          "qname": "Post:organization",
-          "type": "string"
-        },
-        "wikidataId": {
-          "hidden": true,
-          "label": "Wikidata ID",
-          "matchable": true,
-          "maxLength": 64,
-          "name": "wikidataId",
-          "qname": "Post:wikidataId",
-          "type": "identifier"
-        }
-      },
-      "required": [
-        "holder"
-      ],
-      "schemata": [
-        "Interest",
-        "Interval",
-        "Post"
-      ],
-      "temporalExtent": {
-        "end": [
-          "endDate"
-        ],
-        "start": [
-          "startDate",
-          "date"
         ]
       }
     },
@@ -6111,6 +6025,97 @@
         ]
       }
     },
+    "Risk": {
+      "caption": [
+        "reason",
+        "status"
+      ],
+      "description": "A risk associated with an entity",
+      "extends": [
+        "Interval"
+      ],
+      "featured": [
+        "entity",
+        "country",
+        "reason",
+        "status",
+        "startDate"
+      ],
+      "label": "Risk",
+      "plural": "Risks",
+      "properties": {
+        "country": {
+          "label": "Country",
+          "matchable": true,
+          "maxLength": 16,
+          "name": "country",
+          "qname": "Risk:country",
+          "type": "country"
+        },
+        "duration": {
+          "label": "Duration",
+          "maxLength": 250,
+          "name": "duration",
+          "qname": "Risk:duration",
+          "type": "number"
+        },
+        "entity": {
+          "label": "Entity",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "entity",
+          "qname": "Risk:entity",
+          "range": "Thing",
+          "reverse": "risks",
+          "type": "entity"
+        },
+        "listingDate": {
+          "label": "Listing date",
+          "matchable": true,
+          "maxLength": 32,
+          "name": "listingDate",
+          "qname": "Risk:listingDate",
+          "type": "date"
+        },
+        "reason": {
+          "label": "Reason",
+          "maxLength": 65000,
+          "name": "reason",
+          "qname": "Risk:reason",
+          "type": "text"
+        },
+        "status": {
+          "label": "Status",
+          "maxLength": 1024,
+          "name": "status",
+          "qname": "Risk:status",
+          "type": "string"
+        },
+        "topics": {
+          "label": "Topics",
+          "maxLength": 64,
+          "name": "topics",
+          "qname": "Risk:topics",
+          "type": "topic"
+        }
+      },
+      "required": [
+        "entity"
+      ],
+      "schemata": [
+        "Interval",
+        "Risk"
+      ],
+      "temporalExtent": {
+        "end": [
+          "endDate"
+        ],
+        "start": [
+          "startDate",
+          "date"
+        ]
+      }
+    },
     "Sanction": {
       "caption": [
         "program"
@@ -6154,10 +6159,10 @@
         },
         "duration": {
           "label": "Duration",
-          "maxLength": 1024,
+          "maxLength": 250,
           "name": "duration",
           "qname": "Sanction:duration",
-          "type": "string"
+          "type": "number"
         },
         "entity": {
           "label": "Entity",
@@ -6812,11 +6817,20 @@
           "type": "name"
         },
         "program": {
+          "description": "Regulatory program or sanctions list on which an entity is listed.",
           "label": "Program",
           "maxLength": 1024,
           "name": "program",
           "qname": "Thing:program",
           "type": "string"
+        },
+        "programId": {
+          "hidden": true,
+          "label": "Program ID",
+          "maxLength": 64,
+          "name": "programId",
+          "qname": "Thing:programId",
+          "type": "identifier"
         },
         "proof": {
           "label": "Source document",
@@ -6848,6 +6862,17 @@
           "name": "retrievedAt",
           "qname": "Thing:retrievedAt",
           "type": "date"
+        },
+        "risks": {
+          "label": "Risks",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "risks",
+          "qname": "Thing:risks",
+          "range": "Risk",
+          "reverse": "entity",
+          "stub": true,
+          "type": "entity"
         },
         "sanctions": {
           "label": "Sanctions",
@@ -7089,6 +7114,7 @@
       "plural": "User accounts",
       "properties": {
         "email": {
+          "description": "Email address",
           "label": "E-Mail",
           "matchable": true,
           "maxLength": 250,
@@ -7126,14 +7152,6 @@
           "stub": true,
           "type": "entity"
         },
-        "number": {
-          "label": "Phone Number",
-          "matchable": true,
-          "maxLength": 64,
-          "name": "number",
-          "qname": "UserAccount:number",
-          "type": "phone"
-        },
         "owner": {
           "label": "Owner",
           "matchable": true,
@@ -7150,6 +7168,15 @@
           "name": "password",
           "qname": "UserAccount:password",
           "type": "string"
+        },
+        "phone": {
+          "description": "Phone number",
+          "label": "Phone",
+          "matchable": true,
+          "maxLength": 32,
+          "name": "phone",
+          "qname": "UserAccount:phone",
+          "type": "phone"
         },
         "service": {
           "label": "Service",
@@ -7371,6 +7398,13 @@
           "name": "crsNumber",
           "qname": "Vessel:crsNumber",
           "type": "identifier"
+        },
+        "deadweightTonnage": {
+          "label": "Deadweight Tonnage",
+          "maxLength": 250,
+          "name": "deadweightTonnage",
+          "qname": "Vessel:deadweightTonnage",
+          "type": "number"
         },
         "flag": {
           "label": "Flag",
@@ -7899,15 +7933,6 @@
       "maxLength": 65000,
       "plural": "HTMLs"
     },
-    "iban": {
-      "description": "An international bank account number, as defined in ISO 13616. IBANs are\nmanaged by SWIFT used in the European SEPA payment system.\n\nA notable aspect of IBANs is that they share a country prefix and validation\nmechanism, but the specific length of an IBAN is dependent on the country\ncode defined in the first two characters: `NO8330001234567` and\n`CY21002001950000357001234567` are both valid values.",
-      "group": "ibans",
-      "label": "IBAN",
-      "matchable": true,
-      "maxLength": 64,
-      "pivot": true,
-      "plural": "IBANs"
-    },
     "identifier": {
       "description": "Used for registration numbers and other codes assigned by an authority\nto identify an entity. This might include tax identifiers and statistical\ncodes.\n\nSince identifiers are high-value criteria when comparing two entities, numbers\nshould only be modelled as identifiers if they are long enough to be meaningful.\nFour- or five-digit industry classifiers create more noise than value.",
       "group": "identifiers",
@@ -7920,11 +7945,11 @@
     "ip": {
       "description": "Internet protocol addresses. This supports both addresses used\nby the protocol versions 4 (e.g. `192.168.1.143`) and 6\n(e.g. `0:0:0:0:0:ffff:c0a8:18f`).",
       "group": "ips",
-      "label": "IP-Address",
+      "label": "IP Address",
       "matchable": true,
       "maxLength": 64,
       "pivot": true,
-      "plural": "IP-Addresses"
+      "plural": "IP Addresses"
     },
     "json": {
       "description": "An encoded JSON object. This is used to store raw HTTP headers for documents\nand some other edge cases. It's a really bad idea and we should try to get rid\nof JSON properties.",
@@ -8079,6 +8104,7 @@
         "fin.adivsor": "Financial advisor",
         "fin.bank": "Bank",
         "fin.fund": "Fund",
+        "forced.labor": "Forced labor",
         "gov": "Government",
         "gov.admin": "Civil service",
         "gov.executive": "Executive branch of government",
@@ -8089,9 +8115,13 @@
         "gov.legislative": "Legislative branch of government",
         "gov.muni": "Municipal government",
         "gov.national": "National government",
+        "gov.religion": "Religious leadership",
         "gov.security": "Security services",
         "gov.soe": "State-owned enterprise",
         "gov.state": "State government",
+        "mare.detained": "Maritime detention",
+        "mare.shadow": "Shadow fleet",
+        "mare.sts": "Ship-to-ship transfer",
         "mil": "Military",
         "poi": "Person of interest",
         "pol.party": "Political party",

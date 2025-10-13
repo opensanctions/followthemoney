@@ -6,6 +6,11 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class Property {
+    /*
+     * Property represents a property of an entity in the schema. It has a name, type, label, and other
+     * attributes that define how the property can be used. Properties can be matchable, stub, and can
+     * have reverse properties and ranges.
+     */
     private final Schema schema;
     private final String name;
     private final String qname;

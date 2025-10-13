@@ -15,6 +15,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import tech.followthemoney.exc.SchemaException;
 
 public class Schema {
+    /*
+     * Schema represents an entity type in the data model. Each schema features a set of properties that
+     * can be used to describe entities of that type. Schemas can extend other schemas,
+     * allowing for inheritance of properties. Schemas can also define edge semantics for conversion to 
+     * a property graph model, and temporal extents for use in temporal queries.
+     */
     private final Model model;
     private final String name;
     private final List<String> extendsNames;

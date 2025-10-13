@@ -1,24 +1,12 @@
 import io
 import os
 import logging
-from banal.lists import ensure_list
 import requests
 from csv import DictReader
 from urllib.parse import urlparse
-from banal import keys_values
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generator,
-    ItemsView,
-    Iterable,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    cast,
-)
+from banal import keys_values, ensure_list
+from typing import TYPE_CHECKING, cast
+from typing import Any, Dict, Generator, ItemsView, Iterable, List, Optional, Set, Tuple
 
 from followthemoney.mapping.source import Record, Source
 from followthemoney.util import sanitize_text
@@ -48,16 +36,16 @@ class CSVSource(Source):
 
     def _parse_filters(self, filters: ItemsView[str, Any]) -> FilterList:
         filters_set: FilterList = []
-        for (key, value) in filters:
+        for key, value in filters:
             values = set(cast(List[Optional[str]], ensure_list(value)))
             filters_set.append((key, values))
         return filters_set
 
     def check_filters(self, data: Record) -> bool:
-        for (k, v) in self.filters_set:
+        for k, v in self.filters_set:
             if data.get(k) not in v:
                 return False
-        for (k, v) in self.filters_not_set:
+        for k, v in self.filters_not_set:
             if data.get(k) in v:
                 return False
         return True

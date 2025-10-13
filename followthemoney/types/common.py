@@ -5,8 +5,8 @@ from banal import ensure_list
 from normality import stringify
 from typing import Any, Dict, Optional, Sequence, Callable, TYPE_CHECKING, TypedDict
 
-from followthemoney.rdf import Literal, Identifier
-from followthemoney.util import get_locale
+from followthemoney.value import Value
+from followthemoney.util import get_locale, const
 from followthemoney.util import gettext, sanitize_text
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class PropertyTypeToDict(TypedDict, total=False):
 class PropertyType(object):
     """Base class for all property types."""
 
-    name: str = "any"
+    name: str = const("any")
     """A machine-facing, variable safe name for the given type."""
 
     group: Optional[str] = None
@@ -87,7 +87,7 @@ class PropertyType(object):
 
     def clean(
         self,
-        raw: Any,
+        raw: Value,
         fuzzy: bool = False,
         format: Optional[str] = None,
         proxy: Optional["EntityProxy"] = None,
@@ -165,11 +165,6 @@ class PropertyType(object):
         be related to (e.g. using a country prefix on a phone number or IBAN)."""
         return None
 
-    def rdf(self, value: str) -> Identifier:
-        """Return an RDF term to represent the given value - either a string
-        literal, or a URI reference."""
-        return Literal(value)
-
     def pick(self, values: Sequence[str]) -> Optional[str]:
         """Pick the best value to show to the user."""
         raise NotImplementedError
@@ -178,7 +173,7 @@ class PropertyType(object):
         """Return an ID suitable to identify this entity as a typed node in a
         graph representation of some FtM data. It's usually the same as the the
         RDF form."""
-        return str(self.rdf(value))
+        return f"{self.name}:{value}"
 
     def node_id_safe(self, value: Optional[str]) -> Optional[str]:
         """Wrapper for node_id to handle None values."""
@@ -186,7 +181,7 @@ class PropertyType(object):
             return None
         return self.node_id(value)
 
-    def caption(self, value: str) -> Optional[str]:
+    def caption(self, value: str, format: Optional[str] = None) -> str:
         """Return a label for the given property value. This is often the same as the
         value, but for types like countries or languages, it would return the label,
         while other values like phone numbers can be formatted to be nicer to read."""
@@ -209,9 +204,10 @@ class PropertyType(object):
         return data
 
     def __eq__(self, other: Any) -> bool:
-        if not isinstance(other, PropertyType):
+        try:
+            return self.name == other.name  # type: ignore
+        except AttributeError:
             return False
-        return self.name == other.name
 
     def __hash__(self) -> int:
         return hash(self.name)
@@ -253,19 +249,19 @@ class EnumType(PropertyType):
 
     def clean_text(
         self,
-        code: str,
+        text: str,
         fuzzy: bool = False,
         format: Optional[str] = None,
         proxy: Optional["EntityProxy"] = None,
     ) -> Optional[str]:
         """All code values are cleaned to be lowercase and trailing whitespace is
         removed."""
-        code = code.lower().strip()
+        code = text.lower().strip()
         if code not in self.codes:
             return None
         return code
 
-    def caption(self, value: str) -> str:
+    def caption(self, value: str, format: Optional[str] = None) -> str:
         """Given a code value, return the label that should be shown to a user."""
         return self.names.get(value, value)
 

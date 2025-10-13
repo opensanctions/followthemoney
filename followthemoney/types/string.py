@@ -1,12 +1,12 @@
 from followthemoney.types.common import PropertyType
-from followthemoney.util import defer as _
+from followthemoney.util import const, defer as _
 from followthemoney.util import MEGABYTE
 
 
 class StringType(PropertyType):
     """A simple string property with no additional semantics."""
 
-    name = "string"
+    name = const("string")
     label = _("Label")
     plural = _("Labels")
     matchable = False
@@ -21,7 +21,7 @@ class TextType(StringType):
     string properties, it might make sense to treat properties of this type as
     full-text search material."""
 
-    name = "text"
+    name = const("text")
     label = _("Text")
     plural = _("Texts")
     total_size = 30 * MEGABYTE
@@ -36,7 +36,7 @@ class HTMLType(StringType):
     to perform server-side sanitisation, or to not render this property at all.
     """
 
-    name = "html"
+    name = const("html")
     label = _("HTML")
     plural = _("HTMLs")
     total_size = 30 * MEGABYTE

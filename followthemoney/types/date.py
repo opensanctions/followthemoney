@@ -4,9 +4,8 @@ from typing import Optional, TYPE_CHECKING
 from prefixdate import parse, parse_format, Precision
 
 from followthemoney.types.common import PropertyType
-from followthemoney.rdf import XSD, Literal, Identifier
 from followthemoney.util import defer as _
-from followthemoney.util import dampen
+from followthemoney.util import dampen, const
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -21,8 +20,8 @@ class DateType(PropertyType):
     The timezone is always expected to be UTC and cannot be specified otherwise. There is
     no support for calendar weeks (`2021-W7`) and date ranges (`2021-2024`)."""
 
-    name = "date"
-    group = "dates"
+    name = const("date")
+    group = const("dates")
     label = _("Date")
     plural = _("Dates")
     matchable = True
@@ -57,18 +56,29 @@ class DateType(PropertyType):
         prefix = os.path.commonprefix([left, right])
         return dampen(4, 10, prefix)
 
-    def rdf(self, value: str) -> Identifier:
-        if len(value) < Precision.HOUR.value:
-            return Literal(value, datatype=XSD.date)
-        return Literal(value, datatype=XSD.dateTime)
-
-    def node_id(self, value: str) -> str:
-        return f"date:{value}"
-
     def to_datetime(self, value: str) -> Optional[datetime]:
+        """Convert a date string to a datetime object in UTC for handling in Python. This
+        will convert the unset fields beyond the prefix to the first possible value, e.g.
+        `2021-02` will become `2021-02-01T00:00:00Z`.
+
+        Args:
+            value (str): The date string to convert.
+
+        Returns:
+            Optional[datetime]: The parsed datetime object in UTC, or None if parsing fails.
+        """
         return parse(value).dt
 
     def to_number(self, value: str) -> Optional[float]:
+        """Convert a date string to a number, which is the number of seconds since the epoch
+        (1970-01-01T00:00:00Z).
+
+        Args:
+            value (str): The date string to convert.
+
+        Returns:
+            Optional[float]: The timestamp as a float, or None if parsing fails.
+        """
         date = self.to_datetime(value)
         if date is None:
             return None

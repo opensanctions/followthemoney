@@ -10,6 +10,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Model {
+    /*
+     * Model represents the schema and types used in the data model. It is used as a singleton, and can be
+     * loaded from a JSON file. The model contains a set of property types and a set of schemata.
+     */
     private final Map<String, Schema> schemata = new HashMap<>();
     private final Map<String, PropertyType> types = new HashMap<>();
 

@@ -22,6 +22,11 @@ import tech.followthemoney.model.Property;
 import tech.followthemoney.model.Schema;
 
 public class ValueEntity extends Entity {
+    /*
+     * ValueEntity represents an entity that is defined by a set of properties represented
+     * as strings, rather than statements. It's a simpler data model, used in cases where
+     * statements are not needed, or not convenient to store.
+     */
     private final static Logger log = LoggerFactory.getLogger(ValueEntity.class);
     
     private Set<String> datasets;

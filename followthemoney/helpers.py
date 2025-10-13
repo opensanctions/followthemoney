@@ -7,14 +7,13 @@
 # probably be the first place to break.
 from os.path import splitext
 from typing import Iterable, List, Optional, Set
-from normality import safe_filename
+from normality import safe_filename, squash_spaces
 from mimetypes import guess_extension
 from itertools import product
 from datetime import datetime, timedelta
 
 from followthemoney.types import registry
-from followthemoney.proxy import E
-from followthemoney.util import join_text
+from followthemoney.proxy import E, EntityProxy
 
 PROV_MIN_DATES = ("createdAt", "authoredAt", "publishedAt")
 PROV_MAX_DATES = ("modifiedAt", "retrievedAt")
@@ -47,7 +46,7 @@ def simplify_provenance(proxy: E) -> E:
 
 
 def entity_filename(
-    proxy: E, base_name: Optional[str] = None, extension: Optional[str] = None
+    proxy: EntityProxy, base_name: Optional[str] = None, extension: Optional[str] = None
 ) -> Optional[str]:
     """Derive a safe filename for the given entity."""
     if proxy.schema.is_a("Document"):
@@ -85,7 +84,7 @@ def name_entity(entity: E) -> E:
 
 
 def check_person_cutoff(
-    entity: E,
+    entity: EntityProxy,
     death_cutoff: datetime = datetime(2000, 1, 1),
     birth_cutoff: Optional[datetime] = None,
 ) -> bool:
@@ -148,24 +147,22 @@ def inline_names(entity: E, related: E) -> None:
 
 
 def combine_names(entity: E) -> E:
-    """This function will try to build names from name parts provided as part
-    of a person entity. This is of course impossible to do culturally correctly
-    for the whole planet at once, so it should be mostly used for internal-facing
-    (e.g. matching) processes."""
+    """Build a full names from name parts of a Person entity and add them as aliases.
+
+    This is of course impossible to do culturally correctly for the whole planet at
+    once, so it should be mostly used for internal-facing (e.g. matching) processes."""
     if entity.schema.is_a("Person"):
-        first_names = entity.get("firstName")
-        second_names = entity.get("secondName")
-        second_names.append("")
-        middle_names = entity.get("middleName")
-        middle_names.append("")
-        father_names = entity.get("fatherName")
-        father_names.append("")
         last_names = entity.get("lastName")
-        for (first, second, middle, father, last) in product(
-            first_names, second_names, middle_names, father_names, last_names
-        ):
-            name = join_text(first, second, middle, father, last)
-            if name is not None:
+        names_seq = [entity.get("firstName")]
+        names_seq.append(entity.get("secondName"))
+        names_seq.append(entity.get("middleName"))
+        names_seq.append(entity.get("fatherName"))
+        names_seq.append(entity.get("motherName"))
+        names_seq.append(last_names)
+        names_seq = [n for n in names_seq if len(n)]
+        for pairing in product(*names_seq):
+            name = squash_spaces(" ".join(pairing))
+            if len(name):
                 entity.add("alias", name)
 
         # If no first name is given, at least add the last name:

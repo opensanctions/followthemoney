@@ -1,6 +1,6 @@
 from typing import Generator, List, Optional, Tuple
 from followthemoney.property import Property
-from followthemoney.proxy import E
+from followthemoney.proxy import EntityProxy
 from followthemoney.schema import Schema
 from followthemoney.types import registry
 
@@ -17,12 +17,12 @@ class Exporter(object):
             yield prop
 
     def exportable_fields(
-        self, proxy: E
+        self, proxy: EntityProxy
     ) -> Generator[Tuple[Property, List[str]], None, None]:
         for prop in self.exportable_properties(proxy.schema):
             yield prop, proxy.get(prop)
 
-    def write(self, proxy: E, extra: Optional[List[str]] = None) -> None:
+    def write(self, proxy: EntityProxy, extra: Optional[List[str]] = None) -> None:
         raise NotImplementedError
 
     def finalize(self) -> None:
