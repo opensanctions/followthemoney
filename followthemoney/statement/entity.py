@@ -7,6 +7,7 @@ from rigour.names.pick import pick_lang_name
 
 from followthemoney.model import Model
 from followthemoney.exc import InvalidData
+from followthemoney.schema import Schema
 from followthemoney.types.common import PropertyType
 from followthemoney.property import Property
 from followthemoney.util import gettext
@@ -477,12 +478,38 @@ class StatementEntity(EntityProxy):
         dataset: Dataset,
         statements: Iterable[Statement],
     ) -> SE:
-        obj: Optional[SE] = None
+        model = Model.instance()
+        canonical_id: Optional[str] = None
+        schemata: Set[str] = set()
+        first_seens: Set[str] = set()
+        props: Dict[str, Set[Statement]] = {}
         for stmt in statements:
-            if obj is None:
-                data = {"schema": stmt.schema, "id": stmt.canonical_id}
-                obj = cls(dataset, data)
-            obj.add_statement(stmt)
-        if obj is None:
-            raise ValueError("No statements given!")
+            schemata.add(stmt.schema)
+            canonical_id = stmt.canonical_id or canonical_id or stmt.entity_id
+            if stmt.prop == BASE_ID:
+                if stmt.first_seen is not None:
+                    first_seens.add(stmt.first_seen)
+            else:
+                if stmt.prop not in props:
+                    props[stmt.prop] = set()
+                props[stmt.prop].add(stmt)
+
+        schema: Optional[Schema] = None
+        for name in schemata:
+            if schema is None:
+                schema = model.get(name)
+            elif schema.name != name:
+                try:
+                    schema = model.common_schema(schema, name)
+                except InvalidData as exc:
+                    raise InvalidData(f"{canonical_id}: {exc}") from exc
+
+        if schema is None:
+            err = "No valid schema for entity: %s %r" % (canonical_id, schemata)
+            raise InvalidData(err)
+
+        data = {"schema": schema, "id": canonical_id}
+        obj = cls(dataset, data)
+        obj.last_change = max(first_seens, default=None)
+        obj._statements = {p: s for p, s in props.items()}
         return obj
