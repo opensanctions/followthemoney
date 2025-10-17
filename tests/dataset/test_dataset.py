@@ -28,6 +28,7 @@ def test_donations_base(catalog_data: Dict[str, Any]):
     with pytest.raises(ValueError):
         ds.get_resource("donations.dbf")
 
+
 def test_donations_export(catalog_data: Dict[str, Any]):
     export = DataCatalog(Dataset, catalog_data).get("donations").to_dict()
     assert "publisher" not in export
@@ -49,7 +50,7 @@ def test_company_dataset(catalog_data: Dict[str, Any]):
     assert ds.name == "company_data"
     assert ds.model.publisher is not None
     assert ds.model.publisher.country == "us"
-    assert ds.model.publisher.country_label == "United States of America"
+    assert ds.model.publisher.country_label == "United States"
     assert ds.model.coverage is not None
     assert "coverage" in ds.to_dict()
     assert ds.model.coverage.start == "2005"

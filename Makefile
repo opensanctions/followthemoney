@@ -24,7 +24,7 @@ docs: default-model ontology
 
 build: default-model ontology
 
-check: typecheck test
+check: default-model typecheck test
 
 ontology:
 	mkdir -p site/ns
