@@ -77,6 +77,8 @@ def compare(
     weights: Weights = COMPARE_WEIGHTS,
 ) -> float:
     """Compare two entities and return a match score."""
+    if left.__eq__(right):
+        return 1.0
     scores = compare_scores(left, right)
     return _compare(scores, weights)
 
