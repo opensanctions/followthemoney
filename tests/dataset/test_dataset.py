@@ -30,7 +30,7 @@ def test_donations_base(catalog_data: Dict[str, Any]):
 
 
 def test_donations_export(catalog_data: Dict[str, Any]):
-    export = DataCatalog(Dataset, catalog_data).get("donations").to_dict()
+    export = DataCatalog(Dataset, catalog_data).require("donations").to_dict()
     assert "publisher" not in export
 
     assert export["resources"][0]["name"] == "donations.csv"

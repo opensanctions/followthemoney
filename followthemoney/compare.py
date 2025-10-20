@@ -73,12 +73,16 @@ def _compare(scores: Scores, weights: Weights, n_std: int = 1) -> float:
 
 def entity_is_same(left: EntityProxy, right: EntityProxy) -> bool:
     """Check if two entities are the same apart from their ID."""
-    if left.schema.name != right.schema.name:
+    if left.schema != right.schema:
         return False
 
-    for prop in set(left.properties.keys()).union(right.properties.keys()):
-        left_vals = sorted(left.properties.get(prop, []))
-        right_vals = sorted(right.properties.get(prop, []))
+    props = set(left.properties.keys()).union(right.properties.keys())
+    if 0 == len(props):
+        return False
+
+    for prop in props:
+        left_vals = sorted(left.get(prop))
+        right_vals = sorted(right.get(prop))
         if left_vals != right_vals:
             return False
     return True

@@ -26,8 +26,10 @@ def test_compare_names():
     }
     right = model.get_proxy(right)
     same_score = compare_names(left.schema, left, left)
+    assert same_score is not None
     assert same_score > 0.5, same_score
     lr_score = compare_names(left.schema, left, right)
+    assert lr_score is not None
     assert lr_score > 0.1, lr_score
     assert lr_score < same_score, (lr_score, same_score)
 
@@ -80,7 +82,7 @@ def test_is_equal():
     # Check that self-comparison returns True
     left = {
         "schema": "Person",
-        "properties": {"name": ["mr frank banana", "f. banana"]}
+        "properties": {"name": ["mr frank banana", "f. banana"]},
     }
     left = model.get_proxy(left)
     assert entity_is_same(left, left)
