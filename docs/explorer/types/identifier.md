@@ -12,7 +12,7 @@ Identifier properties can specify a `format`, which names a more precise validat
 | Code | Label | Strong | Description | 
 | ---- | ----- | ------ | ----------- |
 {%- for fmt in rigour_id_formats %}
-| `{{ fmt.names | join(", ") }}` | {{fmt.title}} |  {{ bool_icon(fmt.strong) }} | {{ fmt.description }} |
+| `{{fmt.name}}` | {{fmt.title}} |  {{ bool_icon(fmt.strong) }} | {{ fmt.description }} |
 {%- endfor -%}
 
 ## Python API

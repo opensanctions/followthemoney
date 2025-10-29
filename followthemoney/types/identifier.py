@@ -1,6 +1,6 @@
 import re
 from typing import Optional, TYPE_CHECKING
-from rigour.ids import get_identifier_format_names, get_identifier_format
+from rigour.ids import get_identifier_format
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import dampen, shortest, longest
@@ -35,8 +35,8 @@ class IdentifierType(PropertyType):
         format: Optional[str] = None,
         proxy: Optional["EntityProxy"] = None,
     ) -> Optional[str]:
-        if format in get_identifier_format_names():
-            format_ = get_identifier_format(format)
+        format_ = get_identifier_format(format)
+        if format_ is not None:
             return format_.normalize(text)
         return text
 
@@ -61,7 +61,7 @@ class IdentifierType(PropertyType):
         return f"id:{value}"
 
     def caption(self, value: str, format: Optional[str] = None) -> str:
-        if format in get_identifier_format_names():
-            format_ = get_identifier_format(format)
+        format_ = get_identifier_format(format)
+        if format_ is not None:
             return format_.format(value)
         return value
