@@ -2,7 +2,7 @@ from typing import Optional, TYPE_CHECKING
 from ipaddress import ip_address
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import const, defer as _
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -13,8 +13,8 @@ class IpType(PropertyType):
     by the protocol versions 4 (e.g. `192.168.1.143`) and 6
     (e.g. `0:0:0:0:0:ffff:c0a8:18f`)."""
 
-    name = const("ip")
-    group = const("ips")
+    name = "ip"
+    group = "ips"
     label = _("IP Address")
     plural = _("IP Addresses")
     matchable = True

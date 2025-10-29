@@ -6,7 +6,7 @@ from phonenumbers.phonenumberutil import region_code_for_number, NumberParseExce
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
-from followthemoney.util import const, dampen
+from followthemoney.util import dampen
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -29,8 +29,8 @@ class PhoneType(PropertyType):
     validation outcome from doing the two operations the other way around. Always
     define the country first."""
 
-    name = const("phone")
-    group = const("phones")
+    name = "phone"
+    group = "phones"
     label = _("Phone number")
     plural = _("Phone numbers")
     matchable = True

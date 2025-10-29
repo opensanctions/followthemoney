@@ -106,7 +106,7 @@ class Schema:
 
     def __init__(self, model: "Model", name: str, data: SchemaSpec) -> None:
         #: Machine-readable name of the schema, used for identification.
-        self.name = const(name)
+        self.name = name
         self.model = model
         self._label = data.get("label", name)
         self._plural = data.get("plural", self.label)
@@ -191,6 +191,7 @@ class Schema:
         #: inherited from parent schemata.
         self.properties: Dict[str, Property] = {}
         for pname, prop in data.get("properties", {}).items():
+            pname = const(pname)
             self.properties[pname] = Property(self, pname, prop)
 
     def generate(self, model: "Model") -> None:
@@ -264,6 +265,7 @@ class Schema:
         name = data.get("name")
         if name is None:
             raise InvalidModel("Unnamed reverse: %s" % other)
+        name = const(name)
 
         prop = self.get(name)
         if prop is None:
@@ -272,7 +274,7 @@ class Schema:
                 "type": registry.entity.name,
                 "reverse": {"name": other.name},
                 "range": other.schema.name,
-                "hidden": data.get("hidden", other.hidden),
+                "hidden": as_bool(data.get("hidden", other.hidden)),
             }
             prop = Property(self, name, spec)
             prop.stub = True

@@ -5,7 +5,7 @@ from prefixdate import parse, parse_format, Precision
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
-from followthemoney.util import dampen, const
+from followthemoney.util import dampen
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -20,8 +20,8 @@ class DateType(PropertyType):
     The timezone is always expected to be UTC and cannot be specified otherwise. There is
     no support for calendar weeks (`2021-W7`) and date ranges (`2021-2024`)."""
 
-    name = const("date")
-    group = const("dates")
+    name = "date"
+    group = "dates"
     label = _("Date")
     plural = _("Dates")
     matchable = True

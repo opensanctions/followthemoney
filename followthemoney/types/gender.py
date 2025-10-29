@@ -2,7 +2,7 @@ from typing import Optional, TYPE_CHECKING
 from babel.core import Locale
 
 from followthemoney.types.common import EnumType, EnumValues
-from followthemoney.util import const, gettext, defer as _
+from followthemoney.util import gettext, defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -14,9 +14,9 @@ class GenderType(EnumType):
     government databases and represent it in a way that can be used by
     structured tools. I'm not sure this justifies the simplification."""
 
-    MALE = const("male")
-    FEMALE = const("female")
-    OTHER = const("other")
+    MALE = "male"
+    FEMALE = "female"
+    OTHER = "other"
 
     LOOKUP = {
         "m": MALE,
@@ -34,8 +34,8 @@ class GenderType(EnumType):
         "divers": OTHER,
     }
 
-    name = const("gender")
-    group = const("genders")
+    name = "gender"
+    group = "genders"
     label = _("Gender")
     plural = _("Genders")
     matchable = False

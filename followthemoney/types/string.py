@@ -6,7 +6,7 @@ from followthemoney.util import MEGABYTE
 class StringType(PropertyType):
     """A simple string property with no additional semantics."""
 
-    name = const("string")
+    name = "string"
     label = _("Label")
     plural = _("Labels")
     matchable = False
@@ -21,7 +21,7 @@ class TextType(StringType):
     string properties, it might make sense to treat properties of this type as
     full-text search material."""
 
-    name = const("text")
+    name = "text"
     label = _("Text")
     plural = _("Texts")
     total_size = 30 * MEGABYTE

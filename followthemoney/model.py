@@ -9,6 +9,7 @@ from followthemoney.types.common import PropertyType, PropertyTypeToDict
 from followthemoney.schema import Schema, SchemaToDict
 from followthemoney.property import Property
 from followthemoney.exc import InvalidModel, InvalidData
+from followthemoney.util import const
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -72,6 +73,7 @@ class Model(object):
             if not isinstance(data, dict):
                 raise InvalidModel("Model file is not a mapping: %s" % filepath)
             for name, config in data.items():
+                name = const(name)
                 self.schemata[name] = Schema(self, name, config)
 
     def get(self, name: Union[str, Schema]) -> Optional[Schema]:

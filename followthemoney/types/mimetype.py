@@ -3,7 +3,7 @@ from rigour.mime import normalize_mimetype, parse_mimetype
 from rigour.mime import DEFAULT
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import const, defer as _
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -18,8 +18,8 @@ class MimeType(PropertyType):
     MIME type properties do not contain parameters as used in HTTP headers,
     like `charset=UTF-8`."""
 
-    name = const("mimetype")
-    group = const("mimetypes")
+    name = "mimetype"
+    group = "mimetypes"
     label = _("MIME-Type")
     plural = _("MIME-Types")
     matchable = False

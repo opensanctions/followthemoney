@@ -4,7 +4,7 @@ from rigour.langs import iso_639_alpha3
 
 from followthemoney.types.common import EnumType, EnumValues
 from followthemoney.util import defer as _, gettext
-from followthemoney.util import const, get_env_list
+from followthemoney.util import get_env_list
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -16,8 +16,8 @@ class LanguageType(EnumType):
     for additional languages once there is a specific need for them to be
     supported."""
 
-    name = const("language")
-    group = const("languages")
+    name = "language"
+    group = "languages"
     label = _("Language")
     plural = _("Languages")
     matchable = False

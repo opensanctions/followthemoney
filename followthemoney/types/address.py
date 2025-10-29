@@ -6,7 +6,7 @@ from rigour.text.distance import levenshtein_similarity
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
-from followthemoney.util import dampen, const
+from followthemoney.util import dampen
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -20,8 +20,8 @@ class AddressType(PropertyType):
 
     LINE_BREAKS = re.compile(r"(\r\n|\n|<BR/>|<BR>|\t|ESQ\.,|ESQ,|;)")
     COMMATA = re.compile(r"(,\s?[,\.])")
-    name = const("address")
-    group = const("addresses")
+    name = "address"
+    group = "addresses"
     label = _("Address")
     plural = _("Addresses")
     matchable = True

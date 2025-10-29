@@ -1,7 +1,7 @@
 from babel.core import Locale
 
 from followthemoney.types.common import EnumType, EnumValues
-from followthemoney.util import const, gettext, defer as _
+from followthemoney.util import gettext, defer as _
 
 
 class TopicType(EnumType):
@@ -15,8 +15,8 @@ class TopicType(EnumType):
     enable queries such as _find all paths between a government procurement
     award and a politician_."""
 
-    name = const("topic")
-    group = const("topics")
+    name = "topic"
+    group = "topics"
     label = _("Topic")
     plural = _("Topics")
     matchable = False

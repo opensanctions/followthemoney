@@ -4,7 +4,7 @@ from typing import Any, Optional, TYPE_CHECKING
 from followthemoney.types.common import PropertyType
 from followthemoney.value import Value
 from followthemoney.util import ENTITY_ID_LEN, get_entity_id, sanitize_text
-from followthemoney.util import const, gettext, defer as _
+from followthemoney.util import gettext, defer as _
 from followthemoney.exc import InvalidData
 
 if TYPE_CHECKING:
@@ -22,8 +22,8 @@ class EntityType(PropertyType):
 
     REGEX_RAW = r"^[0-9a-zA-Z]([0-9a-zA-Z\.\-]*[0-9a-zA-Z])?$"
     REGEX = re.compile(REGEX_RAW)
-    name = const("entity")
-    group = const("entities")
+    name = "entity"
+    group = "entities"
     label = _("Entity")
     plural = _("Entities")
     matchable = True

@@ -1,5 +1,5 @@
 from followthemoney.types.common import PropertyType
-from followthemoney.util import const, defer as _
+from followthemoney.util import defer as _
 
 
 class ChecksumType(PropertyType):
@@ -12,8 +12,8 @@ class ChecksumType(PropertyType):
     of this type are scrubbed when submitted via the normal API. Checksums can only
     be defined by uploading a document to be ingested."""
 
-    name = const("checksum")
-    group = const("checksums")
+    name = "checksum"
+    group = "checksums"
     label = _("Checksum")
     plural = _("Checksums")
     matchable = True

@@ -4,7 +4,7 @@ from rigour.ids import get_identifier_format
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import dampen, shortest, longest
-from followthemoney.util import const, defer as _
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -20,8 +20,8 @@ class IdentifierType(PropertyType):
     Four- or five-digit industry classifiers create more noise than value."""
 
     COMPARE_CLEAN = re.compile(r"[\W_]+")
-    name = const("identifier")
-    group = const("identifiers")
+    name = "identifier"
+    group = "identifiers"
     label = _("Identifier")
     plural = _("Identifiers")
     matchable = True

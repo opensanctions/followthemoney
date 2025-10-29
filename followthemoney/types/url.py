@@ -2,7 +2,7 @@ from typing import Optional, TYPE_CHECKING
 from rigour.urls import clean_url, compare_urls
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import const, dampen, defer as _
+from followthemoney.util import dampen, defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -16,8 +16,8 @@ class UrlType(PropertyType):
     SCHEMES = ("http", "https", "ftp", "mailto")
     DEFAULT_SCHEME = "http"
 
-    name = const("url")
-    group = const("urls")
+    name = "url"
+    group = "urls"
     label = _("URL")
     plural = _("URLs")
     matchable = True

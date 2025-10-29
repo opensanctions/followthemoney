@@ -2,7 +2,7 @@ import re
 from typing import Optional, Tuple
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import const, defer as _
+from followthemoney.util import defer as _
 
 
 class NumberType(PropertyType):
@@ -24,7 +24,7 @@ class NumberType(PropertyType):
     _FLOAT_FMT = "{:" + SEPARATOR + "." + str(PRECISION) + "f}"
     _INT_FMT = "{:" + SEPARATOR + "d}"
 
-    name = const("number")
+    name = "number"
     label = _("Number")
     plural = _("Numbers")
     matchable = False

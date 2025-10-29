@@ -87,17 +87,16 @@ class Property:
         self.schema = schema
 
         #: Machine-readable name for this property.
-        self.name = const(name)
+        self.name = name
         if not check_property_name(self.name):
             raise InvalidModel("Invalid name: %s" % self.name)
 
         #: Qualified property name, which also includes the schema name.
         self.qname = const("%s:%s" % (schema.name, self.name))
 
-        self._hash = hash("<Property(%r)>" % self.qname)
-
         self._label = data.get("label", name)
         self._description = data.get("description")
+        self._hash = hash("<Property(%r)>" % self.qname)
 
         #: This property is deprecated and should not be used.
         self.deprecated = as_bool(data.get("deprecated", False))
@@ -162,6 +161,8 @@ class Property:
             format_ = get_identifier_format(self.format)
             if format_ is None or format_.NAME != self.format:
                 raise InvalidModel("Invalid identifier format: %s" % self.format)
+            # Internalize the string:
+            self.format = format_.NAME
 
     @property
     def label(self) -> str:

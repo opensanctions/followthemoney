@@ -7,7 +7,7 @@ from rigour.text.distance import levenshtein_similarity
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import dampen
-from followthemoney.util import const, defer as _
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -21,8 +21,8 @@ class NameType(PropertyType):
     No validation rules apply, and things having multiple names must be considered
     a perfectly ordinary case."""
 
-    name = const("name")
-    group = const("names")
+    name = "name"
+    group = "names"
     label = _("Name")
     plural = _("Names")
     matchable = True

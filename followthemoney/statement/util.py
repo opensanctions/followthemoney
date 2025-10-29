@@ -1,8 +1,8 @@
-import sys
 from functools import cache
 from typing import Tuple
 
 from followthemoney.model import Model
+from followthemoney.util import const
 
 BASE_ID = "id"
 
@@ -28,4 +28,4 @@ def get_prop_type(schema: str, prop: str) -> str:
 def unpack_prop(id: str) -> Tuple[str, str, str]:
     schema, prop = id.split(":", 1)
     prop_type = get_prop_type(schema, prop)
-    return sys.intern(schema), prop_type, sys.intern(prop)
+    return const(schema), prop_type, const(prop)
