@@ -462,7 +462,7 @@ class EntityProxy(object):
         return self._size
 
     def __hash__(self) -> int:
-        if not self.id:
+        if self.id is None:
             raise RuntimeError("Cannot hash entity without an ID")
         return hash(self.id)
 
