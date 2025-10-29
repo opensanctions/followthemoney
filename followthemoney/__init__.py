@@ -9,7 +9,7 @@ from followthemoney.statement import Statement, StatementEntity, SE
 from followthemoney.dataset import Dataset, DefaultDataset, DS
 from followthemoney.util import set_model_locale
 
-__version__ = "4.3.0"
+__version__ = "4.3.1"
 
 # Data model singleton
 model = Model.instance()
