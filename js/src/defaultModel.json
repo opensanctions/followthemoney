@@ -6936,7 +6936,7 @@
           "type": "name"
         },
         "wikidataId": {
-          "format": "qid",
+          "format": "wikidata",
           "label": "Wikidata ID",
           "matchable": true,
           "maxLength": 32,

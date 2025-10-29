@@ -1,5 +1,6 @@
 import re
 from banal import is_mapping, as_bool
+from rigour.ids import get_identifier_format
 from typing import TYPE_CHECKING, Any, List, Optional, TypedDict
 
 from followthemoney.exc import InvalidModel
@@ -156,6 +157,11 @@ class Property:
                 if not is_mapping(self._reverse):
                     raise InvalidModel("Invalid reverse: %s" % self)
                 self.reverse = self.range._add_reverse(model, self._reverse, self)
+
+        if self.type == registry.identifier and self.format is not None:
+            format_ = get_identifier_format(self.format)
+            if format_ is None or format_.NAME != self.format:
+                raise InvalidModel("Invalid identifier format: %s" % self.format)
 
     @property
     def label(self) -> str:

@@ -55,7 +55,7 @@ Thing:
     wikidataId:
       label: Wikidata ID
       type: identifier
-      format: qid
+      format: wikidata
       maxLength: 32
     keywords:
       label: Keywords
