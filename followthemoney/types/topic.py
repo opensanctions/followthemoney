@@ -86,6 +86,8 @@ class TopicType(EnumType):
         "sanction.linked": _("Sanction-linked entity"),
         "sanction.counter": _("Counter-sanctioned entity"),
         "export.control": _("Export controlled"),
+        # For BIS 50% rule:
+        "export.control.linked": _("Export control-linked"),
         "export.risk": _("Trade risk"),
         "debarment": _("Debarred entity"),
         "poi": _("Person of interest"),
@@ -103,6 +105,7 @@ class TopicType(EnumType):
         "crime",
         "debarment",
         "export.control",
+        "export.control.linked",
         "export.risk",
         "poi",
         "mare.detained",

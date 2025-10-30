@@ -8100,6 +8100,7 @@
         "crime.war": "War crimes",
         "debarment": "Debarred entity",
         "export.control": "Export controlled",
+        "export.control.linked": "Export control-linked",
         "export.risk": "Trade risk",
         "fin": "Financial services",
         "fin.adivsor": "Financial advisor",
