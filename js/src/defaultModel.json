@@ -6687,7 +6687,7 @@
           "type": "url"
         },
         "alias": {
-          "label": "Other name",
+          "label": "Alias",
           "matchable": true,
           "maxLength": 384,
           "name": "alias",
@@ -6929,6 +6929,7 @@
           "type": "entity"
         },
         "weakAlias": {
+          "description": "A relatively broad or generic alias that should not be used for matching in screening systems. It may still may be useful for identification purposes, particularly in confirming a possible match triggered by other identifier information.",
           "label": "Weak alias",
           "maxLength": 384,
           "name": "weakAlias",
