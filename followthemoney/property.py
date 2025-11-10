@@ -3,7 +3,7 @@ from banal import is_mapping, as_bool
 from rigour.ids import get_identifier_format
 from typing import TYPE_CHECKING, Any, List, Optional, TypedDict
 
-from followthemoney.exc import InvalidModel
+from followthemoney.exc import InvalidData, InvalidModel
 from followthemoney.types import registry
 from followthemoney.util import gettext, get_entity_id, const
 
@@ -235,6 +235,18 @@ class Property:
         if self.format is not None:
             data["format"] = self.format
         return data
+
+    def __reduce__(self) -> Any:
+        return (self._reconstruct, (self.qname,))
+
+    @classmethod
+    def _reconstruct(cls, qname: str) -> "Property":
+        from followthemoney.model import Model
+
+        prop = Model.instance().get_qname(qname)
+        if prop is None:
+            raise InvalidData("Unknown property: %r" % qname)
+        return prop
 
     def __repr__(self) -> str:
         return "<Property(%r)>" % self.qname

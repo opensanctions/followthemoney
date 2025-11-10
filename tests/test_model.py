@@ -1,3 +1,4 @@
+import pickle
 from pytest import raises
 from followthemoney import model
 from followthemoney.types import registry
@@ -215,3 +216,20 @@ def test_schema_temporal_extent():
     assert interval.temporal_end_props == [
         interval.get("endDate"),
     ]
+
+
+def test_schema_pickle():
+    schema = model.schemata["Person"]
+    data = pickle.dumps(schema)
+    schema2 = pickle.loads(data)
+    assert schema2 is schema
+    assert hash(schema) == hash(schema2)
+    assert schema2.name is schema.name
+
+
+def test_property_pickle():
+    prop = model.get_qname("Person:birthDate")
+    data = pickle.dumps(prop)
+    prop2 = pickle.loads(data)
+    assert prop2 is prop
+    assert hash(prop) == hash(prop2)

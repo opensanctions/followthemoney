@@ -468,6 +468,18 @@ class Schema:
         data["properties"] = properties
         return data
 
+    def __reduce__(self) -> Any:
+        return (self._reconstruct, (self.name,))
+
+    @classmethod
+    def _reconstruct(cls, name: str) -> "Schema":
+        from followthemoney.model import Model
+
+        schema = Model.instance().get(name)
+        if schema is None:
+            raise InvalidData("Unknown schema: %r" % name)
+        return schema
+
     def __eq__(self, other: Any) -> bool:
         """Compare two schemata (via hash)."""
         try:
