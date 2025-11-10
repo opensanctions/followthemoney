@@ -20,7 +20,7 @@ def test_value_entity():
     exported = se.to_dict()
     assert exported == {
         "id": "jane",
-        "caption": "Jane Doe",
+        # "caption": "Jane Doe",
         "schema": "Person",
         "properties": {"name": ["Jane Doe"], "birthDate": ["1976"]},
         "referents": [],
@@ -73,6 +73,6 @@ def test_statement_entity():
 def test_value_entity_pickle():
     original = ValueEntity.from_dict({"id": "1", "schema": "Person"})
     pickled = pickle.dumps(original)
-    unpickled = pickle.loads(pickled) 
+    unpickled = pickle.loads(pickled)
     assert unpickled == original
-    assert unpickled.to_dict()["caption"] == "Person"
+    assert unpickled.schema is original.schema

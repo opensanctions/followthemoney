@@ -81,12 +81,13 @@ class ValueEntity(EntityProxy):
     def to_dict(self) -> Dict[str, Any]:
         data: Dict[str, Any] = {
             "id": self.id,
-            "caption": self._caption or self.caption,
             "schema": self.schema.name,
             "properties": self.properties,
             "referents": list(self.referents),
             "datasets": list(self.datasets),
         }
+        if self._caption is not None:
+            data["caption"] = self._caption
         if self.first_seen is not None:
             data["first_seen"] = self.first_seen
         if self.last_seen is not None:
