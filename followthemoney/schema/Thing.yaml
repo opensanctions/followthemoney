@@ -24,7 +24,7 @@ Thing:
       label: Country
       type: country
     alias:
-      label: Other name
+      label: Alias
       type: name
     previousName:
       label: Previous name
@@ -32,6 +32,7 @@ Thing:
     weakAlias:
       label: Weak alias
       type: name
+      description: "A relatively broad or generic alias that should not be used for matching in screening systems. It may still may be useful for identification purposes, particularly in confirming a possible match triggered by other identifier information."
       matchable: false
     sourceUrl:
       label: Source link
