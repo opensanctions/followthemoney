@@ -81,9 +81,6 @@ class ValueEntity(EntityProxy):
     def to_dict(self) -> Dict[str, Any]:
         data = super().to_dict()
         extra_data: Dict[str, Any] = {
-            "id": self.id,
-            "schema": self.schema.name,
-            "properties": self.properties,
             "referents": list(self.referents),
             "datasets": list(self.datasets),
         }
