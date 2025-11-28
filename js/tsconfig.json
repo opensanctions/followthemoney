@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "target": "es2015",
-    "module": "es2015",
+    "target": "es6",
+    "module": "esnext",
     "lib": [
       "es2015",
       "es2016",

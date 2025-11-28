@@ -4,7 +4,7 @@
   "description": "JavaScript version of the followthemoney data model",
   "keywords": [],
   "main": "dist/followthemoney.umd.js",
-  "module": "dist/followthemoney.es5.js",
+  "module": "dist/followthemoney.es.js",
   "typings": "dist/followthemoney.d.ts",
   "sideEffects": false,
   "files": [
@@ -68,7 +68,6 @@
     "@rollup/plugin-typescript": "^12.1.4",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",
-    "@types/uuid": "^10.0.0",
     "colors": "^1.4.0",
     "cross-env": "^10.0.0",
     "eslint": "^9.32.0",
@@ -89,6 +88,6 @@
     "typescript-eslint": "^8.38.0"
   },
   "dependencies": {
-    "uuid": "~11.1.0"
+    "uuid": "~13.0.0"
   }
 }
