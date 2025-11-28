@@ -42,25 +42,28 @@ class ValueEntity(EntityProxy):
         key_prefix: Optional[str] = None,
         cleaned: bool = True,
     ):
+        self._caption: Optional[str] = data.pop("caption", None)
+        self.datasets: Set[str] = set(data.pop("datasets", []))
+        self.referents: Set[str] = set(data.pop("referents", []))
+        self.first_seen: Optional[str] = data.pop("first_seen", None)
+        self.last_seen: Optional[str] = data.pop("last_seen", None)
+        self.last_change: Optional[str] = data.pop("last_change", None)
         super().__init__(schema, data, key_prefix=key_prefix, cleaned=cleaned)
-        self._caption: Optional[str] = data.get("caption")
-        self.datasets: Set[str] = set(data.get("datasets", []))
-        self.referents: Set[str] = set(data.get("referents", []))
-        self.first_seen: Optional[str] = data.get("first_seen")
-        self.last_seen: Optional[str] = data.get("last_seen")
-        self.last_change: Optional[str] = data.get("last_change")
 
         # add data from statement dict if present.
         # this updates the dataset and referents set
         for stmt_data in data.pop("statements", []):
             stmt = Statement.from_dict(stmt_data)
+            prop = schema.get(stmt.prop)
+            if prop is None:
+                continue
             self.datasets.add(stmt.dataset)
             if stmt.schema != self.schema.name:
                 self.schema = schema.model.common_schema(self.schema, stmt.schema)
             if stmt.entity_id != self.id:
                 self.referents.add(stmt.entity_id)
             if stmt.prop != BASE_ID:
-                self.add(stmt.prop, stmt.value)
+                self.unsafe_add(prop, stmt.value, cleaned=cleaned)
 
     def merge(self: VE, other: EntityProxy) -> VE:
         merged = super().merge(other)
@@ -80,18 +83,14 @@ class ValueEntity(EntityProxy):
 
     def to_dict(self) -> Dict[str, Any]:
         data = super().to_dict()
-        extra_data: Dict[str, Any] = {
-            "referents": list(self.referents),
-            "datasets": list(self.datasets),
-        }
+        data["referents"] = list(self.referents)
+        data["datasets"] = list(self.datasets)
         if self._caption is not None:
-            extra_data["caption"] = self._caption
+            data["caption"] = self._caption
         if self.first_seen is not None:
-            extra_data["first_seen"] = self.first_seen
+            data["first_seen"] = self.first_seen
         if self.last_seen is not None:
-            extra_data["last_seen"] = self.last_seen
+            data["last_seen"] = self.last_seen
         if self.last_change is not None:
-            extra_data["last_change"] = self.last_change
-        data.update(extra_data)
+            data["last_change"] = self.last_change
         return data
-

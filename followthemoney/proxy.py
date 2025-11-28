@@ -403,13 +403,10 @@ class EntityProxy(object):
         schema and any contextual values that were handed in initially. The resulting
         dictionary can be used to make a new proxy, and it is commonly written to disk
         or a database."""
-        data = dict(self.context)
-        extra = {
-            "id": self.id,
-            "schema": self.schema.name,
-            "properties": self.properties,
-        }
-        data.update(extra)
+        data: Dict[str, Any] = dict(self.context)
+        data["id"] = self.id
+        data["schema"] = self.schema.name
+        data["properties"] = self.properties
         return data
 
     def to_full_dict(self, matchable: bool = False) -> Dict[str, Any]:
