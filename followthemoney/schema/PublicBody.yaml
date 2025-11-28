@@ -13,5 +13,8 @@ PublicBody:
     - status
   caption:
     - name
+    - alias
+    - weakAlias
+    - previousName
   required:
     - name

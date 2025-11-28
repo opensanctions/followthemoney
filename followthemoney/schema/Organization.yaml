@@ -17,6 +17,10 @@ Organization:
     - name
   caption:
     - name
+    - alias
+    - weakAlias
+    - previousName
+    - registrationNumber
   properties:
     cageCode:
       label: CAGE

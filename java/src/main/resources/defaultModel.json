@@ -1084,7 +1084,11 @@
     },
     "Company": {
       "caption": [
-        "name"
+        "name",
+        "alias",
+        "weakAlias",
+        "previousName",
+        "registrationNumber"
       ],
       "description": "A corporation, usually for profit. Does not distinguish between private and public companies, and can also be used to model more specific constructs like trusts and funds. Companies are assets, so they can be owned by other legal entities.\n",
       "extends": [
@@ -3358,6 +3362,9 @@
     "LegalEntity": {
       "caption": [
         "name",
+        "alias",
+        "weakAlias",
+        "previousName",
         "email",
         "phone",
         "registrationNumber"
@@ -4551,7 +4558,11 @@
     },
     "Organization": {
       "caption": [
-        "name"
+        "name",
+        "alias",
+        "weakAlias",
+        "previousName",
+        "registrationNumber"
       ],
       "description": "Any type of incorporated entity that cannot be owned by another (see Company). This might include charities, foundations or state-owned enterprises, depending on their jurisdiction.\n",
       "extends": [
@@ -5184,6 +5195,7 @@
         "name",
         "alias",
         "weakAlias",
+        "previousName",
         "lastName",
         "email",
         "phone"
@@ -5794,7 +5806,10 @@
     },
     "PublicBody": {
       "caption": [
-        "name"
+        "name",
+        "alias",
+        "weakAlias",
+        "previousName"
       ],
       "description": "A public body, such as a ministry, department or state company.\n",
       "extends": [

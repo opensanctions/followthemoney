@@ -17,6 +17,9 @@ LegalEntity:
     - name
   caption:
     - name
+    - alias
+    - weakAlias
+    - previousName
     - email
     - phone
     - registrationNumber
