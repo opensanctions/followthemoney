@@ -79,19 +79,19 @@ class ValueEntity(EntityProxy):
         return merged
 
     def to_dict(self) -> Dict[str, Any]:
-        data: Dict[str, Any] = {
-            "id": self.id,
-            "schema": self.schema.name,
-            "properties": self.properties,
+        data = super().to_dict()
+        extra_data: Dict[str, Any] = {
             "referents": list(self.referents),
             "datasets": list(self.datasets),
         }
         if self._caption is not None:
-            data["caption"] = self._caption
+            extra_data["caption"] = self._caption
         if self.first_seen is not None:
-            data["first_seen"] = self.first_seen
+            extra_data["first_seen"] = self.first_seen
         if self.last_seen is not None:
-            data["last_seen"] = self.last_seen
+            extra_data["last_seen"] = self.last_seen
         if self.last_change is not None:
-            data["last_change"] = self.last_change
+            extra_data["last_change"] = self.last_change
+        data.update(extra_data)
         return data
+
