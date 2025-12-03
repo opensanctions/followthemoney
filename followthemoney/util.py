@@ -88,7 +88,7 @@ def key_bytes(key: Any) -> bytes:
     text = stringify(key)
     if text is None:
         return b""
-    return text.encode("utf-8")
+    return text.encode(DEFAULT_ENCODING)
 
 
 def join_text(*parts: Any, sep: str = " ") -> Optional[str]:

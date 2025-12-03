@@ -1,9 +1,11 @@
+import hashlib
 import logging
 from typing import TYPE_CHECKING, cast, Any
 from typing import Dict, Generator, List, Optional, Set, Tuple, Union, Type, TypeVar
 from itertools import product
 from banal import ensure_dict
 from rigour.names import pick_name
+from normality.encoding import DEFAULT_ENCODING as ENC
 
 from followthemoney.exc import InvalidData
 from followthemoney.types import registry
@@ -17,6 +19,7 @@ from followthemoney.schema import Schema
 
 if TYPE_CHECKING:
     from followthemoney.model import Model
+    from hashlib import _Hash
 
 log = logging.getLogger(__name__)
 P = Union[Property, str]
@@ -437,6 +440,28 @@ class EntityProxy(object):
             self.add(prop, values, cleaned=True, quiet=True)
         return self
 
+    def _checksum_digest(self) -> "_Hash":
+        """Create a SHA1 digest of the entity's ID, schema and properties for
+        change detection. This is returned as a hashlib digest object so that
+        it can be subclassed."""
+        digest = hashlib.sha1()
+        if self.id is not None:
+            digest.update(self.id.encode(ENC))
+        digest.update(self.schema.name.encode(ENC))
+        for prop in sorted(self._properties.keys()):
+            digest.update(prop.encode(ENC))
+            for value in sorted(self._properties[prop]):
+                digest.update(value.encode(ENC))
+                digest.update(b"\x1e")
+            digest.update(b"\x1f")
+        return digest
+
+    @property
+    def checksum(self) -> str:
+        """A SHA1 checksum hexdigest representing the current state of the
+        entity proxy. This can be used for change detection."""
+        return self._checksum_digest().hexdigest()
+
     def __getstate__(self) -> Dict[str, Any]:
         data = {slot: getattr(self, slot) for slot in self.__slots__}
         data["schema"] = self.schema.name
@@ -460,13 +485,13 @@ class EntityProxy(object):
 
     def __hash__(self) -> int:
         if self.id is None:
-            raise RuntimeError("Cannot hash entity without an ID")
+            return hash(self.checksum)
         return hash(self.id)
 
     def __eq__(self, other: Any) -> bool:
         try:
             if self.id is None or other.id is None:
-                raise RuntimeError("Cannot compare entities without IDs.")
+                return bool(self.checksum == other.checksum)
             return bool(self.id == other.id)
         except AttributeError:
             return False

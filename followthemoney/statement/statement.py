@@ -6,6 +6,7 @@ from typing import Any, Dict, Generator, Optional
 from typing_extensions import TypedDict, Self
 from rigour.time import datetime_iso, iso_datetime
 from rigour.boolean import bool_text
+from normality.encoding import DEFAULT_ENCODING as ENC
 
 from followthemoney.proxy import EntityProxy
 from followthemoney.statement.util import get_prop_type, BASE_ID
@@ -173,7 +174,7 @@ class Statement(object):
             # where a certain entity might be emitted as external while it is already
             # linked in to the graph via another route.
             key = f"{key}.ext"
-        return hashlib.sha1(key.encode("utf-8")).hexdigest()
+        return hashlib.sha1(key.encode(ENC)).hexdigest()
 
     @classmethod
     def from_dict(cls, data: StatementDict) -> "Statement":

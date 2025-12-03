@@ -62,8 +62,11 @@ def test_example_entity():
     idstmt = list(sp.statements)[-1]
     assert idstmt.value == "c23bd2254b243c438a12525f7d1ab8f8887927d8"
     assert sp.caption == "John Doe"
+    assert sp.checksum == "f76794ed2492edda96ca21c1e831dba39b99ffd4"
+    assert sp.key_prefix == dx.name
     assert "John Doe", sp.get_type_values(registry.name)
     assert len(list(sp.iterprops())) == 3
+    assert len(sp.properties) == 3
     sp.add("country", "us")
     assert len(sp) == 5
     idstmt = list(sp.statements)[-1]
@@ -82,6 +85,7 @@ def test_example_entity():
     idstmt = list(sp.statements)[-1]
     so = sp.clone()
     assert so.id == sp.id
+    assert sp.checksum == so.checksum
     assert so.dataset == sp.dataset
     idstmt2 = list(so.statements)[-1]
     assert idstmt.value == idstmt2.value

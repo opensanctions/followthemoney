@@ -71,31 +71,15 @@ def _compare(scores: Scores, weights: Weights, n_std: int = 1) -> float:
     return 1.0 / (1.0 + math.exp(-prob))
 
 
-def entity_is_same(left: EntityProxy, right: EntityProxy) -> bool:
-    """Check if two entities are the same apart from their ID."""
-    if left.schema != right.schema:
-        return False
-
-    props = set(left.properties.keys()).union(right.properties.keys())
-    if 0 == len(props):
-        return False
-
-    for prop in props:
-        left_vals = sorted(left.get(prop))
-        right_vals = sorted(right.get(prop))
-        if left_vals != right_vals:
-            return False
-    return True
-
-
 def compare(
     left: EntityProxy,
     right: EntityProxy,
     weights: Weights = COMPARE_WEIGHTS,
 ) -> float:
     """Compare two entities and return a match score."""
-    if entity_is_same(left, right):
-        return 1.0
+    if left.checksum == right.checksum:
+        if len(left.properties) > 0 and len(right.properties) > 0:
+            return 1.0
     scores = compare_scores(left, right)
     return _compare(scores, weights)
 

@@ -1,9 +1,10 @@
 from hashlib import sha1
 from collections.abc import Mapping
-from typing import Any, Dict, List, Optional, Set, Type
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Type
 from typing import Generator, Iterable, Tuple, TypeVar
 from rigour.langs import LangStr
 from rigour.names.pick import pick_lang_name
+from normality.encoding import DEFAULT_ENCODING as ENC
 
 from followthemoney.model import Model
 from followthemoney.exc import InvalidData
@@ -20,6 +21,9 @@ from followthemoney.statement.statement import Statement
 from followthemoney.statement.util import BASE_ID
 
 SE = TypeVar("SE", bound="StatementEntity")
+
+if TYPE_CHECKING:
+    from hashlib import _Hash
 
 
 class StatementEntity(EntityProxy):
@@ -97,9 +101,9 @@ class StatementEntity(EntityProxy):
             if stmt.first_seen is not None:
                 first_seen.add(stmt.first_seen)
         if self.id is not None:
-            digest = sha1(self.schema.name.encode("utf-8"))
+            digest = sha1(self.schema.name.encode(ENC))
             for id in sorted(ids):
-                digest.update(id.encode("utf-8"))
+                digest.update(id.encode(ENC))
             checksum = digest.hexdigest()
             # This is to make the last_change value stable across
             # serialisation:
@@ -448,6 +452,23 @@ class StatementEntity(EntityProxy):
         data = self.to_context_dict()
         data["statements"] = [stmt.to_dict() for stmt in self.statements]
         return data
+
+    def _checksum_digest(self) -> "_Hash":
+        """Create a SHA1 digest of the entity's ID, schema and properties for
+        change detection. This is returned as a hashlib digest object so that
+        it can be subclassed."""
+        digest = sha1()
+        if self.id is not None:
+            digest.update(self.id.encode(ENC))
+        statement_ids: List[str] = []
+        for stmts in self._statements.values():
+            for stmt in stmts:
+                if stmt.id is not None:
+                    statement_ids.append(stmt.id)
+        for stmt_id in sorted(statement_ids):
+            digest.update(stmt_id.encode(ENC))
+            digest.update(b"\x1e")
+        return digest
 
     def __len__(self) -> int:
         return len(list(self._iter_stmt())) + 1

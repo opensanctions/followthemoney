@@ -16,6 +16,7 @@ def test_value_entity():
     assert se.schema.name == "Person"
     assert se.id == "jane"
     assert se.caption == "Jane Doe"
+    assert se.checksum == "b0139596060f3193e4994484870070638f287e6c"
     assert se.datasets == set()
     exported = se.to_dict()
     assert exported == {
@@ -45,6 +46,7 @@ def test_value_entity():
     sp = StatementEntity.from_data(ds, se.to_dict())
     assert sp.id == se.id == "jane"
     assert sp.datasets == se.datasets == {"test"}
+    assert se.checksum != sp.checksum
 
     # with statements list in payload
     data = sp.to_statement_dict()
