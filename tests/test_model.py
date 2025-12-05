@@ -111,6 +111,11 @@ def test_make_entity():
     ent = model.make_entity("Person")
     assert ent.id is None
     assert ent.schema.name == "Person"
+    with raises(RuntimeError):
+        hash(ent)
+
+    ent.id = "test"
+    assert hash(ent) == hash("test")
 
 
 def test_model_to_dict():

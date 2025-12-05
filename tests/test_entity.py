@@ -45,6 +45,7 @@ def test_value_entity():
     se = ValueEntity.from_dict(data)
     sp = StatementEntity.from_data(ds, se.to_dict())
     assert sp.id == se.id == "jane"
+    assert hash(se) == hash(sp)
     assert sp.datasets == se.datasets == {"test"}
     assert se.checksum != sp.checksum
 
