@@ -10,10 +10,11 @@ from threading import local
 from typing import cast, Dict, Any, List, Optional, TypeVar, Union
 from normality import stringify
 from normality.cleaning import remove_unsafe_chars
-from normality.encoding import DEFAULT_ENCODING
+from rigour.env import ENCODING
 from banal import is_mapping, unique_list, ensure_list
 
 MEGABYTE = 1024 * 1024
+HASH_ENCODING = "utf-8"
 DEFAULT_LOCALE = "en"
 ENTITY_ID_LEN = 200
 
@@ -64,7 +65,7 @@ def get_env_list(name: str, default: List[str] = []) -> List[str]:
     return default
 
 
-def sanitize_text(value: Any, encoding: str = DEFAULT_ENCODING) -> Optional[str]:
+def sanitize_text(value: Any, encoding: str = ENCODING) -> Optional[str]:
     text = stringify(value, encoding_default=encoding)
     if text is None:
         return None
@@ -74,8 +75,8 @@ def sanitize_text(value: Any, encoding: str = DEFAULT_ENCODING) -> Optional[str]
         log.warning("Cannot NFC text: %s", ex)
         return None
     text = remove_unsafe_chars(text)
-    byte_text = text.encode(DEFAULT_ENCODING, "replace")
-    text = byte_text.decode(DEFAULT_ENCODING, "replace")
+    byte_text = text.encode("utf-8", "replace")
+    text = byte_text.decode("utf-8", "replace")
     if len(text) == 0:
         return None
     return text
@@ -88,7 +89,7 @@ def key_bytes(key: Any) -> bytes:
     text = stringify(key)
     if text is None:
         return b""
-    return text.encode(DEFAULT_ENCODING)
+    return text.encode(ENCODING)
 
 
 def join_text(*parts: Any, sep: str = " ") -> Optional[str]:

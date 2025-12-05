@@ -3,7 +3,7 @@ import yaml
 from functools import cache
 from typing import TYPE_CHECKING, Any
 from typing import Dict, Generator, Iterator, Optional, Set, TypedDict, Union
-from normality.encoding import DEFAULT_ENCODING
+from rigour.env import ENCODING
 
 from followthemoney.types import registry
 from followthemoney.types.common import PropertyType, PropertyTypeToDict
@@ -69,7 +69,7 @@ class Model(object):
                     schema.properties[prop.name] = prop
 
     def _load(self, filepath: str) -> None:
-        with open(filepath, "r", encoding=DEFAULT_ENCODING) as fh:
+        with open(filepath, "r", encoding=ENCODING) as fh:
             data = yaml.safe_load(fh)
             if not isinstance(data, dict):
                 raise InvalidModel("Model file is not a mapping: %s" % filepath)

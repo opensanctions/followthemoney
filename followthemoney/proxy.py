@@ -5,14 +5,13 @@ from typing import Dict, Generator, List, Optional, Set, Tuple, Union, Type, Typ
 from itertools import product
 from banal import ensure_dict
 from rigour.names import pick_name
-from normality.encoding import DEFAULT_ENCODING as ENC
 
 from followthemoney.exc import InvalidData
 from followthemoney.types import registry
 from followthemoney.types.common import PropertyType
 from followthemoney.property import Property
 from followthemoney.value import string_list, Values
-from followthemoney.util import sanitize_text, gettext
+from followthemoney.util import HASH_ENCODING, sanitize_text, gettext
 from followthemoney.util import merge_context, make_entity_id
 from followthemoney.model import Model
 from followthemoney.schema import Schema
@@ -446,12 +445,12 @@ class EntityProxy(object):
         it can be subclassed."""
         digest = hashlib.sha1()
         if self.id is not None:
-            digest.update(self.id.encode(ENC))
-        digest.update(self.schema.name.encode(ENC))
+            digest.update(self.id.encode(HASH_ENCODING))
+        digest.update(self.schema.name.encode(HASH_ENCODING))
         for prop in sorted(self._properties.keys()):
-            digest.update(prop.encode(ENC))
+            digest.update(prop.encode(HASH_ENCODING))
             for value in sorted(self._properties[prop]):
-                digest.update(value.encode(ENC))
+                digest.update(value.encode(HASH_ENCODING))
                 digest.update(b"\x1e")
             digest.update(b"\x1f")
         return digest
@@ -485,13 +484,13 @@ class EntityProxy(object):
 
     def __hash__(self) -> int:
         if self.id is None:
-            return hash(self.checksum)
+            raise RuntimeError("Unhashable entity proxy without ID.")
         return hash(self.id)
 
     def __eq__(self, other: Any) -> bool:
         try:
             if self.id is None or other.id is None:
-                return bool(self.checksum == other.checksum)
+                raise RuntimeError("Cannot compare entity proxies without IDs.")
             return bool(self.id == other.id)
         except AttributeError:
             return False

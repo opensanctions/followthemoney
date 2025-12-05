@@ -4,14 +4,13 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Type
 from typing import Generator, Iterable, Tuple, TypeVar
 from rigour.langs import LangStr
 from rigour.names.pick import pick_lang_name
-from normality.encoding import DEFAULT_ENCODING as ENC
 
 from followthemoney.model import Model
 from followthemoney.exc import InvalidData
 from followthemoney.schema import Schema
 from followthemoney.types.common import PropertyType
 from followthemoney.property import Property
-from followthemoney.util import gettext
+from followthemoney.util import HASH_ENCODING, gettext
 from followthemoney.proxy import P
 from followthemoney.types import registry
 from followthemoney.value import string_list, Values
@@ -101,9 +100,9 @@ class StatementEntity(EntityProxy):
             if stmt.first_seen is not None:
                 first_seen.add(stmt.first_seen)
         if self.id is not None:
-            digest = sha1(self.schema.name.encode(ENC))
+            digest = sha1(self.schema.name.encode(HASH_ENCODING))
             for id in sorted(ids):
-                digest.update(id.encode(ENC))
+                digest.update(id.encode(HASH_ENCODING))
             checksum = digest.hexdigest()
             # This is to make the last_change value stable across
             # serialisation:
@@ -459,14 +458,14 @@ class StatementEntity(EntityProxy):
         it can be subclassed."""
         digest = sha1()
         if self.id is not None:
-            digest.update(self.id.encode(ENC))
+            digest.update(self.id.encode(HASH_ENCODING))
         statement_ids: List[str] = []
         for stmts in self._statements.values():
             for stmt in stmts:
                 if stmt.id is not None:
                     statement_ids.append(stmt.id)
         for stmt_id in sorted(statement_ids):
-            digest.update(stmt_id.encode(ENC))
+            digest.update(stmt_id.encode(HASH_ENCODING))
             digest.update(b"\x1e")
         return digest
 

@@ -8,7 +8,7 @@ from types import TracebackType
 from typing import cast
 from typing import BinaryIO, Generator, Iterable, List, Optional, TextIO, Type
 from rigour.boolean import text_bool
-from normality.encoding import DEFAULT_ENCODING
+from rigour.env import ENCODING
 
 from followthemoney.statement.statement import Statement, StatementDict
 from followthemoney.statement.util import unpack_prop
@@ -61,7 +61,7 @@ def read_json_statements(
 
 
 def read_csv_statements(fh: BinaryIO) -> Generator[Statement, None, None]:
-    wrapped = TextIOWrapper(fh, encoding=DEFAULT_ENCODING)
+    wrapped = TextIOWrapper(fh, encoding=ENCODING)
     for row in csv.DictReader(wrapped, dialect=csv.unix_dialect):
         data = cast(StatementDict, row)
         data["external"] = text_bool(row.get("external")) or False
@@ -73,7 +73,7 @@ def read_csv_statements(fh: BinaryIO) -> Generator[Statement, None, None]:
 
 
 def read_pack_statements(fh: BinaryIO) -> Generator[Statement, None, None]:
-    wrapped = TextIOWrapper(fh, encoding=DEFAULT_ENCODING)
+    wrapped = TextIOWrapper(fh, encoding=ENCODING)
     yield from read_pack_statements_decoded(wrapped)
 
 
@@ -130,10 +130,10 @@ def read_path_statements(path: Path, format: str) -> Generator[Statement, None, 
 
 def get_statement_writer(fh: BinaryIO, format: str) -> "StatementWriter":
     if format == CSV:
-        wrapped = TextIOWrapper(fh, encoding=DEFAULT_ENCODING)
+        wrapped = TextIOWrapper(fh, encoding=ENCODING)
         return CSVStatementWriter(wrapped)
     elif format == PACK:
-        wrapped = TextIOWrapper(fh, encoding=DEFAULT_ENCODING)
+        wrapped = TextIOWrapper(fh, encoding=ENCODING)
         return PackStatementWriter(wrapped)
     elif format == JSON:
         return JSONStatementWriter(fh)
