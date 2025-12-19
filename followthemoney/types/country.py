@@ -1,6 +1,7 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Callable, Optional, TYPE_CHECKING, Sequence
 from babel.core import Locale
 from rigour.territories import get_ftm_countries, lookup_territory
+from rigour.territories import territories_intersect
 
 from followthemoney.types.common import EnumType, EnumValues
 from followthemoney.util import defer as _
@@ -24,6 +25,20 @@ class CountryType(EnumType):
 
     def _locale_names(self, locale: Locale) -> EnumValues:
         return {t.code: t.name for t in get_ftm_countries()}
+
+    def compare(self, left: str, right: str) -> float:
+        overlap = territories_intersect([left], [right])
+        return 1.0 if len(overlap) else 0.0
+
+    def compare_sets(
+        self,
+        left: Sequence[str],
+        right: Sequence[str],
+        func: Callable[[Sequence[float]], float] = max,
+    ) -> float:
+        """Compare two sets of values and select the highest-scored result."""
+        overlap = territories_intersect(left, right)
+        return 1.0 if len(overlap) else 0.0
 
     def clean_text(
         self,
