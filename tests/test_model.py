@@ -60,9 +60,11 @@ def test_schema_basics():
 
     ownership = model["Ownership"]
     owner = ownership.get("owner")
+    assert owner is not None
     assert owner.range == model["LegalEntity"]
     assert owner.reverse is not None
     role = ownership.get("role")
+    assert role is not None
     assert role.reverse is None
 
 
@@ -109,6 +111,11 @@ def test_make_entity():
     ent = model.make_entity("Person")
     assert ent.id is None
     assert ent.schema.name == "Person"
+    with raises(RuntimeError):
+        hash(ent)
+
+    ent.id = "test"
+    assert hash(ent) == hash("test")
 
 
 def test_model_to_dict():
@@ -121,9 +128,10 @@ def test_model_to_dict():
 def test_model_property():
     thing = model.schemata["Thing"]
     name = thing.get("name")
+    assert name is not None
     assert name.name in repr(name), repr(name)
     assert not name.hidden, name.hidden
-    assert name.validate("huhu") is None
+    assert name.validate(["huhu"]) is None
 
 
 def test_descendants():
@@ -137,11 +145,13 @@ def test_descendants():
 def test_model_reverse_properties():
     thing = model.schemata["Thing"]
     notes = thing.get("noteEntities")
+    assert notes is not None, notes
     assert notes.stub is True, notes
 
     person = model.schemata["Person"]
     assoc = model.schemata["Associate"]
     prop = assoc.get("associate")
+    assert prop is not None, prop
     assert prop.stub is False, prop
     assert prop.range == person, prop
     assert prop.reverse is not None
@@ -167,6 +177,7 @@ def test_matchable():
 def test_specificity_name():
     company = model.schemata["Company"]
     name = company.get("name")
+    assert name is not None
     assert 0 == name.specificity("AA")
     assert 0.4 <= name.specificity("Church of Jesus Christ of the Latter Day Saints")  # noqa
 
@@ -174,10 +185,12 @@ def test_specificity_name():
 def test_specificity_date():
     company = model.schemata["Company"]
     date = company.get("incorporationDate")
+    assert date is not None
     spec = date.specificity("2011-01-01")
     assert 0.5 <= spec, spec
 
     date = company.get("retrievedAt")
+    assert date is not None
     spec = date.specificity("2011-01-01")
     assert 0.0 == spec, spec
 
@@ -233,3 +246,27 @@ def test_property_pickle():
     prop2 = pickle.loads(data)
     assert prop2 is prop
     assert hash(prop) == hash(prop2)
+
+
+def test_is_equal():
+    # Check that self-comparison returns True
+    left = {
+        "schema": "Person",
+        "properties": {"name": ["mr frank banana", "f. banana"]},
+    }
+    left = model.get_proxy(left)
+    assert left.checksum == left.checksum
+    # Check that different schema returns False
+    right = {
+        "schema": "Organization",
+        "properties": {"name": ["mr frank banana", "f. banana"]},
+    }
+    right = model.get_proxy(right)
+    assert left.checksum != right.checksum
+    # Check that different properties returns False
+    right = {
+        "schema": "Person",
+        "properties": {"name": ["mr frank bananoid"]},
+    }
+    right = model.get_proxy(right)
+    assert left.checksum != right.checksum

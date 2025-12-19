@@ -9,6 +9,7 @@ from rigour.boolean import bool_text
 
 from followthemoney.proxy import EntityProxy
 from followthemoney.statement.util import get_prop_type, BASE_ID
+from followthemoney.util import HASH_ENCODING
 
 
 class StatementDict(TypedDict):
@@ -173,7 +174,7 @@ class Statement(object):
             # where a certain entity might be emitted as external while it is already
             # linked in to the graph via another route.
             key = f"{key}.ext"
-        return hashlib.sha1(key.encode("utf-8")).hexdigest()
+        return hashlib.sha1(key.encode(HASH_ENCODING)).hexdigest()
 
     @classmethod
     def from_dict(cls, data: StatementDict) -> "Statement":

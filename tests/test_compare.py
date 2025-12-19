@@ -2,7 +2,7 @@ import pytest
 from copy import deepcopy
 
 from followthemoney import model
-from followthemoney.compare import compare, compare_names, entity_is_same
+from followthemoney.compare import compare, compare_names
 
 
 ENTITY = {
@@ -76,27 +76,3 @@ def test_compare_quality():
     reduced["properties"]["name"] = ["Frank Banana"]
     reduced_proxy = model.get_proxy(reduced)
     assert compare(entity, reduced_proxy) < best_score
-
-
-def test_is_equal():
-    # Check that self-comparison returns True
-    left = {
-        "schema": "Person",
-        "properties": {"name": ["mr frank banana", "f. banana"]},
-    }
-    left = model.get_proxy(left)
-    assert entity_is_same(left, left)
-    # Check that different schema returns False
-    right = {
-        "schema": "Organization",
-        "properties": {"name": ["mr frank banana", "f. banana"]},
-    }
-    right = model.get_proxy(right)
-    assert not entity_is_same(left, right)
-    # Check that different properties returns False
-    right = {
-        "schema": "Person",
-        "properties": {"name": ["mr frank bananoid"]},
-    }
-    right = model.get_proxy(right)
-    assert not entity_is_same(left, right)

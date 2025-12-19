@@ -5,6 +5,7 @@ from rigour.names import pick_name
 from followthemoney.proxy import EntityProxy
 from followthemoney.schema import Schema
 from followthemoney.statement import BASE_ID, Statement
+from followthemoney.util import HASH_ENCODING
 
 VE = TypeVar("VE", bound="ValueEntity")
 
@@ -80,6 +81,19 @@ class ValueEntity(EntityProxy):
             changed = _defined(self.last_change, other.last_change)
             merged.last_change = max(changed, default=None)
         return merged
+
+    @property
+    def checksum(self) -> str:
+        digest = self._checksum_digest()
+        for dataset in sorted(self.datasets):
+            digest.update(dataset.encode(HASH_ENCODING))
+            digest.update(b"\x1e")
+        for referent in sorted(self.referents):
+            digest.update(referent.encode(HASH_ENCODING))
+            digest.update(b"\x1e")
+        if self.last_change is not None:
+            digest.update(self.last_change.encode(HASH_ENCODING))
+        return digest.hexdigest()
 
     def to_dict(self) -> Dict[str, Any]:
         data = super().to_dict()
