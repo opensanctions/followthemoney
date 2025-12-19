@@ -27,6 +27,16 @@ class DateType(PropertyType):
     matchable = True
     max_length = 32
 
+    HISTORIC = "1001-01-01"
+    """A sentinel date value representing a very old date, used to indicate historic (and often imprecise) dates
+    that can be assumed to be long in the past."""
+
+    RELEVANCE_MIN = "1900-01-01"
+    """A cutoff date value representing the minimum relevant date for modern fincrime applications."""
+
+    RELEVANCE_MAX = "2100-12-31"
+    """A cutoff date value representing the maximum relevant date for modern fincrime applications."""
+
     def validate(
         self, value: str, fuzzy: bool = False, format: Optional[str] = None
     ) -> bool:
