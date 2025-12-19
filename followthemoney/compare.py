@@ -78,6 +78,9 @@ def compare(
 ) -> float:
     """Compare two entities and return a match score."""
     if left.checksum == right.checksum:
+        # Check if there is any data at all (ie any basis for making a decision),
+        # if so, return a perfect match. This avoids marking two empty entities
+        # as matching. Bit ambiguous, but practical.
         if len(left.properties) > 0 and len(right.properties) > 0:
             return 1.0
     scores = compare_scores(left, right)
