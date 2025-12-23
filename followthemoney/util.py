@@ -56,15 +56,6 @@ def get_locale() -> Locale:
     return Locale.parse(state.locale)
 
 
-def get_env_list(name: str, default: List[str] = []) -> List[str]:
-    value = stringify(os.environ.get(name))
-    if value is not None:
-        values = value.split(":")
-        if len(values):
-            return values
-    return default
-
-
 def sanitize_text(value: Any, encoding: str = ENCODING) -> Optional[str]:
     text = stringify(value, encoding_default=encoding)
     if text is None:

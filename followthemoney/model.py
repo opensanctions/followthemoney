@@ -10,6 +10,7 @@ from followthemoney.types.common import PropertyType, PropertyTypeToDict
 from followthemoney.schema import Schema, SchemaToDict
 from followthemoney.property import Property
 from followthemoney.exc import InvalidModel, InvalidData
+from followthemoney.settings import MODEL_PATH
 from followthemoney.util import const
 
 if TYPE_CHECKING:
@@ -48,10 +49,7 @@ class Model(object):
     @classmethod
     def instance(cls) -> "Model":
         if cls._instance is None:
-            model_path = os.path.dirname(__file__)
-            model_path = os.path.join(model_path, "schema")
-            model_path = os.environ.get("FTM_MODEL_PATH", model_path)
-            cls._instance = cls(model_path)
+            cls._instance = cls(MODEL_PATH)
         return cls._instance
 
     def generate(self) -> None:

@@ -4,7 +4,7 @@ from rigour.langs import iso_639_alpha3
 
 from followthemoney.types.common import EnumType, EnumValues
 from followthemoney.util import defer as _, gettext
-from followthemoney.util import get_env_list
+from followthemoney.settings import get_env_list
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy

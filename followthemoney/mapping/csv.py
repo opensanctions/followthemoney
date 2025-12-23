@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, cast
 from typing import Any, Dict, Generator, ItemsView, Iterable, List, Optional, Set, Tuple
 
 from followthemoney.mapping.source import Record, Source
+from followthemoney.settings import USER_AGENT
 from followthemoney.util import sanitize_text
 from followthemoney.exc import InvalidMapping
 
@@ -64,7 +65,8 @@ class CSVSource(Source):
         parsed_url = urlparse(url)
         log.info("Loading: %s", url)
         if parsed_url.scheme in ["http", "https"]:
-            res = requests.get(url, stream=True)
+            headers = {"User-Agent": USER_AGENT}
+            res = requests.get(url, stream=True, headers=headers)
             if not res.ok:
                 raise InvalidMapping("Failed to open CSV: %s" % url)
             # if res.encoding is None:

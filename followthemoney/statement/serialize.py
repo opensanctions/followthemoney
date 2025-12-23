@@ -5,7 +5,7 @@ import logging
 from io import TextIOWrapper
 from pathlib import Path
 from types import TracebackType
-from typing import cast
+from typing import Tuple, cast
 from typing import BinaryIO, Generator, Iterable, List, Optional, TextIO, Type
 from rigour.boolean import text_bool
 from rigour.env import ENCODING
@@ -223,12 +223,12 @@ class PackStatementWriter(StatementWriter):
             "id",
         ]
         self.writer.writerow(columns)
-        self._batch: List[List[Optional[str]]] = []
+        self._batch: List[Tuple[Optional[str], ...]] = []
 
     def write(self, stmt: Statement) -> None:
         # HACK: This is very similar to the CSV writer, but at the very inner
         # loop of the application, so we're duplicating code here.
-        row = [
+        row = (
             stmt.entity_id,
             f"{stmt.schema}:{stmt.prop}",
             stmt.value,
@@ -240,7 +240,7 @@ class PackStatementWriter(StatementWriter):
             stmt.first_seen,
             stmt.last_seen,
             stmt.id,
-        ]
+        )
         self._batch.append(row)
         if len(self._batch) >= CSV_BATCH:
             self.writer.writerows(self._batch)
