@@ -100,6 +100,9 @@ only-include = ["followthemoney", "LICENSE", "README.md"]
 [tool.distutils.bdist_wheel]
 universal = true
 
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
 [tool.babel.extractors.followthemoney]
 "followthemoney/**.py" = "python"
 "followthemoney/schema/**.yaml" = "ftmmodel"

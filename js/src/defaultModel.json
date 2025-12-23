@@ -1796,6 +1796,15 @@
       "matchable": true,
       "plural": "Cryptocurrency wallets",
       "properties": {
+        "accountId": {
+          "description": "Platform-specific user/account identifier",
+          "label": "Account ID",
+          "matchable": true,
+          "maxLength": 64,
+          "name": "accountId",
+          "qname": "CryptoWallet:accountId",
+          "type": "identifier"
+        },
         "balance": {
           "label": "Balance",
           "maxLength": 250,
