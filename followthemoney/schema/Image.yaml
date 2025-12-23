@@ -1,4 +1,7 @@
 Image:
+  # This schema defines an image file entity within the FollowTheMoney data model.
+  # If a `checksum` property is present, consider loading it from an Aleph archive
+  # or FtM data lake. Otherwise, use `sourceUrl` to fetch the image directly.
   extends:
     - Document
   label: Image
@@ -23,3 +26,7 @@ Image:
         label: "Images"
       type: entity
       range: Person
+    credit:
+      label: "Credit"
+      description: "The credit or attribution for the image."
+      type: string

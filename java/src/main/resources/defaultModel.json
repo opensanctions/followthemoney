@@ -3168,6 +3168,14 @@
       "label": "Image",
       "plural": "Images",
       "properties": {
+        "credit": {
+          "description": "The credit or attribution for the image.",
+          "label": "Credit",
+          "maxLength": 1024,
+          "name": "credit",
+          "qname": "Image:credit",
+          "type": "string"
+        },
         "pictured": {
           "label": "Pictured",
           "matchable": true,
