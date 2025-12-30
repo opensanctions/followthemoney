@@ -8,7 +8,7 @@ from rigour.time import datetime_iso, iso_datetime
 from rigour.boolean import bool_text
 
 from followthemoney.proxy import EntityProxy
-from followthemoney.statement.util import get_prop_type, BASE_ID
+from followthemoney.statement.util import NON_LANG_TYPE_NAMES, get_prop_type, BASE_ID
 from followthemoney.util import HASH_ENCODING
 
 
@@ -86,7 +86,13 @@ class Statement(object):
         self._schema = schema
         self._value = value
         self._dataset = dataset
+
+        # Remove lang for non-linguistic property types:
+        prop_type = get_prop_type(schema, prop)
+        if lang is not None and prop_type in NON_LANG_TYPE_NAMES:
+            lang = None
         self._lang = lang
+
         self.original_value = original_value
         self.first_seen = first_seen
         self.last_seen = last_seen or first_seen

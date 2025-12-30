@@ -2,9 +2,27 @@ from functools import cache
 from typing import Tuple
 
 from followthemoney.model import Model
+from followthemoney.types import registry
 from followthemoney.util import const
 
 BASE_ID = "id"
+
+# Some property types should not set the `lang` attribute on statements.
+# These are typically non-linguistic types, but we're making an exclusion
+# for now for types where parsing is likely to have taken place (e.g. country, date).
+NON_LANG_TYPE_NAMES = {
+    registry.entity.name,
+    # registry.date.name,
+    registry.checksum.name,
+    registry.email.name,
+    registry.phone.name,
+    # registry.gender.name,
+    registry.mimetype.name,
+    registry.topic.name,
+    registry.url.name,
+    # registry.country.name,
+    registry.ip.name,
+}
 
 
 def pack_prop(schema: str, prop: str) -> str:
