@@ -154,6 +154,7 @@ class Statement(object):
             self.prop,
             self.value,
             self.external,
+            lang=self.lang,
         )
 
     @classmethod
@@ -164,11 +165,15 @@ class Statement(object):
         prop: str,
         value: str,
         external: Optional[bool],
+        lang: Optional[str] = None,
     ) -> Optional[str]:
         """Hash the key properties of a statement record to make a unique ID."""
         if prop is None or value is None:
             return None
-        key = f"{dataset}.{entity_id}.{prop}.{value}"
+        if lang is None:
+            key = f"{dataset}.{entity_id}.{prop}.{value}"
+        else:
+            key = f"{dataset}.{entity_id}.{prop}.{value}.{lang}"
         if external:
             # We consider the external flag in key composition to avoid race conditions
             # where a certain entity might be emitted as external while it is already
