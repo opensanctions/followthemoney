@@ -8,19 +8,21 @@ from followthemoney.util import const
 BASE_ID = "id"
 
 # Some property types should not set the `lang` attribute on statements.
-# These are typically non-linguistic types, but we're making an exclusion
-# for now for types where parsing is likely to have taken place (e.g. country, date).
+# These are typically non-linguistic types, although there's an argument
+# that language metadata could be useful for dates and countries, where
+# text parsing is likely to have taken place.
 NON_LANG_TYPE_NAMES = {
     registry.entity.name,
-    # registry.date.name,
+    registry.date.name,
     registry.checksum.name,
     registry.email.name,
     registry.phone.name,
-    # registry.gender.name,
+    registry.gender.name,
     registry.mimetype.name,
     registry.topic.name,
     registry.url.name,
-    # registry.country.name,
+    registry.country.name,
+    registry.language.name,
     registry.ip.name,
 }
 
