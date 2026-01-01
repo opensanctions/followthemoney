@@ -1086,6 +1086,7 @@
       "caption": [
         "name",
         "alias",
+        "abbreviation",
         "weakAlias",
         "previousName",
         "registrationNumber"
@@ -3380,6 +3381,7 @@
       "caption": [
         "name",
         "alias",
+        "abbreviation",
         "weakAlias",
         "previousName",
         "email",
@@ -3400,6 +3402,14 @@
       "matchable": true,
       "plural": "Legal entities",
       "properties": {
+        "abbreviation": {
+          "description": "Abbreviated name or acronym",
+          "label": "Abbreviation",
+          "maxLength": 384,
+          "name": "abbreviation",
+          "qname": "LegalEntity:abbreviation",
+          "type": "name"
+        },
         "agencyClient": {
           "label": "Clients",
           "matchable": true,
@@ -4577,6 +4587,7 @@
       "caption": [
         "name",
         "alias",
+        "abbreviation",
         "weakAlias",
         "previousName",
         "registrationNumber"
@@ -5211,8 +5222,9 @@
       "caption": [
         "name",
         "alias",
-        "weakAlias",
         "previousName",
+        "weakAlias",
+        "abbreviation",
         "lastName",
         "email",
         "phone"
@@ -5825,6 +5837,7 @@
       "caption": [
         "name",
         "alias",
+        "abbreviation",
         "weakAlias",
         "previousName"
       ],

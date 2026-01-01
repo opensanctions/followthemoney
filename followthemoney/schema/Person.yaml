@@ -15,8 +15,9 @@ Person:
   caption:
     - name
     - alias
-    - weakAlias
     - previousName
+    - weakAlias
+    - abbreviation
     - lastName
     - email
     - phone

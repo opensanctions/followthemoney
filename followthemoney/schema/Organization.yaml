@@ -18,6 +18,7 @@ Organization:
   caption:
     - name
     - alias
+    - abbreviation
     - weakAlias
     - previousName
     - registrationNumber
