@@ -88,9 +88,10 @@ class Statement(object):
         self._dataset = dataset
 
         # Remove lang for non-linguistic property types:
-        prop_type = get_prop_type(schema, prop)
-        if lang is not None and prop_type in NON_LANG_TYPE_NAMES:
-            lang = None
+        if lang is not None:
+            prop_type = get_prop_type(schema, prop)
+            if prop_type in NON_LANG_TYPE_NAMES:
+                lang = None
         self._lang = lang
 
         self.original_value = original_value
