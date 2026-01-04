@@ -31,6 +31,7 @@ def test_statement_state():
     assert xstmt.canonical_id == "canonical-456"
     assert xstmt.id == stmt.id
 
+    # Statements are immutable
     with pytest.raises(AttributeError):
         stmt.lang = "spa"  # type: ignore
 
