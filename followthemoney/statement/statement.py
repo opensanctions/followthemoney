@@ -8,7 +8,7 @@ from rigour.time import datetime_iso, iso_datetime
 from rigour.boolean import bool_text
 
 from followthemoney.proxy import EntityProxy
-from followthemoney.statement.util import NON_LANG_TYPE_NAMES, get_prop_type, BASE_ID
+from followthemoney.statement.util import get_prop_type, BASE_ID, is_prop_linguistic
 from followthemoney.util import HASH_ENCODING
 
 
@@ -87,10 +87,12 @@ class Statement(object):
         self._value = value
         self._dataset = dataset
 
-        # Remove lang for non-linguistic property types:
+        # Remove lang for non-linguistic property types. The goal here is to avoid
+        # duplicate statements because of language tags, but the language metadata
+        # may be relevant as context for how the original_value was parsed so it's
+        # a bit of information loss.
         if lang is not None:
-            prop_type = get_prop_type(schema, prop)
-            if prop_type in NON_LANG_TYPE_NAMES:
+            if not is_prop_linguistic(schema, prop):
                 lang = None
         self._lang = lang
 
@@ -230,6 +232,8 @@ class Statement(object):
         if value is not None and value != self._value:
             stmt_id = None
         if dataset is not None and dataset != self._dataset:
+            stmt_id = None
+        if external != self._external:
             stmt_id = None
         if lang != self._lang:
             stmt_id = None

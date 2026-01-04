@@ -24,6 +24,7 @@ NON_LANG_TYPE_NAMES = {
     registry.country.name,
     registry.language.name,
     registry.ip.name,
+    BASE_ID,
 }
 
 
@@ -42,6 +43,12 @@ def get_prop_type(schema: str, prop: str) -> str:
     if prop_obj is None:
         raise TypeError("Property not found: %s" % prop)
     return prop_obj.type.name
+
+
+@cache
+def is_prop_linguistic(schema: str, prop: str) -> bool:
+    prop_type = get_prop_type(schema, prop)
+    return prop_type not in NON_LANG_TYPE_NAMES
 
 
 @cache
