@@ -32,7 +32,6 @@ class StatementEntity(EntityProxy):
         "schema",
         "id",
         "_caption",
-        "_external",
         "extra_referents",
         "dataset",
         "last_change",
@@ -44,7 +43,6 @@ class StatementEntity(EntityProxy):
         dataset: Dataset,
         data: Dict[str, Any],
         cleaned: bool = True,
-        external: bool = False,
     ) -> None:
         data = dict(data or {})
         schema = Model.instance().get(data.pop("schema", None))
@@ -64,20 +62,15 @@ class StatementEntity(EntityProxy):
         self.dataset = dataset
         """The default dataset for new statements."""
 
-        self._external = external
-        """Whether this entity is external to the current dataset."""
-
         self.id: Optional[str] = data.pop("id", None)
         self._statements: Dict[str, Set[Statement]] = {}
 
         properties = data.pop("properties", None)
         if isinstance(properties, Mapping):
             for key, value in properties.items():
-                self.add(key, value, cleaned=cleaned, quiet=True, external=external)
+                self.add(key, value, cleaned=cleaned, quiet=True)
 
         for stmt_data in data.pop("statements", []):
-            if external:
-                stmt_data["external"] = True
             stmt = Statement.from_dict(stmt_data)
             if self.id is not None:
                 stmt.canonical_id = self.id
@@ -127,7 +120,6 @@ class StatementEntity(EntityProxy):
                 dataset=self.dataset.name,
                 first_seen=first,
                 last_seen=max(last_seen, default=None),
-                external=self._external,
             )
 
     @property
@@ -237,7 +229,6 @@ class StatementEntity(EntityProxy):
         lang: Optional[str] = None,
         original_value: Optional[str] = None,
         origin: Optional[str] = None,
-        external: Optional[bool] = None,
     ) -> None:
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None:
@@ -254,7 +245,6 @@ class StatementEntity(EntityProxy):
                 lang=lang,
                 original_value=original_value,
                 origin=origin,
-                external=external,
             )
         return None
 
@@ -272,7 +262,6 @@ class StatementEntity(EntityProxy):
         lang: Optional[str] = None,
         original_value: Optional[str] = None,
         origin: Optional[str] = None,
-        external: Optional[bool] = None,
     ) -> Optional[str]:
         """Add a statement to the entity, possibly the value."""
         if value is None or len(value) == 0:
@@ -298,9 +287,6 @@ class StatementEntity(EntityProxy):
         if original_value is None and clean != value:
             original_value = value
 
-        if external is None:
-            external = self._external
-
         if self.id is None:
             raise InvalidData("Cannot add statement to entity without ID!")
         stmt = Statement(
@@ -313,7 +299,6 @@ class StatementEntity(EntityProxy):
             original_value=original_value,
             first_seen=seen,
             origin=origin,
-            external=external,
         )
         self.add_statement(stmt)
         return clean
@@ -508,16 +493,14 @@ class StatementEntity(EntityProxy):
         dataset: Dataset,
         data: Dict[str, Any],
         cleaned: bool = True,
-        external: bool = False,
     ) -> SE:
-        return cls(dataset, data, cleaned=cleaned, external=external)
+        return cls(dataset, data, cleaned=cleaned)
 
     @classmethod
     def from_statements(
         cls: Type[SE],
         dataset: Dataset,
         statements: Iterable[Statement],
-        external: bool = False,
     ) -> SE:
         model = Model.instance()
         canonical_id: Optional[str] = None
@@ -550,7 +533,7 @@ class StatementEntity(EntityProxy):
             raise InvalidData(err)
 
         data = {"schema": schema, "id": canonical_id}
-        obj = cls(dataset, data, external=external)
+        obj = cls(dataset, data)
         obj.last_change = max(first_seens, default=None)
         obj._statements = {p: s for p, s in props.items()}
         return obj

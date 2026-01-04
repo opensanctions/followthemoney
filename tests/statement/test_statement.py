@@ -1,6 +1,4 @@
 import pytest
-from followthemoney.dataset.dataset import Dataset
-from followthemoney.statement.entity import StatementEntity
 from followthemoney.statement.statement import Statement
 
 
@@ -36,16 +34,6 @@ def test_statement_state():
     with pytest.raises(AttributeError):
         stmt.lang = "spa"  # type: ignore
 
-
-def test_statement_external():
-    data = {
-        "id": "entity2",
-        "schema": "Person",
-        "properties": {"name": ["Bob"]},
-    }
-    dx = Dataset.make({"name": "test", "title": "Test"})
-    entity = StatementEntity.from_data(dx, data, external=True)
-    stmts = list(entity.statements)
-    assert len(stmts) == 2
-    for stmt in stmts:
-        assert stmt.external is True
+    ext = stmt.clone(external=True)
+    assert ext.external is True
+    assert ext.id != stmt.id
