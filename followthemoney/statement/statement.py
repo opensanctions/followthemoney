@@ -8,7 +8,7 @@ from rigour.time import datetime_iso, iso_datetime
 from rigour.boolean import bool_text
 
 from followthemoney.proxy import EntityProxy
-from followthemoney.statement.util import get_prop_type, BASE_ID, is_prop_linguistic
+from followthemoney.statement.util import get_prop_type, BASE_ID, NON_LANG_TYPE_NAMES
 from followthemoney.util import HASH_ENCODING
 
 
@@ -57,6 +57,7 @@ class Statement(object):
         "_value",
         "_dataset",
         "_lang",
+        "prop_type",
         "original_value",
         "_external",
         "first_seen",
@@ -84,6 +85,7 @@ class Statement(object):
         self.canonical_id = canonical_id or entity_id
         self._prop = prop
         self._schema = schema
+        self.prop_type = get_prop_type(schema, prop)
         self._value = value
         self._dataset = dataset
 
@@ -92,7 +94,7 @@ class Statement(object):
         # may be relevant as context for how the original_value was parsed so it's
         # a bit of information loss.
         if lang is not None:
-            if not is_prop_linguistic(schema, prop):
+            if self.prop_type in NON_LANG_TYPE_NAMES:
                 lang = None
         self._lang = lang
 
@@ -140,11 +142,6 @@ class Statement(object):
         """Whether this statement was observed in an external dataset."""
         return self._external
 
-    @property
-    def prop_type(self) -> str:
-        """The type of the property, e.g. 'string', 'number', 'url'."""
-        return get_prop_type(self._schema, self._prop)
-
     def to_dict(self) -> StatementDict:
         return {
             "canonical_id": self.canonical_id,
@@ -165,14 +162,14 @@ class Statement(object):
     def to_csv_row(self) -> Dict[str, Optional[str]]:
         data = cast(Dict[str, Optional[str]], self.to_dict())
         data["external"] = bool_text(self._external)
-        data["prop_type"] = get_prop_type(self._schema, self._prop)
+        data["prop_type"] = self.prop_type
         return data
 
     def to_db_row(self) -> Dict[str, Any]:
         data = cast(Dict[str, Any], self.to_dict())
         data["first_seen"] = iso_datetime(self.first_seen)
         data["last_seen"] = iso_datetime(self.last_seen)
-        data["prop_type"] = get_prop_type(self._schema, self._prop)
+        data["prop_type"] = self.prop_type
         return data
 
     def __hash__(self) -> int:

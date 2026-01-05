@@ -46,12 +46,6 @@ def get_prop_type(schema: str, prop: str) -> str:
 
 
 @cache
-def is_prop_linguistic(schema: str, prop: str) -> bool:
-    prop_type = get_prop_type(schema, prop)
-    return prop_type not in NON_LANG_TYPE_NAMES
-
-
-@cache
 def unpack_prop(id: str) -> Tuple[str, str, str]:
     schema, prop = id.split(":", 1)
     prop_type = get_prop_type(schema, prop)
