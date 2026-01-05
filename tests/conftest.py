@@ -12,6 +12,11 @@ def catalog_path():
 
 
 @pytest.fixture(scope="module")
+def kekmeta_path():
+    return FIXTURES_PATH.joinpath("kekmeta.yml")
+
+
+@pytest.fixture(scope="module")
 def catalog_data(catalog_path):
     with open(catalog_path, "r") as fh:
         return yaml.safe_load(fh)

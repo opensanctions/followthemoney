@@ -15,6 +15,8 @@ def test_donations_base(catalog_data: Dict[str, Any]):
     ds = catalog.get("donations")
     assert ds is not None, ds
     assert ds.name == "donations"
+    assert ds.model.deprecated is False
+    assert ds.model.deprecation is None
     assert not ds == "donations"
     assert ds.model.publisher is None
     assert ds.to_dict().get("publisher") is None
@@ -158,3 +160,11 @@ def test_catalog_model(catalog_data: Dict[str, Any]):
     assert mdl.title == "Political party donations"
     res = mdl.resources[0]
     assert res.name == "donations.csv"
+
+
+def test_kskmeta_dataset(kekmeta_path: Path):
+    ds = Dataset.from_path(kekmeta_path)
+    assert ds.name == "kekmeta"
+    assert ds.model.deprecated is True
+    assert ds.model.deprecation is not None
+    assert "no longer be updated" in ds.model.deprecation

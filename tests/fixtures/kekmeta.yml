@@ -1,0 +1,17 @@
+title: Kommission zur Ermittlung der Konzentration im Medienbereich
+entry_point: crawler.py
+prefix: kekmeta
+coverage:
+  frequency: monthly
+  start: "2024-06-01"
+  end: "2024-12-31"
+publisher:
+  name: Kommission zur Ermittlung der Konzentration im Medienbereich
+  acronym: KEK
+  description: |
+    Die KEK ist eine unabhängige Behörde, die die Medienkonzentration in Deutschland
+    überwacht und bewertet. Sie wurde 2011 gegründet und hat ihren Sitz in Berlin.
+  url: https://www.kek-online.de/
+  country: de
+  official: true
+deprecation: "This dataset is deprecated and will no longer be updated after 2024-12-31."

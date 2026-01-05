@@ -1,3 +1,4 @@
+from pathlib import Path
 import yaml
 import logging
 from functools import cached_property
@@ -38,6 +39,8 @@ class DatasetModel(BaseModel):
     coverage: DataCoverage | None = None
     resources: List[DataResource] = []
     children: Set[str] = set()
+    deprecation: Optional[str] = None
+    deprecated: bool = False
 
     @field_validator("name", mode="after")
     @classmethod
@@ -56,6 +59,18 @@ class DatasetModel(BaseModel):
             children.update(data.get("scopes", []))
             data["children"] = children
         return data
+
+    @model_validator(mode="after")
+    def evaluate_data(self) -> "DatasetModel":
+        # derive deprecated from deprecation notice:
+        if self.deprecation is not None:
+            self.deprecation = self.deprecation.strip()
+            if not len(self.deprecation):
+                self.deprecation = None
+        self.deprecated = self.deprecation is not None or self.deprecated
+        if self.deprecated and (self.coverage is None or self.coverage.end is None):
+            raise ValueError("Deprecated dataset coverage must have an end date.")
+        return self
 
     def get_resource(self, name: str) -> DataResource:
         for res in self.resources:
@@ -121,10 +136,13 @@ class Dataset:
     ) -> DS:
         from followthemoney.dataset.catalog import DataCatalog
 
+        path = Path(path)
         with open(path, "r") as fh:
             data = yaml.safe_load(fh)
             if catalog is None:
                 catalog = DataCatalog(cls, {})
+            if "name" not in data:
+                data["name"] = path.stem
             return catalog.make_dataset(data)
 
     @classmethod
