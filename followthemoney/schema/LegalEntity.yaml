@@ -18,6 +18,7 @@ LegalEntity:
   caption:
     - name
     - alias
+    - abbreviation
     - weakAlias
     - previousName
     - email
@@ -29,6 +30,12 @@ LegalEntity:
     end:
       - dissolutionDate
   properties:
+    abbreviation:
+      label: Abbreviation
+      type: name
+      description: "Abbreviated name or acronym"
+      # TODO: is un-matchable wise? The idea is to handle it like `weakAlias` rather than `alias`.
+      matchable: false
     email:
       label: E-Mail
       type: email
