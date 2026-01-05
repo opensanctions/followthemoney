@@ -2,9 +2,30 @@ from functools import cache
 from typing import Tuple
 
 from followthemoney.model import Model
+from followthemoney.types import registry
 from followthemoney.util import const
 
 BASE_ID = "id"
+
+# Some property types should not set the `lang` attribute on statements.
+# These are typically non-linguistic types, although there's an argument
+# that language metadata could be useful for dates and countries, where
+# text parsing is likely to have taken place.
+NON_LANG_TYPE_NAMES = {
+    registry.entity.name,
+    registry.date.name,
+    registry.checksum.name,
+    registry.email.name,
+    registry.phone.name,
+    registry.gender.name,
+    registry.mimetype.name,
+    registry.topic.name,
+    registry.url.name,
+    registry.country.name,
+    registry.language.name,
+    registry.ip.name,
+    BASE_ID,
+}
 
 
 def pack_prop(schema: str, prop: str) -> str:
@@ -22,6 +43,12 @@ def get_prop_type(schema: str, prop: str) -> str:
     if prop_obj is None:
         raise TypeError("Property not found: %s" % prop)
     return prop_obj.type.name
+
+
+@cache
+def is_prop_linguistic(schema: str, prop: str) -> bool:
+    prop_type = get_prop_type(schema, prop)
+    return prop_type not in NON_LANG_TYPE_NAMES
 
 
 @cache

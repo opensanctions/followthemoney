@@ -38,7 +38,12 @@ class StatementEntity(EntityProxy):
         "_statements",
     )
 
-    def __init__(self, dataset: Dataset, data: Dict[str, Any], cleaned: bool = True):
+    def __init__(
+        self,
+        dataset: Dataset,
+        data: Dict[str, Any],
+        cleaned: bool = True,
+    ) -> None:
         data = dict(data or {})
         schema = Model.instance().get(data.pop("schema", None))
         if schema is None:
@@ -79,8 +84,7 @@ class StatementEntity(EntityProxy):
         for stmts in self._statements.values():
             for stmt in stmts:
                 if stmt.entity_id is None and self.id is not None:
-                    stmt.entity_id = self.id
-                    stmt.id = stmt.generate_key()
+                    stmt = stmt.clone(entity_id=self.id)
                 if stmt.id is None:
                     stmt.id = stmt.generate_key()
                 yield stmt
