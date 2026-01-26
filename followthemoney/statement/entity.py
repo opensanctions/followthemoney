@@ -15,7 +15,7 @@ from followthemoney.proxy import P
 from followthemoney.types import registry
 from followthemoney.value import string_list, Values
 from followthemoney.proxy import EntityProxy
-from followthemoney.dataset import Dataset, DefaultDataset
+from followthemoney.dataset import Dataset, UndefinedDataset
 from followthemoney.statement.statement import Statement
 from followthemoney.statement.util import BASE_ID
 
@@ -33,14 +33,14 @@ class StatementEntity(EntityProxy):
         "id",
         "_caption",
         "extra_referents",
-        "dataset",
+        "base_dataset",
         "last_change",
         "_statements",
     )
 
     def __init__(
         self,
-        dataset: Dataset,
+        base_dataset: str,
         data: Dict[str, Any],
         cleaned: bool = True,
     ) -> None:
@@ -59,7 +59,8 @@ class StatementEntity(EntityProxy):
         self.last_change: Optional[str] = data.get("last_change", None)
         """The last time this entity was changed."""
 
-        self.dataset = dataset
+        datasets = data.pop("datasets", [])
+        self.base_dataset = base_dataset if len(datasets) != 1 else datasets[0]
         """The default dataset for new statements."""
 
         self.id: Optional[str] = data.pop("id", None)
@@ -117,7 +118,7 @@ class StatementEntity(EntityProxy):
                 prop=BASE_ID,
                 schema=self.schema.name,
                 value=checksum,
-                dataset=self.dataset.name,
+                dataset=self.base_dataset,
                 first_seen=first,
                 last_seen=max(last_seen, default=None),
             )
@@ -149,7 +150,7 @@ class StatementEntity(EntityProxy):
 
     @property
     def key_prefix(self) -> Optional[str]:
-        return self.dataset.name
+        return self.base_dataset
 
     @key_prefix.setter
     def key_prefix(self, dataset: Optional[str]) -> None:
@@ -189,6 +190,11 @@ class StatementEntity(EntityProxy):
         if prop_name is None or prop_name not in self._statements:
             return []
         return list(self._statements[prop_name])
+
+    @property
+    def has_statements(self) -> bool:
+        """Return whether the entity has any statements."""
+        return len(self._statements) > 0
 
     def set(
         self,
@@ -294,7 +300,7 @@ class StatementEntity(EntityProxy):
             prop=prop.name,
             schema=schema or self.schema.name,
             value=clean,
-            dataset=dataset or self.dataset.name,
+            dataset=dataset or self.base_dataset,
             lang=lang,
             original_value=original_value,
             first_seen=seen,
@@ -383,7 +389,7 @@ class StatementEntity(EntityProxy):
 
     def clone(self: SE) -> SE:
         data = {"schema": self.schema.name, "id": self.id}
-        cloned = type(self)(self.dataset, data)
+        cloned = type(self)(self.base_dataset, data)
         for stmt in self._iter_stmt():
             cloned.add_statement(stmt)
         return cloned
@@ -484,8 +490,8 @@ class StatementEntity(EntityProxy):
         default_dataset: Optional[Dataset] = None,
     ) -> SE:
         # Exists only for backwards compatibility.
-        dataset = default_dataset or DefaultDataset
-        return cls(dataset, data, cleaned=cleaned)
+        dataset = default_dataset or UndefinedDataset
+        return cls(dataset.name, data, cleaned=cleaned)
 
     @classmethod
     def from_data(
@@ -494,7 +500,7 @@ class StatementEntity(EntityProxy):
         data: Dict[str, Any],
         cleaned: bool = True,
     ) -> SE:
-        return cls(dataset, data, cleaned=cleaned)
+        return cls(dataset.name, data, cleaned=cleaned)
 
     @classmethod
     def from_statements(
@@ -533,7 +539,7 @@ class StatementEntity(EntityProxy):
             raise InvalidData(err)
 
         data = {"schema": schema, "id": canonical_id}
-        obj = cls(dataset, data)
+        obj = cls(dataset.name, data)
         obj.last_change = max(first_seens, default=None)
         obj._statements = {p: s for p, s in props.items()}
         return obj
