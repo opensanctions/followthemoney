@@ -86,7 +86,7 @@ def test_example_entity():
     so = sp.clone()
     assert so.id == sp.id
     assert sp.checksum == so.checksum
-    assert so.dataset == sp.dataset
+    assert so.base_dataset == sp.base_dataset
     idstmt2 = list(so.statements)[-1]
     assert idstmt.value == idstmt2.value
 
