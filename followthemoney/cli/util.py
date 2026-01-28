@@ -6,7 +6,7 @@ import click
 import orjson
 from pathlib import Path
 from warnings import warn
-from typing import Any, BinaryIO, Generator, Optional, TextIO, Type
+from typing import Any, BinaryIO, Generator, List, Optional, TextIO, Type
 from banal import is_mapping, is_listish, ensure_list
 
 from followthemoney.export.common import Exporter
@@ -26,7 +26,7 @@ def write_object(stream: TextIO, obj: Any) -> None:
     stream.write(data + "\n")
 
 
-def write_entity(fh: BinaryIO, entity: E) -> None:
+def write_entity(fh: BinaryIO, entity: EntityProxy) -> None:
     data = entity.to_dict()
     entity_id = data.pop("id")
     assert entity_id is not None, data
@@ -131,7 +131,7 @@ def resolve_includes(file_path: PathLike, data: Any) -> Any:
     if is_listish(data):
         return [resolve_includes(file_path, i) for i in data]
     if is_mapping(data):
-        include_paths = ensure_list(data.pop("include", []))
+        include_paths: List[str] = ensure_list(data.pop("include", []))
         for include_path in include_paths:
             dir_prefix = os.path.dirname(file_path)
             include_path = os.path.join(dir_prefix, include_path)

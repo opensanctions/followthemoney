@@ -1,7 +1,7 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from followthemoney.dataset import DefaultDataset
+from followthemoney.dataset import UndefinedDataset
 from followthemoney.statement.entity import StatementEntity
 from followthemoney.statement import write_statements
 from followthemoney.statement import read_path_statements
@@ -17,7 +17,7 @@ EXAMPLE = {
 
 def test_json_statements():
     with TemporaryDirectory() as tmpdir:
-        entity = StatementEntity.from_data(DefaultDataset, EXAMPLE)
+        entity = StatementEntity.from_data(UndefinedDataset, EXAMPLE)
         path = Path(tmpdir) / "statement.json"
         with open(path, "wb") as fh:
             write_statements(fh, JSON, entity.statements)
@@ -31,7 +31,7 @@ def test_json_statements():
 
 def test_csv_statements():
     with TemporaryDirectory() as tmpdir:
-        entity = StatementEntity.from_data(DefaultDataset, EXAMPLE)
+        entity = StatementEntity.from_data(UndefinedDataset, EXAMPLE)
         path = Path(tmpdir) / "statement.csv"
         with open(path, "wb") as fh:
             write_statements(fh, CSV, entity.statements)
@@ -45,7 +45,7 @@ def test_csv_statements():
 
 def test_pack_statements():
     with TemporaryDirectory() as tmpdir:
-        entity = StatementEntity.from_data(DefaultDataset, EXAMPLE)
+        entity = StatementEntity.from_data(UndefinedDataset, EXAMPLE)
         path = Path(tmpdir) / "statement.pack"
         with open(path, "wb") as fh:
             write_statements(fh, PACK, entity.statements)

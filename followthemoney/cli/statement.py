@@ -1,12 +1,12 @@
 import click
 from pathlib import Path
-from typing import Generator, List
+from typing import Generator, List, Optional
 
 
 from followthemoney.cli.cli import cli
 from followthemoney.cli.util import InPath, OutPath
 from followthemoney.cli.util import path_entities, write_entity, path_writer
-from followthemoney.dataset import Dataset, DefaultDataset
+from followthemoney.dataset import Dataset, UndefinedDataset
 from followthemoney.statement import Statement, StatementEntity
 from followthemoney.statement import FORMATS, CSV
 from followthemoney.statement import write_statements
@@ -16,12 +16,18 @@ from followthemoney.statement import read_path_statements
 @cli.command("statements", help="Export entities to statements")
 @click.argument("path", type=InPath)
 @click.option("-o", "--outpath", type=OutPath, default="-")
-@click.option("-d", "--dataset", type=str, required=True)
+@click.option("-d", "--dataset", type=str)
 @click.option("-f", "--format", type=click.Choice(FORMATS), default=CSV)
-def entity_statements(path: Path, outpath: Path, dataset: str, format: str) -> None:
+def entity_statements(
+    path: Path, outpath: Path, dataset: Optional[str], format: str
+) -> None:
     def make_statements() -> Generator[Statement, None, None]:
+        dataset_ = dataset or Dataset.UNDEFINED
         for entity in path_entities(path, StatementEntity):
-            yield from Statement.from_entity(entity, dataset=dataset)
+            for stmt in Statement.from_entity(entity, dataset=dataset_):
+                if dataset is not None:
+                    stmt = stmt.clone(dataset=dataset)
+                yield stmt
 
     with path_writer(outpath) as outfh:
         write_statements(outfh, format, make_statements())
@@ -43,12 +49,12 @@ def format_statements(
 @cli.command("aggregate-statements", help="Roll up statements into entities")
 @click.option("-i", "--infile", type=InPath, default="-")
 @click.option("-o", "--outpath", type=OutPath, default="-")
-@click.option("-d", "--dataset", type=str, default=DefaultDataset.name)
+@click.option("-d", "--dataset", type=str, default=UndefinedDataset.name)
 @click.option("-f", "--format", type=click.Choice(FORMATS), default=CSV)
 def statements_aggregate(
     infile: Path, outpath: Path, dataset: str, format: str
 ) -> None:
-    dataset_ = Dataset.make({"name": dataset, "title": dataset})
+    dataset_ = Dataset.make({"name": dataset})
     with path_writer(outpath) as outfh:
         statements: List[Statement] = []
         for stmt in read_path_statements(infile, format=format):

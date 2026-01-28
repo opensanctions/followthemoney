@@ -15,7 +15,7 @@ from followthemoney.proxy import P
 from followthemoney.types import registry
 from followthemoney.value import string_list, Values
 from followthemoney.proxy import EntityProxy
-from followthemoney.dataset import Dataset, DefaultDataset
+from followthemoney.dataset import Dataset, UndefinedDataset
 from followthemoney.statement.statement import Statement
 from followthemoney.statement.util import BASE_ID
 
@@ -189,6 +189,11 @@ class StatementEntity(EntityProxy):
         if prop_name is None or prop_name not in self._statements:
             return []
         return list(self._statements[prop_name])
+
+    @property
+    def has_statements(self) -> bool:
+        """Return whether the entity has any statements."""
+        return len(self._statements) > 0
 
     def set(
         self,
@@ -433,7 +438,7 @@ class StatementEntity(EntityProxy):
                     origins.add(stmt.origin)
 
         data["referents"] = list(referents)
-        data["datasets"] = list(datasets)
+        data["datasets"] = [d for d in datasets if d != Dataset.UNDEFINED]
         if origins:
             data["origin"] = list(origins)
 
@@ -484,7 +489,7 @@ class StatementEntity(EntityProxy):
         default_dataset: Optional[Dataset] = None,
     ) -> SE:
         # Exists only for backwards compatibility.
-        dataset = default_dataset or DefaultDataset
+        dataset = default_dataset or UndefinedDataset
         return cls(dataset, data, cleaned=cleaned)
 
     @classmethod

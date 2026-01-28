@@ -1,4 +1,5 @@
 import csv
+import sys
 import click
 import orjson
 import logging
@@ -49,6 +50,7 @@ LEGACY_PACK_COLUMNS = [
     "first_seen",
     "last_seen",
 ]
+csv.field_size_limit(sys.maxsize)
 
 
 def read_json_statements(
@@ -69,6 +71,8 @@ def read_csv_statements(fh: BinaryIO) -> Generator[Statement, None, None]:
             data["lang"] = None
         if row.get("original_value") == "":
             data["original_value"] = None
+        if row.get("origin") == "":
+            data["origin"] = None
         yield Statement.from_dict(data)
 
 
@@ -101,7 +105,7 @@ def read_pack_statements_decoded(fh: TextIO) -> Generator[Statement, None, None]
             dataset=data["dataset"],
             lang=data["lang"] or None,
             original_value=data["original_value"] or None,
-            origin=data.get("origin"),
+            origin=data.get("origin") or None,
             first_seen=data["first_seen"],
             external=data["external"] == "t",
             canonical_id=data["entity_id"],

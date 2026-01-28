@@ -83,6 +83,8 @@ class Dataset:
     """A container for entities, often from one source or related to one topic.
     A dataset is a set of data, sez W3C."""
 
+    UNDEFINED = "undefined"
+
     def __init__(self: Self, data: Dict[str, Any]) -> None:
         self.model = DatasetModel.model_validate(data)
         self.name = self.model.name
