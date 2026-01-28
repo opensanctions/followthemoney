@@ -2,11 +2,11 @@ from followthemoney.entity import ValueEntity, VE
 from followthemoney.model import Model
 from followthemoney.schema import Schema
 from followthemoney.property import Property
-from followthemoney.types import registry
+from followthemoney.types import registry, PropertyType
 from followthemoney.value import Value, Values
 from followthemoney.proxy import EntityProxy, E
 from followthemoney.statement import Statement, StatementEntity, SE
-from followthemoney.dataset import Dataset, DefaultDataset, DS
+from followthemoney.dataset import Dataset, UndefinedDataset, DS
 from followthemoney.util import set_model_locale
 
 __version__ = "4.5.0"
@@ -20,13 +20,14 @@ __all__ = [
     "Model",
     "Schema",
     "Property",
+    "PropertyType",
     "Value",
     "Values",
     "EntityProxy",
     "E",
     "registry",
     "Dataset",
-    "DefaultDataset",
+    "UndefinedDataset",
     "DS",
     "Statement",
     "StatementEntity",

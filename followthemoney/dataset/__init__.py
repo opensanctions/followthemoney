@@ -4,12 +4,11 @@ from followthemoney.dataset.resource import DataResource
 from followthemoney.dataset.publisher import DataPublisher
 from followthemoney.dataset.coverage import DataCoverage
 
-DefaultDataset = Dataset.make({"name": "default"})
 UndefinedDataset = Dataset.make({"name": Dataset.UNDEFINED})
 
 __all__ = [
     "Dataset",
-    "DefaultDataset",
+    "UndefinedDataset",
     "DataCatalog",
     "DataResource",
     "DataPublisher",

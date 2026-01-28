@@ -24,7 +24,7 @@ def entity_statements(
     def make_statements() -> Generator[Statement, None, None]:
         dataset_ = dataset or Dataset.UNDEFINED
         for entity in path_entities(path, StatementEntity):
-            for stmt in Statement.from_entity(entity, dataset=dataset or dataset_):
+            for stmt in Statement.from_entity(entity, dataset=dataset_):
                 if dataset is not None:
                     stmt = stmt.clone(dataset=dataset)
                 yield stmt

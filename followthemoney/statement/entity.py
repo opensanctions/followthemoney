@@ -438,7 +438,7 @@ class StatementEntity(EntityProxy):
                     origins.add(stmt.origin)
 
         data["referents"] = list(referents)
-        data["datasets"] = list(datasets)
+        data["datasets"] = [d for d in datasets if d != Dataset.UNDEFINED]
         if origins:
             data["origin"] = list(origins)
 

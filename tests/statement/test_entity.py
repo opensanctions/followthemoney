@@ -5,7 +5,7 @@ from followthemoney.statement.util import BASE_ID
 from followthemoney.types import registry
 from followthemoney.proxy import EntityProxy
 from followthemoney.exc import InvalidData
-from followthemoney.dataset import Dataset
+from followthemoney.dataset import Dataset, UndefinedDataset
 from followthemoney.statement import StatementEntity, Statement
 
 DAIMLER = "66ce9f62af8c7d329506da41cb7c36ba058b3d28"
@@ -31,8 +31,7 @@ EXAMPLE_2 = {
 
 
 def test_import_entity():
-    dx = Dataset.make({"name": "test", "title": "Test"})
-    sp = StatementEntity.from_data(dx, EXAMPLE_2)
+    sp = StatementEntity.from_data(UndefinedDataset, EXAMPLE_2)
     assert sp.schema is not None
     assert sp.schema.name == "Person"
     assert sp.id == "test"
@@ -56,21 +55,20 @@ def test_parse_proxy():
 
 
 def test_example_entity():
-    dx = Dataset.make({"name": "test", "title": "Test"})
-    sp = StatementEntity.from_data(dx, EXAMPLE)
+    sp = StatementEntity.from_data(UndefinedDataset, EXAMPLE)
     assert len(sp) == 4
     idstmt = list(sp.statements)[-1]
-    assert idstmt.value == "c23bd2254b243c438a12525f7d1ab8f8887927d8"
+    assert idstmt.value == "8ad2048e5f9d7cae8ffe724d09f0a3a5ca18bfec"
     assert sp.caption == "John Doe"
-    assert sp.checksum == "f76794ed2492edda96ca21c1e831dba39b99ffd4"
-    assert sp.key_prefix == dx.name
+    assert sp.checksum == "01b955d90ddb0999750531893bff991318d5c559"
+    assert sp.key_prefix == UndefinedDataset.name
     assert "John Doe", sp.get_type_values(registry.name)
     assert len(list(sp.iterprops())) == 3
     assert len(sp.properties) == 3
     sp.add("country", "us")
     assert len(sp) == 5
     idstmt = list(sp.statements)[-1]
-    assert idstmt.value == "5f88a482d141d99c1b749f80cfbb3a038d743d50"
+    assert idstmt.value == "43598935c0292ca8bddc93590fd242ff74dee87e"
     sp.add("country", {"gb"})
     assert len(sp) == 6
     sp.add("country", ("gb", "us"))
@@ -90,7 +88,7 @@ def test_example_entity():
     idstmt2 = list(so.statements)[-1]
     assert idstmt.value == idstmt2.value
 
-    sx = StatementEntity.from_statements(dx, sp.statements)
+    sx = StatementEntity.from_statements(UndefinedDataset, sp.statements)
     assert sx.id == sp.id
     assert len(sx) == len(sp)
 
@@ -148,8 +146,7 @@ def test_example_entity():
 
 
 def test_advanced_props():
-    dx = Dataset.make({"name": "test", "title": "Test"})
-    sp = StatementEntity.from_data(dx, EXAMPLE_2)
+    sp = StatementEntity.from_data(UndefinedDataset, EXAMPLE_2)
     assert sp.last_seen is None
     now = datetime_iso(utc_now())
     assert now is not None
@@ -172,9 +169,8 @@ def test_advanced_props():
 
 
 def test_entity_merge():
-    dx = Dataset.make({"name": "test", "title": "Test"})
-    sp1 = StatementEntity.from_data(dx, EXAMPLE_2)
-    sp2 = StatementEntity.from_data(dx, EXAMPLE_2)
+    sp1 = StatementEntity.from_data(UndefinedDataset, EXAMPLE_2)
+    sp2 = StatementEntity.from_data(UndefinedDataset, EXAMPLE_2)
     assert sp1.id == sp2.id
     assert sp1.schema.name == sp2.schema.name
     assert len(sp1) == len(sp2)
@@ -188,7 +184,6 @@ def test_entity_merge():
 
 
 def test_other_entity():
-    dx = Dataset.make({"name": "test", "title": "Test"})
     smt = Statement(
         entity_id="blubb",
         prop="name",
@@ -196,7 +191,7 @@ def test_other_entity():
         value="Jane Doe",
         dataset="test",
     )
-    sp = StatementEntity.from_statements(dx, [smt])
+    sp = StatementEntity.from_statements(UndefinedDataset, [smt])
     assert sp.id == "blubb"
     assert sp.schema.name == "LegalEntity"
     assert "test" in sp.datasets
