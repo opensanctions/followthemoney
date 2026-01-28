@@ -33,14 +33,14 @@ class StatementEntity(EntityProxy):
         "id",
         "_caption",
         "extra_referents",
-        "base_dataset",
+        "dataset",
         "last_change",
         "_statements",
     )
 
     def __init__(
         self,
-        base_dataset: str,
+        dataset: Dataset,
         data: Dict[str, Any],
         cleaned: bool = True,
     ) -> None:
@@ -59,8 +59,7 @@ class StatementEntity(EntityProxy):
         self.last_change: Optional[str] = data.get("last_change", None)
         """The last time this entity was changed."""
 
-        datasets = data.pop("datasets", [])
-        self.base_dataset = base_dataset if len(datasets) != 1 else datasets[0]
+        self.dataset = dataset
         """The default dataset for new statements."""
 
         self.id: Optional[str] = data.pop("id", None)
@@ -118,7 +117,7 @@ class StatementEntity(EntityProxy):
                 prop=BASE_ID,
                 schema=self.schema.name,
                 value=checksum,
-                dataset=self.base_dataset,
+                dataset=self.dataset.name,
                 first_seen=first,
                 last_seen=max(last_seen, default=None),
             )
@@ -150,7 +149,7 @@ class StatementEntity(EntityProxy):
 
     @property
     def key_prefix(self) -> Optional[str]:
-        return self.base_dataset
+        return self.dataset.name
 
     @key_prefix.setter
     def key_prefix(self, dataset: Optional[str]) -> None:
@@ -300,7 +299,7 @@ class StatementEntity(EntityProxy):
             prop=prop.name,
             schema=schema or self.schema.name,
             value=clean,
-            dataset=dataset or self.base_dataset,
+            dataset=dataset or self.dataset.name,
             lang=lang,
             original_value=original_value,
             first_seen=seen,
@@ -389,7 +388,7 @@ class StatementEntity(EntityProxy):
 
     def clone(self: SE) -> SE:
         data = {"schema": self.schema.name, "id": self.id}
-        cloned = type(self)(self.base_dataset, data)
+        cloned = type(self)(self.dataset, data)
         for stmt in self._iter_stmt():
             cloned.add_statement(stmt)
         return cloned
@@ -491,7 +490,7 @@ class StatementEntity(EntityProxy):
     ) -> SE:
         # Exists only for backwards compatibility.
         dataset = default_dataset or UndefinedDataset
-        return cls(dataset.name, data, cleaned=cleaned)
+        return cls(dataset, data, cleaned=cleaned)
 
     @classmethod
     def from_data(
@@ -500,7 +499,7 @@ class StatementEntity(EntityProxy):
         data: Dict[str, Any],
         cleaned: bool = True,
     ) -> SE:
-        return cls(dataset.name, data, cleaned=cleaned)
+        return cls(dataset, data, cleaned=cleaned)
 
     @classmethod
     def from_statements(
@@ -539,7 +538,7 @@ class StatementEntity(EntityProxy):
             raise InvalidData(err)
 
         data = {"schema": schema, "id": canonical_id}
-        obj = cls(dataset.name, data)
+        obj = cls(dataset, data)
         obj.last_change = max(first_seens, default=None)
         obj._statements = {p: s for p, s in props.items()}
         return obj
