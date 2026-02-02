@@ -1,5 +1,4 @@
 import csv
-import sys
 import click
 import orjson
 import logging
@@ -13,6 +12,7 @@ from rigour.env import ENCODING
 
 from followthemoney.statement.statement import Statement, StatementDict
 from followthemoney.statement.util import unpack_prop
+from followthemoney.util import ENTITY_VALUE_MAX, PROP_VALUE_MAX
 
 log = logging.getLogger(__name__)
 
@@ -50,12 +50,12 @@ LEGACY_PACK_COLUMNS = [
     "first_seen",
     "last_seen",
 ]
-csv.field_size_limit(sys.maxsize)
+csv.field_size_limit(PROP_VALUE_MAX)
 
 
 def read_json_statements(
     fh: BinaryIO,
-    max_line: int = 40 * 1024 * 1024,
+    max_line: int = ENTITY_VALUE_MAX,
 ) -> Generator[Statement, None, None]:
     while line := fh.readline(max_line):
         data = orjson.loads(line)

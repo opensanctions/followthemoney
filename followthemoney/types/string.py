@@ -1,6 +1,5 @@
 from followthemoney.types.common import PropertyType
-from followthemoney.util import const, defer as _
-from followthemoney.util import MEGABYTE
+from followthemoney.util import PROP_VALUE_MAX, const, defer as _
 
 
 class StringType(PropertyType):
@@ -24,7 +23,7 @@ class TextType(StringType):
     name = "text"
     label = _("Text")
     plural = _("Texts")
-    total_size = 30 * MEGABYTE
+    total_size = PROP_VALUE_MAX
     max_length = 65000
 
 
@@ -39,5 +38,5 @@ class HTMLType(StringType):
     name = const("html")
     label = _("HTML")
     plural = _("HTMLs")
-    total_size = 30 * MEGABYTE
+    total_size = PROP_VALUE_MAX
     max_length = 65000

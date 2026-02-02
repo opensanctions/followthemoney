@@ -14,6 +14,8 @@ from rigour.env import ENCODING
 from banal import is_mapping, unique_list, ensure_list
 
 MEGABYTE = 1024 * 1024
+PROP_VALUE_MAX = 30 * MEGABYTE
+ENTITY_VALUE_MAX = 50 * MEGABYTE
 HASH_ENCODING = "utf-8"
 DEFAULT_LOCALE = "en"
 ENTITY_ID_LEN = 200
