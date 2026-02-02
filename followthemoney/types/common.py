@@ -1,7 +1,6 @@
 from inspect import cleandoc
 from itertools import product
 from babel.core import Locale
-from banal import ensure_list
 from normality import stringify
 from typing import Any, Dict, Optional, Sequence, Callable, TYPE_CHECKING, TypedDict
 
@@ -115,7 +114,6 @@ class PropertyType(object):
         """Helper function for converting multi-valued FtM data into formats that
         allow only a single value per field (e.g. CSV). This is not fully reversible
         and should be used as a last option."""
-        values = ensure_list(values)
         return "; ".join(values)
 
     def _specificity(self, value: str) -> float:
@@ -154,7 +152,7 @@ class PropertyType(object):
     ) -> float:
         """Compare two sets of values and select the highest-scored result."""
         results = []
-        for le, ri in product(ensure_list(left), ensure_list(right)):
+        for le, ri in product(left, right):
             results.append(self.compare(le, ri))
         if not len(results):
             return 0.0

@@ -1,6 +1,5 @@
 import json
 from typing import Any, Optional, Sequence, TYPE_CHECKING
-from banal import ensure_list
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import sanitize_text, defer as _
@@ -48,7 +47,7 @@ class JsonType(PropertyType):
 
     def join(self, values: Sequence[str]) -> str:
         """Turn multiple values into a JSON array."""
-        values = [self.unpack(v) for v in ensure_list(values)]
+        values = [self.unpack(v) for v in values]
         data = self.pack(values)
         if data is None:
             return "[]"
