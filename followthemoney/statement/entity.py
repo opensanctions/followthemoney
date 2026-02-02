@@ -184,6 +184,13 @@ class StatementEntity(EntityProxy):
             return []
         return list({s.value for s in self._statements[prop_name]})
 
+    def get_prop(self, prop: Property) -> Iterable[str]:
+        try:
+            statements = self._statements[prop.name]
+            return {s.value for s in statements}
+        except KeyError:
+            return []
+
     def get_statements(self, prop: P, quiet: bool = False) -> List[Statement]:
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None or prop_name not in self._statements:
@@ -344,11 +351,13 @@ class StatementEntity(EntityProxy):
         combined = []
         for prop_name, statements in self._statements.items():
             prop = self.schema.properties[prop_name]
+            # Used in performance-critical code paths:
+            if prop.type is not type_:
+                continue
             if matchable and not prop.matchable:
                 continue
-            if prop.type == type_:
-                for statement in statements:
-                    combined.append(statement)
+            for statement in statements:
+                combined.append(statement)
         return combined
 
     @property

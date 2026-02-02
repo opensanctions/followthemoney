@@ -1,6 +1,6 @@
 import hashlib
 import logging
-from typing import TYPE_CHECKING, cast, Any
+from typing import TYPE_CHECKING, Iterable, Any, cast
 from typing import Dict, Generator, List, Optional, Set, Tuple, Union, Type, TypeVar
 from itertools import product
 from banal import ensure_dict
@@ -121,6 +121,20 @@ class EntityProxy(object):
         if prop_name is None:
             return []
         return self._properties.get(prop_name, [])
+
+    def get_prop(self, prop: Property) -> Iterable[str]:
+        """Get all values of a property, returning an empty list if the property
+        does not exist. This has better performance characteristics than `get()`
+        as it does not need to resolve the property name.
+
+        :param prop: can be given as a name or an instance of
+            :class:`~followthemoney.property.Property`.
+        :return: An iterable of values.
+        """
+        try:
+            return self._properties[prop.name]
+        except KeyError:
+            return []
 
     def first(self, prop: P, quiet: bool = False) -> Optional[str]:
         """Get only the first value set for the property.
@@ -311,10 +325,11 @@ class EntityProxy(object):
         combined = set()
         for prop_name, values in self._properties.items():
             prop = self.schema.properties[prop_name]
+            if prop.type is not type_:
+                continue
             if matchable and not prop.matchable:
                 continue
-            if prop.type == type_:
-                combined.update(values)
+            combined.update(values)
         return list(combined)
 
     @property
