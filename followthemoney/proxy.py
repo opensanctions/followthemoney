@@ -117,6 +117,9 @@ class EntityProxy(object):
             an empty list instead of raising an error.
         :return: A list of values.
         """
+        if prop in self.schema.properties:
+            return self._properties.get(prop, [])  # type: ignore
+
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None:
             return []

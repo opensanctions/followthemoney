@@ -348,7 +348,7 @@ class StatementEntity(EntityProxy):
     def get_type_statements(
         self, type_: PropertyType, matchable: bool = False
     ) -> List[Statement]:
-        combined = []
+        combined: List[Statement] = []
         for prop_name, statements in self._statements.items():
             prop = self.schema.properties[prop_name]
             # Used in performance-critical code paths:
