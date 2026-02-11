@@ -13,6 +13,7 @@ Thing:
   properties:
     name:
       label: Name
+      description: "The primary name of the entity"
       type: name
     summary: # a short one-liner kind of description
       label: Summary
@@ -22,12 +23,14 @@ Thing:
       type: text
     country:
       label: Country
+      description: "An association between the entity and a country that is not covered by a more specific property (eg. jurisdiction, birthCountry)."
       type: country
     alias:
       label: Alias
       type: name
     previousName:
       label: Previous name
+      description: "A former name of the entity"
       type: name
     weakAlias:
       label: Weak alias

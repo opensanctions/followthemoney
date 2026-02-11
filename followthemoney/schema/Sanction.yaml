@@ -30,6 +30,7 @@ Sanction:
       type: identifier
     unscId:
       label: "UN SC identifier"
+      description: "Identifier issued by the UN Security Council for sanctions designations"
       type: identifier
       maxLength: 16
     program:
