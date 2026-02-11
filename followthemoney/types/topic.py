@@ -89,6 +89,7 @@ class TopicType(EnumType):
         # For BIS 50% rule:
         "export.control.linked": _("Export control-linked"),
         "export.risk": _("Trade risk"),
+        "invest.risk": _("Investment risk"),
         "debarment": _("Debarred entity"),
         "poi": _("Person of interest"),
     }
@@ -107,6 +108,7 @@ class TopicType(EnumType):
         "export.control",
         "export.control.linked",
         "export.risk",
+        "invest.risk",
         "poi",
         "mare.detained",
         "mare.shadow",
