@@ -76,6 +76,7 @@ LegalEntity:
       # description: "Sector, eg. ??"
       matchable: false
     classification:
+      # OS note: We use this with PEPs to summarize their exposure.
       label: Classification
       # description: "Classification, eg. ??"
       matchable: false
@@ -147,7 +148,7 @@ LegalEntity:
       maxLength: 32
     ogrnCode:
       label: "OGRN"
-      description: "Identification number used in Russia's Unified State Register of Legal Entities (EGRUL) (Russian: ОГРН)"
+      description: "Registration number used in Russia's Unified State Register of Legal Entities (EGRUL) (Russian: ОГРН)"
       type: identifier
       format: ogrn
       maxLength: 32
