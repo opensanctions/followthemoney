@@ -6,7 +6,7 @@ LegalEntity:
   description: >
     Any party to legal proceedings, such as asset ownership, corporate governance
     or social interactions. Often used when raw data does not specify if something
-    is a person or company.
+    is a person, organization or company.
   matchable: true
   featured:
     - name
@@ -51,7 +51,9 @@ LegalEntity:
       description: "Website address"
     legalForm:
       label: Legal form
-      # description: ""
+      description: "Company or organization type"
+      examples:
+        - Joint Stock Company
       matchable: false
     incorporationDate:
       label: Incorporation date
@@ -126,7 +128,7 @@ LegalEntity:
     uscCode:
       # cf. https://en.wikipedia.org/wiki/Unified_Social_Credit_Identifier
       label: "USCC"
-      description: "Unified Social Credit Identifier"
+      description: "Chinese Unified Social Credit Identifier"
       type: identifier
       format: uscc
     icijId:
@@ -164,6 +166,9 @@ LegalEntity:
     uniqueEntityId:
       label: "Unique Entity ID"
       description: "UEI from SAM.gov"
+      # This is a scheme the US federal government (peace be upon its remains) introduced to replace
+      # DUNS numbers, which had previously been used as an ID in procurement. DUNS was basically killing
+      # them with license fees.
       type: identifier
       format: uei
       maxLength: 32
@@ -175,7 +180,9 @@ LegalEntity:
       maxLength: 16
     swiftBic:
       label: "SWIFT/BIC"
-      description: "Bank identifier code"
+      description: "SWIFT Bank identifier code from ISO9362"
+      # OS note: BIC exist as bank codes (8 characters) and branch codes (11 characters). OpenSanctions
+      # currently cuts everything down to 8, meaning that all branches will match the same bank.
       type: identifier
       format: bic
       maxLength: 16

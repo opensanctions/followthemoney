@@ -26,9 +26,13 @@ Passport:
       type: identifier
       hidden: true
     surname:
+      # FIXME: wtf. make this `lastName` ???
       label: "Surname"
+      deprecated: true
     givenName:
+      # FIXME: firstName
       label: "Given name"
+    # TODO: add middleName
     birthDate:
       label: "Birth date"
       type: date

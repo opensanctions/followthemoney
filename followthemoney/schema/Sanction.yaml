@@ -27,6 +27,7 @@ Sanction:
       label: "Authority"
     authorityId:
       label: "Authority-issued identifier"
+      # eg. OFAC IDs, FCDO IDs, etc.
       type: identifier
     unscId:
       label: "UN SC identifier"
@@ -53,6 +54,7 @@ Sanction:
       type: number
     reason:
       label: "Reason"
+      description: An explanation of the designation's justification.
       type: text
     country:
       label: "Country"

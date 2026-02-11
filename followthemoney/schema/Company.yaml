@@ -24,12 +24,14 @@ Company:
     - previousName
     - registrationNumber
   properties:
+    # FIXME: this is also in legal entity? WTH???
     jurisdiction:
       label: Jurisdiction
       type: country
     registrationNumber:
       label: Registration number
       type: identifier
+
     capital:
       label: "Capital"
     voenCode:
@@ -52,7 +54,7 @@ Company:
       matchable: false
     cikCode:
       label: "SEC Central Index Key"
-      description: "US SEC Central Index Key"
+      description: "US SEC Central Index Key for listed companies"
       type: identifier
     jibCode:
       label: "JIB"
@@ -102,6 +104,7 @@ Company:
       label: ISIN
       description: International Securities Identification Number
       type: identifier
+      deprecated: true
     ticker:
       label: Stock ticker symbol
       type: identifier

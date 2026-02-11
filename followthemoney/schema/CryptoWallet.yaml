@@ -20,6 +20,7 @@ CryptoWallet:
       - creationDate
   properties:
     publicKey:
+      # FIXME: this is a very unusual name for this. what do the bros call it???
       label: Address
       description: Public key used to identify the wallet
       type: identifier

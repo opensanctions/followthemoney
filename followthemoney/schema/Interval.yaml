@@ -23,6 +23,8 @@ Interval:
   properties:
     startDate:
       label: "Start date"
+      # FIXME: language needs to work for: Passport, Ownership, Family, Occupancy :-O
+      # description: "The date on which this became true."
       type: date
     endDate:
       label: "End date"
@@ -38,8 +40,10 @@ Interval:
       type: text
     recordId:
       label: "Record ID"
+      description: Identifier of a record upon which this link is based.
     sourceUrl:
       label: "Source link"
+      description: "A deep link to a source website for the profile."
       type: url
       matchable: false
     proof:
