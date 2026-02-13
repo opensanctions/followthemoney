@@ -15,6 +15,7 @@ export interface IPropertyDatum {
   deprecated?: boolean
   range?: string | null
   reverse?: string
+  examples?: string[]
 }
 
 /**
@@ -38,6 +39,7 @@ export class Property {
   public readonly hasRange: boolean
   private readonly range: string | null
   private readonly reverse: string | null
+  public readonly examples: string[] | null = null
 
   constructor(schema: Schema, property: IPropertyDatum) {
     this.schema = schema
@@ -56,6 +58,7 @@ export class Property {
     this.type = schema.model.getType(property.type)
     this.hasRange = this.range !== null
     this.hasReverse = this.range !== null && this.reverse !== null
+    this.examples = property.examples || null
   }
 
   getRange(): Schema {
