@@ -1125,10 +1125,10 @@
         },
         "capital": {
           "label": "Capital",
-          "maxLength": 1024,
+          "maxLength": 250,
           "name": "capital",
           "qname": "Company:capital",
-          "type": "string"
+          "type": "number"
         },
         "cikCode": {
           "description": "US SEC Central Index Key",
@@ -1197,14 +1197,6 @@
           "qname": "Company:jibCode",
           "type": "identifier"
         },
-        "jurisdiction": {
-          "label": "Jurisdiction",
-          "matchable": true,
-          "maxLength": 16,
-          "name": "jurisdiction",
-          "qname": "Company:jurisdiction",
-          "type": "country"
-        },
         "kppCode": {
           "description": "Russian code issued by the tax authority, identifies the reason for registration at the Federal Tax Service (Russian: КПП). A company may have multiple KPP codes (e.g. for different branches), and the codes are not unique across companies.",
           "label": "KPP",
@@ -1252,14 +1244,6 @@
           "maxLength": 64,
           "name": "pfrNumber",
           "qname": "Company:pfrNumber",
-          "type": "identifier"
-        },
-        "registrationNumber": {
-          "label": "Registration number",
-          "matchable": true,
-          "maxLength": 64,
-          "name": "registrationNumber",
-          "qname": "Company:registrationNumber",
           "type": "identifier"
         },
         "ricCode": {
