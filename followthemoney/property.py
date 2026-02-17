@@ -38,6 +38,7 @@ class PropertyDict(TypedDict, total=False):
     matchable: Optional[bool]
     deprecated: Optional[bool]
     maxLength: Optional[int]
+    examples: Optional[List[str]]
     # stub: Optional[bool]
     range: Optional[str]
     format: Optional[str]
@@ -78,6 +79,7 @@ class Property:
         "stub",
         "_reverse",
         "reverse",
+        "examples",
     )
 
     def __init__(self, schema: "Schema", name: str, data: PropertySpec) -> None:
@@ -142,6 +144,14 @@ class Property:
         #: views.
         self._reverse = data.get("reverse")
         self.reverse: Optional["Property"] = None
+
+        #: Example values for this property, which can be used in the user interface to
+        #: illustrate the expected format of the value.
+        examples = data.get("examples")
+        if examples is not None:
+            examples = [str(e) for e in examples if e is not None]
+            examples = examples if len(examples) > 0 else None
+        self.examples: Optional[List[str]] = examples
 
     def generate(self, model: "Model") -> None:
         """Setup method used when loading the model in order to build out the reverse
@@ -234,6 +244,8 @@ class Property:
             data["reverse"] = self.reverse.name
         if self.format is not None:
             data["format"] = self.format
+        if self.examples is not None:
+            data["examples"] = self.examples
         return data
 
     def __reduce__(self) -> Any:

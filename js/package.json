@@ -1,6 +1,6 @@
 {
   "name": "@opensanctions/followthemoney",
-  "version": "4.5.2",
+  "version": "4.5.3",
   "description": "JavaScript version of the followthemoney data model",
   "keywords": [],
   "main": "dist/followthemoney.umd.js",

@@ -4529,7 +4529,16 @@
       "label": "Occupancy",
       "plural": "Occupancies",
       "properties": {
+        "constituency": {
+          "description": "The geographic area/distict represented by the holder.",
+          "label": "Constituency",
+          "maxLength": 1024,
+          "name": "constituency",
+          "qname": "Occupancy:constituency",
+          "type": "string"
+        },
         "declarationDate": {
+          "description": "If established by an asset declaration",
           "label": "Declaration date",
           "maxLength": 32,
           "name": "declarationDate",
@@ -4545,6 +4554,14 @@
           "range": "Person",
           "reverse": "positionOccupancies",
           "type": "entity"
+        },
+        "politicalGroup": {
+          "description": "Caucus, faction or parliamentary group of the holder.",
+          "label": "Political group",
+          "maxLength": 1024,
+          "name": "politicalGroup",
+          "qname": "Occupancy:politicalGroup",
+          "type": "string"
         },
         "post": {
           "label": "Position occupied",
