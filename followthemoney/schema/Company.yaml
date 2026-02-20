@@ -24,14 +24,9 @@ Company:
     - previousName
     - registrationNumber
   properties:
-    jurisdiction:
-      label: Jurisdiction
-      type: country
-    registrationNumber:
-      label: Registration number
-      type: identifier
     capital:
       label: "Capital"
+      type: number
     voenCode:
       label: "VOEN"
       description: "Azerbaijan taxpayer ID"
