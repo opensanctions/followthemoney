@@ -409,14 +409,20 @@ class Schema:
         """
         errors = {}
         properties = cast(Dict[str, Any], ensure_dict(data.get("properties")))
-        for name, prop in self.properties.items():
-            values = ensure_list(properties.get(name, []))
+        for name, values in properties.items():
+            prop = self.properties.get(name)
+            if prop is None:
+                continue
+            values = ensure_list(values)
             error = prop.validate(values)
             if error is None and not len(values):
                 if prop.name in self.required:
                     error = gettext("Required")
             if error is not None:
                 errors[name] = error
+        for req_name in self.required:
+            if req_name not in properties and req_name not in errors:
+                errors[req_name] = gettext("Required")
         if len(errors):
             msg = gettext("Entity validation failed")
             raise InvalidData(msg, errors={"properties": errors})

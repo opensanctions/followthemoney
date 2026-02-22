@@ -426,7 +426,7 @@ class EntityProxy(object):
         data: Dict[str, Any] = dict(self.context)
         data["id"] = self.id
         data["schema"] = self.schema.name
-        data["properties"] = self.properties
+        data["properties"] = self._properties
         return data
 
     def to_full_dict(self, matchable: bool = False) -> Dict[str, Any]:

@@ -59,6 +59,18 @@ def get_locale() -> Locale:
 
 
 def sanitize_text(value: Any, encoding: str = ENCODING) -> Optional[str]:
+    if isinstance(value, str):
+        if not value:
+            return None
+        try:
+            text = unicodedata.normalize("NFC", value)
+        except (SystemError, Exception) as ex:
+            log.warning("Cannot NFC text: %s", ex)
+            return None
+        text = remove_unsafe_chars(text)
+        if not text:
+            return None
+        return text
     text = stringify(value, encoding_default=encoding)
     if text is None:
         return None
@@ -68,9 +80,7 @@ def sanitize_text(value: Any, encoding: str = ENCODING) -> Optional[str]:
         log.warning("Cannot NFC text: %s", ex)
         return None
     text = remove_unsafe_chars(text)
-    byte_text = text.encode("utf-8", "replace")
-    text = byte_text.decode("utf-8", "replace")
-    if len(text) == 0:
+    if not text:
         return None
     return text
 
@@ -79,6 +89,8 @@ def key_bytes(key: Any) -> bytes:
     """Convert the given data to a value appropriate for hashing."""
     if isinstance(key, bytes):
         return key
+    if isinstance(key, str):
+        return key.encode(ENCODING) if key else b""
     text = stringify(key)
     if text is None:
         return b""
@@ -104,6 +116,8 @@ def const_case(text: str) -> str:
 
 def get_entity_id(obj: Any) -> Optional[str]:
     """Given an entity-ish object, try to get the ID."""
+    if isinstance(obj, str):
+        return obj if obj else None
     if is_mapping(obj):
         obj = obj.get("id")
     else:
