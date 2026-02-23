@@ -24,7 +24,10 @@ Event:
       type: address
     country:
       label: "Country"
+      # or nuke description?
+      description: "Deprecated / duplication, use `Thing:country` instead"
       type: country
+      deprecated: true
     important:
       label: "Important"
     organizer:
