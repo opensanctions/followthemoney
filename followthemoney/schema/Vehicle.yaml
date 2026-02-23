@@ -25,6 +25,8 @@ Vehicle:
       type: identifier
     type:
       label: Type
+      examples:
+        - Bulk carrier
     model:
       label: Model
     owner:

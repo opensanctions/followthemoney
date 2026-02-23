@@ -57,6 +57,9 @@ Contract:
       label: "Number of awards"
     status:
       label: "Status"
+      examples:
+        - In force
+        - Annulled
     method:
       label: "Procurement method"
     criteria:

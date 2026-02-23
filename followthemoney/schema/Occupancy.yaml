@@ -56,4 +56,7 @@ Occupancy:
       description: "Caucus, faction or parliamentary group of the holder."
     status:
       label: "Status"
+      examples:
+        - current
+        - ended
       type: string

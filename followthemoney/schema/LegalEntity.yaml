@@ -65,20 +65,36 @@ LegalEntity:
       description: "The date the legal entity was dissolved, if applicable"
     taxStatus:
       label: Tax status
-      # description: "Tax status, eg. ??"
+      examples:
+        - Non-Habitual Resident
+        - Compliant as at March 2022
       matchable: false
     status:
       label: Status
-      # description: "Status, eg. ??"
+      description: "A short string describing how 'active' (broadly defined) an entity is"
+      examples:
+        - Current / Former / Sitting / Retired
+        - Active / Inactive
+        - Dissolved (last known activity October 2024)
+        - Liquidated on 12 November 2022
       matchable: false
     sector:
       label: Sector
-      # description: "Sector, eg. ??"
+      description: "Industrial or trade sector as provided by the data source"
+      examples:
+        - Registered Nurse
+        - Retail and wholesale
+        - Sea and coastal freight water transport
       matchable: false
     classification:
       # OS note: We use this with PEPs to summarize their exposure.
       label: Classification
-      # description: "Classification, eg. ??"
+      description: "Classification as provided by the data source or inferred based on other provided data; prefer `sector` if relevant"
+      examples:
+        - Local government (current) -- inferred classification of a Person based on a political Position held
+        - Banking operations license
+        - 4. Priority Sector Apparel
+        - Entities Directly Serving the Defense and Security Sectors
       matchable: false
     registrationNumber:
       label: Registration number
@@ -104,11 +120,11 @@ LegalEntity:
     jurisdiction:
       label: Jurisdiction
       type: country
-      description: "Country or region in which this entity operates"
+      description: "Country or region in which this entity operates; prefer over broader `country` when relevant"
     mainCountry:
       label: Country of origin
       type: country
-      description: "Primary country of this entity"
+      description: "Primary country of this entity; prefer over broader `country` when relevant"
     opencorporatesUrl:
       label: OpenCorporates URL
       type: url

@@ -49,6 +49,11 @@ Sanction:
       label: "Scope of sanctions"
     status:
       label: "Status"
+      examples:
+        - Active
+        - Inactive
+        - Expired
+        - Suspended
     duration:
       label: "Duration"
       type: number
@@ -61,4 +66,5 @@ Sanction:
       type: country
     listingDate:
       label: "Listing date"
+      description: "The date on which the designation is listed; distinct from the `startDate`, which is the date on which the designation goes into effect"
       type: date

@@ -29,6 +29,9 @@ Identification:
         name: identification
     type:
       label: "Type"
+      examples:
+        - Passport
+        - Driving license
     country:
       label: "Country"
       type: country

@@ -54,6 +54,8 @@ Person:
       description: "The part of a name that indicates one's family, also often called surname or family name"
     nameSuffix:
       label: Name suffix
+      examples:
+        - OBE
     birthDate:
       label: Birth date
       type: date
