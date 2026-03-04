@@ -73,16 +73,16 @@ Company:
       matchable: false
     kppCode:
       label: "KPP"
-      description: "Russian code issued by the tax authority, identifies the reason for registration at the Federal Tax Service (Russian: КПП). A company may have multiple KPP codes (e.g. for different branches), and the codes are not unique across companies."
+      description: "(RU, КПП) Russian code issued by the tax authority, identifies the reason for registration at the Federal Tax Service. A company may have multiple KPP codes (e.g. for different branches), and the codes are not unique across companies."
       type: identifier
       matchable: false
     okvedCode:
       label: "OKVED(2) Classifier"
-      description: "Russian classifier that that categorizes businesses by their (primary and secondary) economic activities (Russian: ОКВЭД)"
+      description: "(RU, ОКВЭД) Russian classifier that categorizes businesses by their (primary and secondary) economic activities"
       matchable: false
     okopfCode:
       label: "OKOPF"
-      description: "Russian classifier that that categorizes different types of legal entities in Russia based on their organizational and legal structure (Russian: ОКОПФ)"
+      description: "(RU, ОКОПФ) Russian classifier that categorizes different types of legal entities in Russia based on their organizational and legal structure"
       matchable: false
     fnsCode:
       label: "Federal tax service code"
@@ -102,7 +102,7 @@ Company:
       type: identifier
     oksmCode:
       label: OKSM
-      description: "Russian (ОКСМ) countries classifier"
+      description: "(RU, ОКСМ) Russian countries classifier"
       matchable: false
     isinCode:
       label: ISIN

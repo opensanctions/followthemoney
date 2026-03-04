@@ -158,13 +158,13 @@ LegalEntity:
       matchable: false
     innCode:
       label: "INN"
-      description: "Russian tax identification number (Russian: ИНН). Issued to businesses and individuals in Russia"
+      description: "(RU, ИНН) Russian tax identification number. Issued to businesses and individuals in Russia."
       type: identifier
       format: inn
       maxLength: 32
     ogrnCode:
       label: "OGRN"
-      description: "Registration number used in Russia's Unified State Register of Legal Entities (EGRUL) (Russian: ОГРН)"
+      description: "(RU, ОГРН) Registration number used in Russia's Unified State Register of Legal Entities (EGRUL)"
       type: identifier
       format: ogrn
       maxLength: 32
