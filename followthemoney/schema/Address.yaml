@@ -67,9 +67,6 @@ Address:
     longitude:
       label: "Longitude"
       type: "number"
-    country:
-      label: "Country"
-      type: "country"
     osmId:
       label: "OpenStreetmap Place ID"
       type: "identifier"
