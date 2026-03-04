@@ -4,7 +4,7 @@ ProjectParticipant:
   extends:
     - Interest
   description: >
-    An activity carried out by a group of participants.
+    A participant in a `Project`.
   matchable: false
   featured:
     - project

@@ -6,7 +6,7 @@ Project:
     - Thing
     - Value
   description: >
-    An activity carried out by a group of participants.
+    An activity carried out by a group of `participants`.
   matchable: false
   featured:
     - name
