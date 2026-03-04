@@ -22,9 +22,6 @@ Event:
     location:
       label: "Location"
       type: address
-    country:
-      label: "Country"
-      type: country
     important:
       label: "Important"
     organizer:

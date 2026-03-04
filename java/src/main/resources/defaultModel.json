@@ -29,14 +29,6 @@
           "qname": "Address:city",
           "type": "string"
         },
-        "country": {
-          "label": "Country",
-          "matchable": true,
-          "maxLength": 16,
-          "name": "country",
-          "qname": "Address:country",
-          "type": "country"
-        },
         "full": {
           "label": "Full address",
           "matchable": true,
@@ -2824,14 +2816,6 @@
       "label": "Event",
       "plural": "Events",
       "properties": {
-        "country": {
-          "label": "Country",
-          "matchable": true,
-          "maxLength": 16,
-          "name": "country",
-          "qname": "Event:country",
-          "type": "country"
-        },
         "important": {
           "label": "Important",
           "maxLength": 1024,
