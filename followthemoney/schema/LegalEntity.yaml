@@ -91,7 +91,7 @@ LegalEntity:
       label: Classification
       description: "Classification as provided by the data source or inferred based on other provided data; prefer `sector` if relevant"
       examples:
-        - Local government (current) -- inferred classification of a Person based on a political Position held
+        - Local government (current)
         - Banking operations license
         - 4. Priority Sector Apparel
         - Entities Directly Serving the Defense and Security Sectors

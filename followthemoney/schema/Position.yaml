@@ -39,10 +39,7 @@ Position:
       type: date
     subnationalArea:
       label: Subnational area
-      description: "The name or code of a subnational jurisdiction when the position is geographically limited"
-      examples:
-        - "**NOT**: the constituency of a national member of parliament, since its legislative jurisdiction is nationwide"
-        - "`WC` or `Western Cape`: member of the Western Cape Provincial Parliament"
+      description: "The name or code of a subnational jurisdiction, only when the position is geographically limited. Prefer `Occupancy:constituency` where relevant."
       type: string
     numberOfSeats:
       label: Total number of seats

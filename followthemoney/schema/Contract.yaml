@@ -42,8 +42,11 @@ Contract:
       range: Project
     type:
       label: "Type"
-      description: >
-        Type of contract. Potentially W (Works), U (Supplies), S (Services).
+      description: "Type of contract"
+      examples:
+         - W (Works)
+         - U (Supplies)
+         - S (Services)
     contractDate:
       label: "Contract date"
       type: date
