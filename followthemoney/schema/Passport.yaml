@@ -2,7 +2,7 @@ Passport:
   label: "Passport"
   plural: "Passports"
   description: >
-    An passport held by a person.
+    A passport held by a person.
   extends:
     - Identification
   matchable: false

@@ -53,8 +53,6 @@ Vessel:
       type: country
     pastTypes:
       label: Past Types
-    #buildDate:
-    #  label: Build Date
     mmsi:
       label: MMSI
       type: identifier
