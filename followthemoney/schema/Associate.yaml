@@ -1,7 +1,7 @@
 Associate:
   label: "Associate"
   plural: "Associates"
-  description: "Non-family association between two people"
+  description: "Non-family association between two people."
   extends:
     - Interval
   matchable: false

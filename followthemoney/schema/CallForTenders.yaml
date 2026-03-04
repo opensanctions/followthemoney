@@ -3,7 +3,7 @@ CallForTenders:
   plural: "Calls for tenders"
   description: >
     A public appeal issued by an authority, possibly on behalf of another,
-    for buying a specific work, supply or service
+    for buying a specific work, supply or service.
   extends:
     - Thing
     - Interval

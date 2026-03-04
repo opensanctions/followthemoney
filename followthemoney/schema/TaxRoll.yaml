@@ -1,7 +1,7 @@
 TaxRoll:
   label: "Tax roll"
   plural: "Tax rolls"
-  description: "A tax declaration of an individual"
+  description: "A tax declaration of an individual."
   extends:
     - Interval
   icon: fa-bank

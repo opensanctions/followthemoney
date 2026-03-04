@@ -1,7 +1,7 @@
 Sanction:
   label: Sanction
   plural: Sanctions
-  description: "A sanction designation"
+  description: "A sanction designation."
   extends:
     - Interval
   matchable: false
