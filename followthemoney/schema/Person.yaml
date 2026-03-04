@@ -38,7 +38,7 @@ Person:
       description: "The part of a name that indicates the person, also often called given name or forename"
     secondName:
       label: Second name
-      description: "Deprecated, use one of the other more specific name properties instead."
+      description: "Deprecated, use one of the other more specific name properties instead"
       deprecated: true
     middleName:
       label: Middle name

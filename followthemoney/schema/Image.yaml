@@ -28,5 +28,5 @@ Image:
       range: Person
     credit:
       label: "Credit"
-      description: "The credit or attribution for the image."
+      description: "The credit or attribution for the image"
       type: string

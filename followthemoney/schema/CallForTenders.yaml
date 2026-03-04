@@ -96,7 +96,7 @@ CallForTenders:
       type: url
     fallsUnderGPPScope:
       label: "Does this call fall under the scope of GPP?"
-      description: "European Green Public Procurement (GPP) or green purchasing."
+      description: "European Green Public Procurement (GPP) or green purchasing"
     certificationCheck:
       label: "Certification check"
     awardingDate:

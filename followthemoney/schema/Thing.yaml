@@ -48,7 +48,7 @@ Thing:
       # OS notes: discouraged in favor of `notes` in most cases.
     sourceUrl:
       label: Source link
-      description: "A deep link to a source website for the profile."
+      description: "A deep link to a source website for the profile"
       type: url
       matchable: false
     publisher:
@@ -78,15 +78,19 @@ Thing:
       description: "Plain text keywords provided for the entity; prefer more specific `type`, `status`, etc. as appropriate"
     topics:
       label: Topics
-      description: "Controlled tags used to qualify the entity and associate it with a risk category."
+      description: "Controlled tags used to qualify the entity and associate it with a risk category"
+      examples:
+        - sanction
+        - debarment
+        - role.pep
       type: topic
     address:
       label: Address
-      description: "A textual description of an address linked to the entity."
+      description: "A textual description of an address linked to the entity"
       type: address
     addressEntity:
       label: Address
-      description: "A reference to an `Address` entity with structured place information."
+      description: "A reference to an `Address` entity with structured place information"
       reverse:
         name: things
         label: "Located there"
@@ -94,7 +98,7 @@ Thing:
       range: Address
     program: # Used by sanctions
       label: Program
-      description: Regulatory program or sanctions list on which an entity is listed.
+      description: Regulatory program or sanctions list on which an entity is listed
     programId:
       # This is a unique identifier for the program issued by OpenSanctions, but
       # could also be used for authority-issued IDs in other usage scenarios.

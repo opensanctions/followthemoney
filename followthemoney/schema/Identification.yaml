@@ -41,4 +41,4 @@ Identification:
       maxLength: 64
     authority:
       label: "Authority"
-      description: "Government body issuing the identification document."
+      description: "Government body issuing the identification document"

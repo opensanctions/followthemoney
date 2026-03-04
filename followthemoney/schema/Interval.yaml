@@ -41,10 +41,10 @@ Interval:
       type: text
     recordId:
       label: "Record ID"
-      description: Identifier of a record upon which this link is based.
+      description: Identifier of a record upon which this link is based
     sourceUrl:
       label: "Source link"
-      description: "A deep link to a source website for the profile."
+      description: "A deep link to a source website for the profile"
       type: url
       matchable: false
     proof:
