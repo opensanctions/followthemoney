@@ -30,19 +30,20 @@ Thing:
       matchable: false
     country:
       label: Country
-      description: "An association between the entity and a country that is not covered by a more specific property (eg. jurisdiction, birthCountry, mainCountry)."
+      description: "An association between the entity and a country that is not covered by a more specific property (e.g. `jurisdiction`, `birthCountry`, `mainCountry`)"
       type: country
-    summary: # a short one-liner kind of description
+    summary:
       label: Summary
-      description: "A short one-liner."
+      description: "A short one-liner description; see also `description`, `notes`"
       type: text
       # OS notes: discouraged in favor of `notes` in most cases.
     notes:
       label: Notes
-      description: "Narrative description of the entity."
+      description: "Narrative description of the entity; see also `description`, `summary`"
       type: text
-    description: # a longer description
+    description:
       label: Description
+      description: "A longer description; see also `notes`, `summary`"
       type: text
       # OS notes: discouraged in favor of `notes` in most cases.
     sourceUrl:

@@ -38,4 +38,7 @@ Family:
       description: "The relative of the subject person."
     relationship:
       label: "Relationship"
-      description: "Nature of the relationship, from the person's perspective eg. 'mother', where 'relative' is mother of 'person'."
+      description: "Nature of the relationship from the `person`'s perspective, e.g. 'mother', where `relative` is the mother of `person`"
+      examples:
+        - mother
+        - sibling

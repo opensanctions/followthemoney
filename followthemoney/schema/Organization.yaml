@@ -4,7 +4,7 @@ Organization:
   label: Organization
   plural: Organizations
   description: >
-    Any type of incorporated entity that cannot be owned by another (see Company). This
+    Any type of incorporated entity that cannot be owned by another (see `Company`). This
     might include charities, foundations or state-owned enterprises, depending on their
     jurisdiction.
   matchable: true

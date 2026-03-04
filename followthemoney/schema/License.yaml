@@ -1,7 +1,7 @@
 License:
   label: License
   plural: Licenses
-  description: "A grant of land, rights or property. A type of Contract"
+  description: "A grant of land, rights or property. A type of `Contract`."
   extends:
     - Contract
   matchable: false
