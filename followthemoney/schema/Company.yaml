@@ -24,20 +24,9 @@ Company:
     - previousName
     - registrationNumber
   properties:
-    jurisdiction:
-      label: Jurisdiction
-      # or nuke description?
-      description: "Deprecated / duplication, use `LegalEntity:jurisdiction` instead"
-      type: country
-      deprecated: true
-    registrationNumber:
-      label: Registration number
-      # or nuke description?
-      description: "Deprecated / duplication, use `LegalEntity:registrationNumber` instead"
-      type: identifier
-      deprecated: true
     capital:
       label: "Capital"
+      type: number
     voenCode:
       label: "VOEN"
       description: "Azerbaijan taxpayer ID"

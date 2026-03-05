@@ -67,12 +67,6 @@ Address:
     longitude:
       label: "Longitude"
       type: "number"
-    country:
-      label: "Country"
-      # or nuke description?
-      description: "Deprecated / duplication, use `Thing:country` instead"
-      deprecated: true
-      type: "country"
     osmId:
       label: "OpenStreetmap Place ID"
       type: "identifier"
