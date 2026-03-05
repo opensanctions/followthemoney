@@ -30,6 +30,8 @@
           "type": "string"
         },
         "country": {
+          "deprecated": true,
+          "description": "Deprecated / duplication, use `Thing:country` instead",
           "label": "Country",
           "matchable": true,
           "maxLength": 16,
@@ -84,7 +86,7 @@
           "type": "string"
         },
         "postalCode": {
-          "description": "Zip code or postcode.",
+          "description": "Zip code or postcode",
           "label": "Postal code",
           "maxLength": 16,
           "name": "postalCode",
@@ -92,7 +94,7 @@
           "type": "string"
         },
         "region": {
-          "description": "Also province or area.",
+          "description": "Also province or area",
           "label": "Region",
           "maxLength": 1024,
           "name": "region",
@@ -100,7 +102,7 @@
           "type": "string"
         },
         "remarks": {
-          "description": "Handling instructions, like 'care of'.",
+          "description": "Handling instructions, like 'care of'",
           "label": "Remarks",
           "maxLength": 1024,
           "name": "remarks",
@@ -108,7 +110,7 @@
           "type": "string"
         },
         "state": {
-          "description": "State or federal unit.",
+          "description": "State or federal unit",
           "label": "State",
           "maxLength": 1024,
           "name": "state",
@@ -398,7 +400,7 @@
       ]
     },
     "Associate": {
-      "description": "Non-family association between two people",
+      "description": "Non-family association between two people.",
       "edge": {
         "caption": [
           "relationship"
@@ -420,7 +422,7 @@
       "plural": "Associates",
       "properties": {
         "associate": {
-          "description": "An associate of the subject person.",
+          "description": "An associate of the subject person",
           "label": "Associate",
           "matchable": true,
           "maxLength": 200,
@@ -431,7 +433,7 @@
           "type": "entity"
         },
         "person": {
-          "description": "The subject of the association.",
+          "description": "The subject of the association",
           "label": "Person",
           "matchable": true,
           "maxLength": 200,
@@ -791,7 +793,7 @@
       "caption": [
         "title"
       ],
-      "description": "A public appeal issued by an authority, possibly on behalf of another, for buying a specific work, supply or service\n",
+      "description": "A public appeal issued by an authority, possibly on behalf of another, for buying a specific work, supply or service.\n",
       "extends": [
         "Interval",
         "Thing"
@@ -917,7 +919,7 @@
           "type": "string"
         },
         "fallsUnderGPPScope": {
-          "description": "European Green Public Procurement (GPP) or green purchasing.",
+          "description": "European Green Public Procurement (GPP) or green purchasing",
           "label": "Does this call fall under the scope of GPP?",
           "maxLength": 1024,
           "name": "fallsUnderGPPScope",
@@ -1131,7 +1133,7 @@
           "type": "string"
         },
         "cikCode": {
-          "description": "US SEC Central Index Key",
+          "description": "US SEC Central Index Key for listed companies",
           "label": "SEC Central Index Key",
           "matchable": true,
           "maxLength": 64,
@@ -1140,7 +1142,7 @@
           "type": "identifier"
         },
         "coatoCode": {
-          "description": "Soviet classifier for territories, regions, districts, villages. Aka. SOATO and same as OKATO",
+          "description": "Soviet classifier for territories, regions, districts, villages. Aka. SOATO and same as OKATO.",
           "label": "COATO / SOATO / OKATO",
           "maxLength": 64,
           "name": "coatoCode",
@@ -1180,6 +1182,7 @@
           "type": "identifier"
         },
         "isinCode": {
+          "deprecated": true,
           "description": "International Securities Identification Number",
           "label": "ISIN",
           "matchable": true,
@@ -1198,6 +1201,8 @@
           "type": "identifier"
         },
         "jurisdiction": {
+          "deprecated": true,
+          "description": "Deprecated / duplication, use `LegalEntity:jurisdiction` instead",
           "label": "Jurisdiction",
           "matchable": true,
           "maxLength": 16,
@@ -1206,7 +1211,7 @@
           "type": "country"
         },
         "kppCode": {
-          "description": "Russian code issued by the tax authority, identifies the reason for registration at the Federal Tax Service (Russian: КПП). A company may have multiple KPP codes (e.g. for different branches), and the codes are not unique across companies.",
+          "description": "(RU, КПП) Russian code issued by the tax authority, identifies the reason for registration at the Federal Tax Service. A company may have multiple KPP codes (e.g. for different branches), and the codes are not unique across companies.",
           "label": "KPP",
           "maxLength": 64,
           "name": "kppCode",
@@ -1222,7 +1227,7 @@
           "type": "identifier"
         },
         "okopfCode": {
-          "description": "Russian classifier that that categorizes different types of legal entities in Russia based on their organizational and legal structure (Russian: ОКОПФ)",
+          "description": "(RU, ОКОПФ) Russian classifier that categorizes different types of legal entities in Russia based on their organizational and legal structure",
           "label": "OKOPF",
           "maxLength": 1024,
           "name": "okopfCode",
@@ -1230,7 +1235,7 @@
           "type": "string"
         },
         "oksmCode": {
-          "description": "Russian (ОКСМ) countries classifier",
+          "description": "(RU, ОКСМ) Russian countries classifier",
           "label": "OKSM",
           "maxLength": 1024,
           "name": "oksmCode",
@@ -1238,7 +1243,7 @@
           "type": "string"
         },
         "okvedCode": {
-          "description": "Russian classifier that that categorizes businesses by their (primary and secondary) economic activities (Russian: ОКВЭД)",
+          "description": "(RU, ОКВЭД) Russian classifier that categorizes businesses by their (primary and secondary) economic activities",
           "label": "OKVED(2) Classifier",
           "maxLength": 1024,
           "name": "okvedCode",
@@ -1246,7 +1251,7 @@
           "type": "string"
         },
         "pfrNumber": {
-          "description": "(RU, ПФР) Pension Fund Registration number. AAA-BBB-CCCCCC, where AAA is organisation region, BBB is district, CCCCCC number at a specific branch",
+          "description": "(RU, ПФР) Pension Fund Registration number. AAA-BBB-CCCCCC, where AAA is organisation region, BBB is district, and CCCCCC is the number at a specific branch.",
           "label": "PFR Number",
           "matchable": true,
           "maxLength": 64,
@@ -1255,6 +1260,8 @@
           "type": "identifier"
         },
         "registrationNumber": {
+          "deprecated": true,
+          "description": "Deprecated / duplication, use `LegalEntity:registrationNumber` instead",
           "label": "Registration number",
           "matchable": true,
           "maxLength": 64,
@@ -1314,7 +1321,7 @@
         "name",
         "procedureNumber"
       ],
-      "description": "An contract or contract lot issued by an authority. Multiple lots may be awarded to different suppliers (see ContractAward).\n",
+      "description": "A contract or contract lot issued by an authority. Multiple lots may be awarded to different suppliers (see `ContractAward`).\n",
       "extends": [
         "Asset"
       ],
@@ -1452,6 +1459,10 @@
           "type": "entity"
         },
         "status": {
+          "examples": [
+            "In force",
+            "Annulled"
+          ],
           "label": "Status",
           "maxLength": 1024,
           "name": "status",
@@ -1466,7 +1477,12 @@
           "type": "string"
         },
         "type": {
-          "description": "Type of contract. Potentially W (Works), U (Supplies), S (Services).\n",
+          "description": "Type of contract",
+          "examples": [
+            "W (Works)",
+            "U (Supplies)",
+            "S (Services)"
+          ],
           "label": "Type",
           "maxLength": 1024,
           "name": "type",
@@ -1972,6 +1988,7 @@
       "plural": "Directorships",
       "properties": {
         "director": {
+          "description": "The entity exercising control over another",
           "label": "Director",
           "matchable": true,
           "maxLength": 200,
@@ -2359,7 +2376,7 @@
         "goodsDescription",
         "ccdNumber"
       ],
-      "description": "A foreign economic activity",
+      "description": "A foreign economic activity.",
       "extends": [
         "Interval"
       ],
@@ -2841,6 +2858,8 @@
       "plural": "Events",
       "properties": {
         "country": {
+          "deprecated": true,
+          "description": "Deprecated / duplication, use `Thing:country` instead",
           "label": "Country",
           "matchable": true,
           "maxLength": 16,
@@ -2904,7 +2923,7 @@
       }
     },
     "Family": {
-      "description": "Family relationship between two people",
+      "description": "Family relationship between two people.",
       "edge": {
         "caption": [
           "relationship"
@@ -2926,7 +2945,7 @@
       "plural": "Family members",
       "properties": {
         "person": {
-          "description": "The subject of the familial relation.",
+          "description": "The subject of the familial relation",
           "label": "Person",
           "matchable": true,
           "maxLength": 200,
@@ -2937,7 +2956,11 @@
           "type": "entity"
         },
         "relationship": {
-          "description": "Nature of the relationship, from the person's perspective eg. 'mother', where 'relative' is mother of 'person'.",
+          "description": "Nature of the relationship from the `person`'s perspective, e.g. 'mother', where `relative` is the mother of `person`",
+          "examples": [
+            "mother",
+            "sibling"
+          ],
           "label": "Relationship",
           "maxLength": 1024,
           "name": "relationship",
@@ -2945,7 +2968,7 @@
           "type": "string"
         },
         "relative": {
-          "description": "The relative of the subject person.",
+          "description": "The relative of the subject person",
           "label": "Relative",
           "matchable": true,
           "maxLength": 200,
@@ -3076,7 +3099,7 @@
       "caption": [
         "number"
       ],
-      "description": "An form of identification associated with its holder and some issuing country. This can be used for national ID cards, voter enrollments and similar instruments.\n",
+      "description": "A form of identification associated with its holder and some issuing country. This can be used for national ID cards, voter enrollments, and similar instruments.\n",
       "extends": [
         "Interval"
       ],
@@ -3092,6 +3115,7 @@
       "plural": "Identifications",
       "properties": {
         "authority": {
+          "description": "Government body issuing the identification document",
           "label": "Authority",
           "maxLength": 1024,
           "name": "authority",
@@ -3125,6 +3149,10 @@
           "type": "identifier"
         },
         "type": {
+          "examples": [
+            "Passport",
+            "Driving license"
+          ],
           "label": "Type",
           "maxLength": 1024,
           "name": "type",
@@ -3170,7 +3198,7 @@
       "plural": "Images",
       "properties": {
         "credit": {
-          "description": "The credit or attribution for the image.",
+          "description": "The credit or attribution for the image",
           "label": "Credit",
           "maxLength": 1024,
           "name": "credit",
@@ -3256,6 +3284,7 @@
           "type": "url"
         },
         "date": {
+          "description": "Date associated with an Interval that isn't explicitly its `startDate` or `endDate` (prefer those when available)",
           "label": "Date",
           "matchable": true,
           "maxLength": 32,
@@ -3271,6 +3300,7 @@
           "type": "text"
         },
         "endDate": {
+          "description": "The date of expiry of a document, or on which a relationship, sanctioned status, occupation, etc. ended",
           "label": "End date",
           "matchable": true,
           "maxLength": 32,
@@ -3287,6 +3317,7 @@
           "type": "text"
         },
         "modifiedAt": {
+          "description": "The date on which the entity (like the ID document) was modified, not to be confused with an internal 'last updated'-style metadata field",
           "label": "Modified on",
           "matchable": true,
           "maxLength": 32,
@@ -3328,6 +3359,7 @@
           "type": "url"
         },
         "recordId": {
+          "description": "Identifier of a record upon which this link is based",
           "label": "Record ID",
           "maxLength": 1024,
           "name": "recordId",
@@ -3335,6 +3367,7 @@
           "type": "string"
         },
         "retrievedAt": {
+          "description": "Retrieval date generated by a data gathering system, not to be confused with an internal 'first found'-style metadata field",
           "label": "Retrieved on",
           "maxLength": 32,
           "name": "retrievedAt",
@@ -3342,6 +3375,7 @@
           "type": "date"
         },
         "sourceUrl": {
+          "description": "A deep link to a source website for the profile",
           "label": "Source link",
           "maxLength": 4096,
           "name": "sourceUrl",
@@ -3349,6 +3383,7 @@
           "type": "url"
         },
         "startDate": {
+          "description": "The date of issue of a document, or on which a relationship, sanctioned status, occupation, etc. started",
           "label": "Start date",
           "matchable": true,
           "maxLength": 32,
@@ -3388,7 +3423,7 @@
         "phone",
         "registrationNumber"
       ],
-      "description": "Any party to legal proceedings, such as asset ownership, corporate governance or social interactions. Often used when raw data does not specify if something is a person or company.\n",
+      "description": "Any party to legal proceedings, such as asset ownership, corporate governance or social interactions. Often used when raw data does not specify if something is a person, organization or company.\n",
       "extends": [
         "Thing"
       ],
@@ -3490,6 +3525,13 @@
           "type": "entity"
         },
         "classification": {
+          "description": "Classification as provided by the data source or inferred based on other provided data; prefer `sector` if relevant",
+          "examples": [
+            "Local government (current)",
+            "Banking operations license",
+            "4. Priority Sector Apparel",
+            "Entities Directly Serving the Defense and Security Sectors"
+          ],
           "label": "Classification",
           "maxLength": 1024,
           "name": "classification",
@@ -3726,7 +3768,7 @@
           "type": "date"
         },
         "innCode": {
-          "description": "Russian tax identification number (Russian: ИНН). Issued to businesses and individuals in Russia",
+          "description": "(RU, ИНН) Russian tax identification number. Issued to businesses and individuals in Russia.",
           "format": "inn",
           "label": "INN",
           "matchable": true,
@@ -3736,7 +3778,7 @@
           "type": "identifier"
         },
         "jurisdiction": {
-          "description": "Country or region in which this entity operates",
+          "description": "Country or region in which this entity operates; prefer over broader `country` when relevant",
           "label": "Jurisdiction",
           "matchable": true,
           "maxLength": 16,
@@ -3745,6 +3787,10 @@
           "type": "country"
         },
         "legalForm": {
+          "description": "Company or organization type",
+          "examples": [
+            "Joint Stock Company"
+          ],
           "label": "Legal form",
           "maxLength": 1024,
           "name": "legalForm",
@@ -3771,7 +3817,7 @@
           "type": "identifier"
         },
         "mainCountry": {
-          "description": "Primary country of this entity",
+          "description": "Primary country of this entity; prefer over broader `country` when relevant",
           "label": "Country of origin",
           "matchable": true,
           "maxLength": 16,
@@ -3834,7 +3880,7 @@
           "type": "identifier"
         },
         "ogrnCode": {
-          "description": "Identification number used in Russia's Unified State Register of Legal Entities (EGRUL) (Russian: ОГРН)",
+          "description": "(RU, ОГРН) Registration number used in Russia's Unified State Register of Legal Entities (EGRUL)",
           "format": "ogrn",
           "label": "OGRN",
           "matchable": true,
@@ -3894,7 +3940,7 @@
         },
         "parent": {
           "deprecated": true,
-          "description": "If this entity is a subsidiary, another entity (company or organisation) is its parent",
+          "description": "Deprecated, use `Ownership` link instead",
           "label": "Parent company",
           "matchable": true,
           "maxLength": 200,
@@ -3975,6 +4021,12 @@
           "type": "identifier"
         },
         "sector": {
+          "description": "Industrial or trade sector as provided by the data source",
+          "examples": [
+            "Registered Nurse",
+            "Retail and wholesale",
+            "Sea and coastal freight water transport"
+          ],
           "label": "Sector",
           "maxLength": 1024,
           "name": "sector",
@@ -3993,6 +4045,13 @@
           "type": "entity"
         },
         "status": {
+          "description": "A short string describing how 'active' (broadly defined) an entity is",
+          "examples": [
+            "Current / Former / Sitting / Retired",
+            "Active / Inactive",
+            "Dissolved (last known activity October 2024)",
+            "Liquidated on 12 November 2022"
+          ],
           "label": "Status",
           "maxLength": 1024,
           "name": "status",
@@ -4022,7 +4081,7 @@
           "type": "entity"
         },
         "swiftBic": {
-          "description": "Bank identifier code",
+          "description": "SWIFT Bank identifier code from ISO9362",
           "format": "bic",
           "label": "SWIFT/BIC",
           "matchable": true,
@@ -4052,6 +4111,10 @@
           "type": "entity"
         },
         "taxStatus": {
+          "examples": [
+            "Non-Habitual Resident",
+            "Compliant as at March 2022"
+          ],
           "label": "Tax status",
           "maxLength": 1024,
           "name": "taxStatus",
@@ -4069,7 +4132,7 @@
           "type": "identifier"
         },
         "uscCode": {
-          "description": "Unified Social Credit Identifier",
+          "description": "Chinese Unified Social Credit Identifier",
           "format": "uscc",
           "label": "USCC",
           "matchable": true,
@@ -4128,7 +4191,7 @@
       "caption": [
         "name"
       ],
-      "description": "A grant of land, rights or property. A type of Contract",
+      "description": "A grant of land, rights or property. A type of `Contract`.",
       "extends": [
         "Contract"
       ],
@@ -4530,7 +4593,7 @@
       "plural": "Occupancies",
       "properties": {
         "constituency": {
-          "description": "The geographic area/distict represented by the holder.",
+          "description": "The geographic area/distict represented by the holder",
           "label": "Constituency",
           "maxLength": 1024,
           "name": "constituency",
@@ -4556,7 +4619,7 @@
           "type": "entity"
         },
         "politicalGroup": {
-          "description": "Caucus, faction or parliamentary group of the holder.",
+          "description": "Caucus, faction or parliamentary group of the holder",
           "label": "Political group",
           "maxLength": 1024,
           "name": "politicalGroup",
@@ -4574,6 +4637,10 @@
           "type": "entity"
         },
         "status": {
+          "examples": [
+            "current",
+            "ended"
+          ],
           "label": "Status",
           "maxLength": 1024,
           "name": "status",
@@ -4609,7 +4676,7 @@
         "previousName",
         "registrationNumber"
       ],
-      "description": "Any type of incorporated entity that cannot be owned by another (see Company). This might include charities, foundations or state-owned enterprises, depending on their jurisdiction.\n",
+      "description": "Any type of incorporated entity that cannot be owned by another (see `Company`). This might include charities, foundations or state-owned enterprises, depending on their jurisdiction.\n",
       "extends": [
         "LegalEntity"
       ],
@@ -4783,6 +4850,12 @@
           "type": "entity"
         },
         "ownershipType": {
+          "examples": [
+            "beneficial",
+            "direct",
+            "indirect",
+            "ultimate"
+          ],
           "label": "Type of ownership",
           "maxLength": 1024,
           "name": "ownershipType",
@@ -5008,7 +5081,7 @@
         "passportNumber",
         "number"
       ],
-      "description": "An passport held by a person.\n",
+      "description": "A passport held by a person.\n",
       "extends": [
         "Identification"
       ],
@@ -5046,6 +5119,8 @@
           "type": "gender"
         },
         "givenName": {
+          "deprecated": true,
+          "description": "Deprecated, use `Identification:holder` link's `firstName` / `middleName` instead",
           "label": "Given name",
           "maxLength": 1024,
           "name": "givenName",
@@ -5053,6 +5128,8 @@
           "type": "string"
         },
         "passportNumber": {
+          "deprecated": true,
+          "description": "Deprecated, use `Identification:number` instead",
           "hidden": true,
           "label": "Passport number",
           "matchable": true,
@@ -5070,6 +5147,8 @@
           "type": "identifier"
         },
         "surname": {
+          "deprecated": true,
+          "description": "Deprecated, use `Identification:holder` link's `lastName` instead",
           "label": "Surname",
           "maxLength": 1024,
           "name": "surname",
@@ -5320,6 +5399,7 @@
           "type": "country"
         },
         "deathDate": {
+          "description": "Joined the choir invisible.",
           "label": "Death date",
           "matchable": true,
           "maxLength": 32,
@@ -5454,6 +5534,9 @@
           "type": "string"
         },
         "nameSuffix": {
+          "examples": [
+            "OBE"
+          ],
           "label": "Name suffix",
           "maxLength": 1024,
           "name": "nameSuffix",
@@ -5517,7 +5600,7 @@
         },
         "secondName": {
           "deprecated": true,
-          "description": "Deprecated, use one of the other more specific name properties instead.",
+          "description": "Deprecated, use one of the other more specific name properties instead",
           "label": "Second name",
           "maxLength": 1024,
           "name": "secondName",
@@ -5610,7 +5693,7 @@
       "caption": [
         "name"
       ],
-      "description": "A post, role or position within an organization or body. This describes a position one or more people may occupy and not the occupation of the post by a specific individual at a specific point in time.\n'subnationalArea' should be used to further restrict the scope of the position. It should not simply represent some regional aspect of the role - e.g. the constituency of a national member of parliament - when their legislative jurisdiction is nationwide.\n",
+      "description": "A post, role or position within an organization or body. This describes a position one or more people may occupy and not the occupation of the post by a specific individual at a specific point in time (see `Occupancy`).\n",
       "extends": [
         "Thing"
       ],
@@ -5668,7 +5751,8 @@
           "type": "entity"
         },
         "subnationalArea": {
-          "label": "Subnational jurisdiction name or code",
+          "description": "The name or code of a subnational jurisdiction, only when the position is geographically limited. Prefer `Occupancy:constituency` where relevant.",
+          "label": "Subnational area",
           "maxLength": 1024,
           "name": "subnationalArea",
           "qname": "Position:subnationalArea",
@@ -5696,7 +5780,7 @@
         "name",
         "projectId"
       ],
-      "description": "An activity carried out by a group of participants.\n",
+      "description": "An activity carried out by a group of `participants`.\n",
       "extends": [
         "Interval",
         "Thing",
@@ -5793,7 +5877,7 @@
       "caption": [
         "role"
       ],
-      "description": "An activity carried out by a group of participants.\n",
+      "description": "A participant in a `Project`.\n",
       "edge": {
         "caption": [
           "role"
@@ -6094,7 +6178,7 @@
         "reason",
         "status"
       ],
-      "description": "A risk associated with an entity",
+      "description": "A risk associated with an entity.",
       "extends": [
         "Interval"
       ],
@@ -6184,7 +6268,7 @@
       "caption": [
         "program"
       ],
-      "description": "A sanction designation",
+      "description": "A sanction designation.",
       "extends": [
         "Interval"
       ],
@@ -6239,6 +6323,7 @@
           "type": "entity"
         },
         "listingDate": {
+          "description": "The date on which the designation is listed; distinct from the `startDate`, which is the date on which the designation goes into effect",
           "label": "Listing date",
           "matchable": true,
           "maxLength": 32,
@@ -6277,6 +6362,7 @@
           "type": "string"
         },
         "reason": {
+          "description": "An explanation of the designation's justification.",
           "label": "Reason",
           "maxLength": 65000,
           "name": "reason",
@@ -6284,6 +6370,12 @@
           "type": "text"
         },
         "status": {
+          "examples": [
+            "Active",
+            "Inactive",
+            "Expired",
+            "Suspended"
+          ],
           "label": "Status",
           "maxLength": 1024,
           "name": "status",
@@ -6291,6 +6383,7 @@
           "type": "string"
         },
         "unscId": {
+          "description": "Identifier issued by the UN Security Council for sanctions designations",
           "label": "UN SC identifier",
           "matchable": true,
           "maxLength": 16,
@@ -6618,7 +6711,7 @@
       }
     },
     "TaxRoll": {
-      "description": "A tax declaration of an individual",
+      "description": "A tax declaration of an individual.",
       "extends": [
         "Interval"
       ],
@@ -6725,6 +6818,7 @@
       "plural": "Thing",
       "properties": {
         "address": {
+          "description": "A textual description of an address linked to the entity",
           "label": "Address",
           "matchable": true,
           "maxLength": 250,
@@ -6733,6 +6827,7 @@
           "type": "address"
         },
         "addressEntity": {
+          "description": "A reference to an `Address` entity with structured place information",
           "label": "Address",
           "matchable": true,
           "maxLength": 200,
@@ -6751,6 +6846,7 @@
           "type": "url"
         },
         "alias": {
+          "description": "An alternative or secondary name",
           "label": "Alias",
           "matchable": true,
           "maxLength": 384,
@@ -6770,6 +6866,7 @@
           "type": "entity"
         },
         "country": {
+          "description": "An association between the entity and a country that is not covered by a more specific property (e.g. `jurisdiction`, `birthCountry`, `mainCountry`)",
           "label": "Country",
           "matchable": true,
           "maxLength": 16,
@@ -6789,6 +6886,7 @@
           "type": "entity"
         },
         "createdAt": {
+          "description": "The date on which the entity was created, not to be confused with an internal 'first saved'-style metadata field",
           "label": "Created at",
           "maxLength": 32,
           "name": "createdAt",
@@ -6796,6 +6894,7 @@
           "type": "date"
         },
         "description": {
+          "description": "A longer description; see also `notes`, `summary`",
           "label": "Description",
           "maxLength": 65000,
           "name": "description",
@@ -6822,6 +6921,7 @@
           "type": "text"
         },
         "keywords": {
+          "description": "Plain text keywords provided for the entity; prefer more specific `type`, `status`, etc. as appropriate",
           "label": "Keywords",
           "maxLength": 1024,
           "name": "keywords",
@@ -6840,6 +6940,7 @@
           "type": "entity"
         },
         "modifiedAt": {
+          "description": "The date on which the entity was modified, not to be confused with an internal 'last updated'-style metadata field",
           "label": "Modified on",
           "maxLength": 32,
           "name": "modifiedAt",
@@ -6847,6 +6948,7 @@
           "type": "date"
         },
         "name": {
+          "description": "The primary name of the entity",
           "label": "Name",
           "matchable": true,
           "maxLength": 384,
@@ -6866,6 +6968,7 @@
           "type": "entity"
         },
         "notes": {
+          "description": "Narrative description of the entity; see also `description`, `summary`",
           "label": "Notes",
           "maxLength": 65000,
           "name": "notes",
@@ -6873,6 +6976,7 @@
           "type": "text"
         },
         "previousName": {
+          "description": "A former name of the entity",
           "label": "Previous name",
           "matchable": true,
           "maxLength": 384,
@@ -6881,7 +6985,7 @@
           "type": "name"
         },
         "program": {
-          "description": "Regulatory program or sanctions list on which an entity is listed.",
+          "description": "Regulatory program or sanctions list on which an entity is listed",
           "label": "Program",
           "maxLength": 1024,
           "name": "program",
@@ -6921,6 +7025,7 @@
           "type": "url"
         },
         "retrievedAt": {
+          "description": "Retrieval date generated by a data gathering system, not to be confused with an internal 'first found'-style metadata field",
           "label": "Retrieved on",
           "maxLength": 32,
           "name": "retrievedAt",
@@ -6950,6 +7055,7 @@
           "type": "entity"
         },
         "sourceUrl": {
+          "description": "A deep link to a source website for the profile",
           "label": "Source link",
           "maxLength": 4096,
           "name": "sourceUrl",
@@ -6957,6 +7063,7 @@
           "type": "url"
         },
         "summary": {
+          "description": "A short one-liner description; see also `description`, `notes`",
           "label": "Summary",
           "maxLength": 65000,
           "name": "summary",
@@ -6964,6 +7071,12 @@
           "type": "text"
         },
         "topics": {
+          "description": "Controlled tags used to qualify the entity and associate it with a risk category",
+          "examples": [
+            "sanction",
+            "debarment",
+            "role.pep"
+          ],
           "label": "Topics",
           "maxLength": 64,
           "name": "topics",
@@ -7001,6 +7114,9 @@
           "type": "name"
         },
         "wikidataId": {
+          "examples": [
+            "Q7747"
+          ],
           "format": "wikidata",
           "label": "Wikidata ID",
           "matchable": true,
@@ -7180,7 +7296,7 @@
       "properties": {
         "email": {
           "description": "Email address",
-          "label": "E-Mail",
+          "label": "Email",
           "matchable": true,
           "maxLength": 250,
           "name": "email",
@@ -7369,6 +7485,7 @@
         },
         "owner": {
           "deprecated": true,
+          "description": "Deprecated, use `Ownership` link instead",
           "label": "Owner",
           "matchable": true,
           "maxLength": 200,
@@ -7406,6 +7523,9 @@
           "type": "entity"
         },
         "type": {
+          "examples": [
+            "Bulk carrier"
+          ],
           "label": "Type",
           "maxLength": 1024,
           "name": "type",
@@ -7465,6 +7585,7 @@
           "type": "identifier"
         },
         "deadweightTonnage": {
+          "description": "Weight of the vessel when not carrying freight",
           "label": "Deadweight Tonnage",
           "maxLength": 250,
           "name": "deadweightTonnage",
