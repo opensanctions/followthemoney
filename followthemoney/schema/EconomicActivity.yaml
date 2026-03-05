@@ -1,7 +1,7 @@
 EconomicActivity:
   label: "Customs declaration"
   plural: "Customs declarations"
-  description: "A foreign economic activity"
+  description: "A foreign economic activity."
   matchable: false
   extends:
     - Interval

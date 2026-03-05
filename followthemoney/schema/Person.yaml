@@ -38,7 +38,7 @@ Person:
       description: "The part of a name that indicates the person, also often called given name or forename"
     secondName:
       label: Second name
-      description: "Deprecated, use one of the other more specific name properties instead."
+      description: "Deprecated, use one of the other more specific name properties instead"
       deprecated: true
     middleName:
       label: Middle name
@@ -54,6 +54,8 @@ Person:
       description: "The part of a name that indicates one's family, also often called surname or family name"
     nameSuffix:
       label: Name suffix
+      examples:
+        - OBE
     birthDate:
       label: Birth date
       type: date
@@ -61,13 +63,19 @@ Person:
       label: Place of birth
     birthCountry:
       label: Country of birth
+      # nb. Sometimes a territory which is historical, eg. Soviet Union, Yugoslavia, Zaire.
       type: country
     deathDate:
       label: Death date
+      description: Joined the choir invisible.
       type: date
     position:
       label: Position
       matchable: false
+    # OS note: the distinction between nationality and citizenship is pretty fine, the two props
+    # exist mainly so that we can preserve the distinction if it exists in source data.
+    # Nationality is a broader concept of being "of a country", citizenship narrower (as in holding
+    # the passport and/or right to vote).
     nationality:
       label: Nationality
       type: country

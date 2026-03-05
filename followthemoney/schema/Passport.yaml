@@ -2,7 +2,7 @@ Passport:
   label: "Passport"
   plural: "Passports"
   description: >
-    An passport held by a person.
+    A passport held by a person.
   extends:
     - Identification
   matchable: false
@@ -21,14 +21,19 @@ Passport:
     - number
   properties:
     passportNumber:
-      # FIXME: Use `number` from `Identification` instead!!
       label: "Passport number"
+      description: "Deprecated, use `Identification:number` instead"
+      deprecated: true
       type: identifier
       hidden: true
     surname:
       label: "Surname"
+      description: "Deprecated, use `Identification:holder` link's `lastName` instead"
+      deprecated: true
     givenName:
       label: "Given name"
+      description: "Deprecated, use `Identification:holder` link's `firstName` / `middleName` instead"
+      deprecated: true
     birthDate:
       label: "Birth date"
       type: date

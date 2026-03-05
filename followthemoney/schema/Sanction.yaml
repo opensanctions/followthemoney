@@ -1,7 +1,7 @@
 Sanction:
   label: Sanction
   plural: Sanctions
-  description: "A sanction designation"
+  description: "A sanction designation."
   extends:
     - Interval
   matchable: false
@@ -27,9 +27,11 @@ Sanction:
       label: "Authority"
     authorityId:
       label: "Authority-issued identifier"
+      # eg. OFAC IDs, FCDO IDs, etc.
       type: identifier
     unscId:
       label: "UN SC identifier"
+      description: "Identifier issued by the UN Security Council for sanctions designations"
       type: identifier
       maxLength: 16
     program:
@@ -47,15 +49,22 @@ Sanction:
       label: "Scope of sanctions"
     status:
       label: "Status"
+      examples:
+        - Active
+        - Inactive
+        - Expired
+        - Suspended
     duration:
       label: "Duration"
       type: number
     reason:
       label: "Reason"
+      description: An explanation of the designation's justification.
       type: text
     country:
       label: "Country"
       type: country
     listingDate:
       label: "Listing date"
+      description: "The date on which the designation is listed; distinct from the `startDate`, which is the date on which the designation goes into effect"
       type: date

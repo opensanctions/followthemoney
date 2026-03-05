@@ -25,12 +25,14 @@ Vehicle:
       type: identifier
     type:
       label: Type
+      examples:
+        - Bulk carrier
     model:
       label: Model
     owner:
-      # Use `Ownership` link instead.
       deprecated: true
       label: Owner
+      description: "Deprecated, use `Ownership` link instead"
       type: entity
       range: LegalEntity
       reverse:

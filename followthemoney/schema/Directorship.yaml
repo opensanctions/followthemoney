@@ -25,6 +25,7 @@ Directorship:
   properties:
     director:
       label: "Director"
+      description: "The entity exercising control over another"
       reverse:
         name: directorshipDirector
         label: "Directorships"

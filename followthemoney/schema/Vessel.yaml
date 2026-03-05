@@ -40,6 +40,7 @@ Vessel:
       type: number
     deadweightTonnage:
       label: Deadweight Tonnage
+      description: "Weight of the vessel when not carrying freight"
       type: number
     nameChangeDate:
       label: Date of Name Change
@@ -52,8 +53,6 @@ Vessel:
       type: country
     pastTypes:
       label: Past Types
-    #buildDate:
-    #  label: Build Date
     mmsi:
       label: MMSI
       type: identifier

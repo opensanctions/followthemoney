@@ -3,7 +3,7 @@ CallForTenders:
   plural: "Calls for tenders"
   description: >
     A public appeal issued by an authority, possibly on behalf of another,
-    for buying a specific work, supply or service
+    for buying a specific work, supply or service.
   extends:
     - Thing
     - Interval
@@ -96,7 +96,7 @@ CallForTenders:
       type: url
     fallsUnderGPPScope:
       label: "Does this call fall under the scope of GPP?"
-      description: "European Green Public Procurement (GPP) or green purchasing."
+      description: "European Green Public Procurement (GPP) or green purchasing"
     certificationCheck:
       label: "Certification check"
     awardingDate:

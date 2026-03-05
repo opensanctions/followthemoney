@@ -28,7 +28,7 @@ UserAccount:
       label: "Service"
       type: string
     email:
-      label: E-Mail
+      label: Email
       type: email
       description: "Email address"
     phone:

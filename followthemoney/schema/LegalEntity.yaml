@@ -6,7 +6,7 @@ LegalEntity:
   description: >
     Any party to legal proceedings, such as asset ownership, corporate governance
     or social interactions. Often used when raw data does not specify if something
-    is a person or company.
+    is a person, organization or company.
   matchable: true
   featured:
     - name
@@ -37,7 +37,7 @@ LegalEntity:
       # TODO: is un-matchable wise? The idea is to handle it like `weakAlias` rather than `alias`.
       matchable: false
     email:
-      label: E-Mail
+      label: Email
       type: email
       description: "Email address"
     phone:
@@ -51,7 +51,9 @@ LegalEntity:
       description: "Website address"
     legalForm:
       label: Legal form
-      # description: ""
+      description: "Company or organization type"
+      examples:
+        - Joint Stock Company
       matchable: false
     incorporationDate:
       label: Incorporation date
@@ -63,19 +65,36 @@ LegalEntity:
       description: "The date the legal entity was dissolved, if applicable"
     taxStatus:
       label: Tax status
-      # description: "Tax status, eg. ??"
+      examples:
+        - Non-Habitual Resident
+        - Compliant as at March 2022
       matchable: false
     status:
       label: Status
-      # description: "Status, eg. ??"
+      description: "A short string describing how 'active' (broadly defined) an entity is"
+      examples:
+        - Current / Former / Sitting / Retired
+        - Active / Inactive
+        - Dissolved (last known activity October 2024)
+        - Liquidated on 12 November 2022
       matchable: false
     sector:
       label: Sector
-      # description: "Sector, eg. ??"
+      description: "Industrial or trade sector as provided by the data source"
+      examples:
+        - Registered Nurse
+        - Retail and wholesale
+        - Sea and coastal freight water transport
       matchable: false
     classification:
+      # OS note: We use this with PEPs to summarize their exposure.
       label: Classification
-      # description: "Classification, eg. ??"
+      description: "Classification as provided by the data source or inferred based on other provided data; prefer `sector` if relevant"
+      examples:
+        - Local government (current)
+        - Banking operations license
+        - 4. Priority Sector Apparel
+        - Entities Directly Serving the Defense and Security Sectors
       matchable: false
     registrationNumber:
       label: Registration number
@@ -101,11 +120,11 @@ LegalEntity:
     jurisdiction:
       label: Jurisdiction
       type: country
-      description: "Country or region in which this entity operates"
+      description: "Country or region in which this entity operates; prefer over broader `country` when relevant"
     mainCountry:
       label: Country of origin
       type: country
-      description: "Primary country of this entity"
+      description: "Primary country of this entity; prefer over broader `country` when relevant"
     opencorporatesUrl:
       label: OpenCorporates URL
       type: url
@@ -126,7 +145,7 @@ LegalEntity:
     uscCode:
       # cf. https://en.wikipedia.org/wiki/Unified_Social_Credit_Identifier
       label: "USCC"
-      description: "Unified Social Credit Identifier"
+      description: "Chinese Unified Social Credit Identifier"
       type: identifier
       format: uscc
     icijId:
@@ -139,13 +158,13 @@ LegalEntity:
       matchable: false
     innCode:
       label: "INN"
-      description: "Russian tax identification number (Russian: ИНН). Issued to businesses and individuals in Russia"
+      description: "(RU, ИНН) Russian tax identification number. Issued to businesses and individuals in Russia."
       type: identifier
       format: inn
       maxLength: 32
     ogrnCode:
       label: "OGRN"
-      description: "Identification number used in Russia's Unified State Register of Legal Entities (EGRUL) (Russian: ОГРН)"
+      description: "(RU, ОГРН) Registration number used in Russia's Unified State Register of Legal Entities (EGRUL)"
       type: identifier
       format: ogrn
       maxLength: 32
@@ -164,6 +183,9 @@ LegalEntity:
     uniqueEntityId:
       label: "Unique Entity ID"
       description: "UEI from SAM.gov"
+      # This is a scheme the US federal government (peace be upon its remains) introduced to replace
+      # DUNS numbers, which had previously been used as an ID in procurement. DUNS was basically killing
+      # them with license fees.
       type: identifier
       format: uei
       maxLength: 32
@@ -175,15 +197,16 @@ LegalEntity:
       maxLength: 16
     swiftBic:
       label: "SWIFT/BIC"
-      description: "Bank identifier code"
+      description: "SWIFT Bank identifier code from ISO9362"
+      # OS note: BIC exist as bank codes (8 characters) and branch codes (11 characters). OpenSanctions
+      # currently cuts everything down to 8, meaning that all branches will match the same bank.
       type: identifier
       format: bic
       maxLength: 16
     parent:
-      # Use `Ownership` link instead.
       deprecated: true
       label: "Parent company"
-      description: "If this entity is a subsidiary, another entity (company or organisation) is its parent"
+      description: "Deprecated, use `Ownership` link instead"
       reverse:
         label: "Subsidiaries"
         name: subsidiaries

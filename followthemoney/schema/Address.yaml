@@ -40,7 +40,7 @@ Address:
       type: address
     remarks:
       label: "Remarks"
-      description: "Handling instructions, like 'care of'."
+      description: "Handling instructions, like 'care of'"
     postOfficeBox:
       label: "PO Box"
       description: "A mailbox identifier at the post office"
@@ -53,14 +53,14 @@ Address:
       description: "City, town, village or other locality"
     postalCode:
       label: "Postal code"
-      description: "Zip code or postcode."
+      description: "Zip code or postcode"
       maxLength: 16
     region:
       label: "Region"
-      description: "Also province or area."
+      description: "Also province or area"
     state:
       label: "State"
-      description: "State or federal unit."
+      description: "State or federal unit"
     latitude:
       label: "Latitude"
       type: "number"

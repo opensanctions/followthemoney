@@ -2,8 +2,8 @@ Identification:
   label: "Identification"
   plural: "Identifications"
   description: >
-    An form of identification associated with its holder and some issuing country. This
-    can be used for national ID cards, voter enrollments and similar instruments.
+    A form of identification associated with its holder and some issuing country. This
+    can be used for national ID cards, voter enrollments, and similar instruments.
   extends:
     - Interval
   matchable: false
@@ -29,6 +29,9 @@ Identification:
         name: identification
     type:
       label: "Type"
+      examples:
+        - Passport
+        - Driving license
     country:
       label: "Country"
       type: country
@@ -38,3 +41,4 @@ Identification:
       maxLength: 64
     authority:
       label: "Authority"
+      description: "Government body issuing the identification document"

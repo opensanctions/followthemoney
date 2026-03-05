@@ -1,7 +1,7 @@
 Risk:
   label: Risk
   plural: Risks
-  description: "A risk associated with an entity"
+  description: "A risk associated with an entity."
   extends:
     - Interval
   matchable: false

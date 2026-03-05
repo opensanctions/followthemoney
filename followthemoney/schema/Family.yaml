@@ -1,7 +1,7 @@
 Family:
   label: "Family"
   plural: "Family members"
-  description: "Family relationship between two people"
+  description: "Family relationship between two people."
   extends:
     - Interval
   matchable: false
@@ -22,7 +22,7 @@ Family:
   properties:
     person:
       label: "Person"
-      description: "The subject of the familial relation."
+      description: "The subject of the familial relation"
       type: entity
       range: Person
       reverse:
@@ -35,7 +35,10 @@ Family:
       reverse:
         name: familyRelative
         label: "Relatives"
-      description: "The relative of the subject person."
+      description: "The relative of the subject person"
     relationship:
       label: "Relationship"
-      description: "Nature of the relationship, from the person's perspective eg. 'mother', where 'relative' is mother of 'person'."
+      description: "Nature of the relationship from the `person`'s perspective, e.g. 'mother', where `relative` is the mother of `person`"
+      examples:
+        - mother
+        - sibling

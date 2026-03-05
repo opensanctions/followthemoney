@@ -1,7 +1,7 @@
 Associate:
   label: "Associate"
   plural: "Associates"
-  description: "Non-family association between two people"
+  description: "Non-family association between two people."
   extends:
     - Interval
   matchable: false
@@ -22,7 +22,7 @@ Associate:
   properties:
     person:
       label: "Person"
-      description: "The subject of the association."
+      description: "The subject of the association"
       type: entity
       range: Person
       reverse:
@@ -30,7 +30,7 @@ Associate:
         label: "Associates"
     associate:
       label: "Associate"
-      description: "An associate of the subject person."
+      description: "An associate of the subject person"
       type: entity
       range: Person
       reverse:
