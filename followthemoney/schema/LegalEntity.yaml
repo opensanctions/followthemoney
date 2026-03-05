@@ -37,7 +37,7 @@ LegalEntity:
       # TODO: is un-matchable wise? The idea is to handle it like `weakAlias` rather than `alias`.
       matchable: false
     email:
-      label: E-Mail
+      label: Email
       type: email
       description: "Email address"
     phone:

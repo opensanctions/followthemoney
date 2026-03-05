@@ -3639,7 +3639,7 @@
         },
         "email": {
           "description": "Email address",
-          "label": "E-Mail",
+          "label": "Email",
           "matchable": true,
           "maxLength": 250,
           "name": "email",
