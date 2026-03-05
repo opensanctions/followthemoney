@@ -1,7 +1,7 @@
 from typing import Callable, Optional, TYPE_CHECKING, Sequence
 from babel.core import Locale
 from rigour.territories import get_ftm_countries, lookup_territory
-from rigour.territories import territories_intersect
+from rigour.territories import territories_intersect, get_territory
 
 from followthemoney.types.common import EnumType, EnumValues
 from followthemoney.util import defer as _
@@ -59,4 +59,11 @@ class CountryType(EnumType):
         return None
 
     def country_hint(self, value: str) -> str:
+        return value
+
+    def caption(self, value: str, format: Optional[str] = None) -> str:
+        """Turn country codes into short names."""
+        territory = get_territory(value)
+        if territory is not None:
+            return territory.name
         return value

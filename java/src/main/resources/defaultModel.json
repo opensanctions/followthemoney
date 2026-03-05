@@ -29,16 +29,6 @@
           "qname": "Address:city",
           "type": "string"
         },
-        "country": {
-          "deprecated": true,
-          "description": "Deprecated / duplication, use `Thing:country` instead",
-          "label": "Country",
-          "matchable": true,
-          "maxLength": 16,
-          "name": "country",
-          "qname": "Address:country",
-          "type": "country"
-        },
         "full": {
           "label": "Full address",
           "matchable": true,
@@ -1127,10 +1117,10 @@
         },
         "capital": {
           "label": "Capital",
-          "maxLength": 1024,
+          "maxLength": 250,
           "name": "capital",
           "qname": "Company:capital",
-          "type": "string"
+          "type": "number"
         },
         "cikCode": {
           "description": "US SEC Central Index Key for listed companies",
@@ -1200,16 +1190,6 @@
           "qname": "Company:jibCode",
           "type": "identifier"
         },
-        "jurisdiction": {
-          "deprecated": true,
-          "description": "Deprecated / duplication, use `LegalEntity:jurisdiction` instead",
-          "label": "Jurisdiction",
-          "matchable": true,
-          "maxLength": 16,
-          "name": "jurisdiction",
-          "qname": "Company:jurisdiction",
-          "type": "country"
-        },
         "kppCode": {
           "description": "Russian code issued by the tax authority, identifies the reason for registration at the Federal Tax Service (Russian: КПП). A company may have multiple KPP codes (e.g. for different branches), and the codes are not unique across companies.",
           "label": "KPP",
@@ -1257,16 +1237,6 @@
           "maxLength": 64,
           "name": "pfrNumber",
           "qname": "Company:pfrNumber",
-          "type": "identifier"
-        },
-        "registrationNumber": {
-          "deprecated": true,
-          "description": "Deprecated / duplication, use `LegalEntity:registrationNumber` instead",
-          "label": "Registration number",
-          "matchable": true,
-          "maxLength": 64,
-          "name": "registrationNumber",
-          "qname": "Company:registrationNumber",
           "type": "identifier"
         },
         "ricCode": {
@@ -2857,16 +2827,6 @@
       "label": "Event",
       "plural": "Events",
       "properties": {
-        "country": {
-          "deprecated": true,
-          "description": "Deprecated / duplication, use `Thing:country` instead",
-          "label": "Country",
-          "matchable": true,
-          "maxLength": 16,
-          "name": "country",
-          "qname": "Event:country",
-          "type": "country"
-        },
         "important": {
           "label": "Important",
           "maxLength": 1024,
