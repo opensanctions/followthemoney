@@ -7,6 +7,7 @@ from typing import Optional, BinaryIO, List, Any, Dict
 from banal import ensure_list
 
 from followthemoney import model
+from followthemoney.entity import ValueEntity
 from followthemoney.namespace import Namespace
 from followthemoney.cli.util import InPath, OutPath, path_entities
 from followthemoney.cli.util import path_writer, write_entity
@@ -32,11 +33,10 @@ def dump_model(outfile: BinaryIO) -> None:
 def validate(infile: Path, outfile: Path) -> None:
     try:
         with path_writer(outfile) as outfh:
-            for entity in path_entities(infile, EntityProxy, cleaned=False):
-                clean = model.make_entity(entity.schema)
-                clean.id = entity.id
-                for prop, value in entity.itervalues():
-                    clean.add(prop, value)
+            for entity in path_entities(infile, ValueEntity, cleaned=False):
+                clean = entity.clone()
+                for prop in entity.iterprops():
+                    clean.set(prop, entity.get_prop(prop))
                 write_entity(outfh, clean)
     except BrokenPipeError:
         raise click.Abort()
