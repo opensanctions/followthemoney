@@ -5,6 +5,7 @@ from normality import ascii_text
 from rigour.text.scripts import can_latinize
 from rigour.names import tokenize_name, remove_person_prefixes
 from rigour.names import replace_org_types_compare
+from rigour.territories import territories_intersect
 from followthemoney.exc import InvalidData
 from followthemoney.schema import Schema
 from followthemoney.types import registry
@@ -156,6 +157,6 @@ def compare_countries(left: EntityProxy, right: EntityProxy) -> Optional[float]:
         raise ValueError("At least one proxy must have country properties")
     elif not left_countries or not right_countries:
         return None
-    intersection = left_countries.intersection(right_countries)
+    intersection = territories_intersect(left_countries, right_countries)
     union = left_countries.union(right_countries)
     return len(intersection) / float(len(union))
