@@ -82,7 +82,9 @@ class PropertyType(object):
         """Returns a boolean to indicate if the given value is a valid instance of
         the type."""
         cleaned = self.clean_text(value, fuzzy=fuzzy, format=format)
-        return cleaned is not None
+        if cleaned is None or len(cleaned) == 0:
+            return False
+        return len(cleaned) <= self.max_length
 
     def clean(
         self,

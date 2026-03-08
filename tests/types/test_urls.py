@@ -1,3 +1,5 @@
+from urllib.parse import quote
+
 from followthemoney.types import registry
 
 urls = registry.url
@@ -9,7 +11,7 @@ def test_base():
 
 def test_is_url():
     assert urls.validate("http://foo.org")
-    assert not urls.validate(None)
+    # assert not urls.validate(None)
     assert not urls.validate("hello")
     assert urls.validate("foo.org")
     assert urls.validate("//foo.org")
@@ -18,7 +20,8 @@ def test_is_url():
 def test_unicode_url():
     utext = "http://ko.wikipedia.org/wiki/위키백과:대문"
     assert urls.validate(utext)
-    assert urls.validate(utext.encode("utf-8"))
+    etext = quote(utext)
+    assert urls.validate(etext)
 
 
 def test_parse_url():

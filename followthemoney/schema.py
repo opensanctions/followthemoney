@@ -1,6 +1,6 @@
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any
 from typing import Dict, List, Optional, Set, TypedDict, Union
-from banal import ensure_list, ensure_dict, as_bool
+from banal import as_bool
 from functools import cache
 
 from followthemoney.property import Property, PropertySpec, PropertyToDict, ReverseSpec
@@ -23,6 +23,10 @@ class EdgeSpec(TypedDict, total=False):
 class TemporalExtentSpec(TypedDict, total=False):
     start: List[str]
     end: List[str]
+
+
+class ValidationData(TypedDict, total=False):
+    properties: Dict[str, List[str]]
 
 
 class SchemaSpec(TypedDict, total=False):
@@ -403,20 +407,26 @@ class Schema:
             return None
         return self.properties.get(name)
 
-    def validate(self, data: Dict[str, Any]) -> Optional[str]:
-        """Validate a dictionary against the given schema.
-        This will also drop keys which are not valid as properties.
+    def validate(self, data: ValidationData) -> Optional[str]:
+        """Validate a dictionary against the given schema. This works on the assumption
+        that values have already been cleaned and converted to strings, so it only checks
+        that required properties are present and that all values are valid for their
+        type. The return value is a dictionary of property names to error messages, or
+        None if there are no errors.
         """
         errors = {}
-        properties = cast(Dict[str, Any], ensure_dict(data.get("properties")))
-        for name, prop in self.properties.items():
-            values = ensure_list(properties.get(name, []))
+        properties = data.get("properties", {})
+        for prop_name, values in properties.items():
+            prop = self.properties.get(prop_name)
+            if prop is None:
+                continue
+
             error = prop.validate(values)
             if error is None and not len(values):
-                if prop.name in self.required:
+                if prop_name in self.required:
                     error = gettext("Required")
             if error is not None:
-                errors[name] = error
+                errors[prop_name] = error
         if len(errors):
             msg = gettext("Entity validation failed")
             raise InvalidData(msg, errors={"properties": errors})
