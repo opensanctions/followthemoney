@@ -81,8 +81,10 @@ class PropertyType(object):
     ) -> bool:
         """Returns a boolean to indicate if the given value is a valid instance of
         the type."""
-        cleaned = self.clean(value, fuzzy=fuzzy, format=format)
-        return cleaned is not None
+        cleaned = self.clean_text(value, fuzzy=fuzzy, format=format)
+        if cleaned is None or len(cleaned) == 0:
+            return False
+        return len(cleaned) <= self.max_length
 
     def clean(
         self,
@@ -241,8 +243,6 @@ class EnumType(PropertyType):
         self, value: str, fuzzy: bool = False, format: Optional[str] = None
     ) -> bool:
         """Make sure that the given code value is one of the supported set."""
-        if value is None:
-            return False
         return str(value).lower().strip() in self.codes
 
     def clean_text(

@@ -1,4 +1,3 @@
-from banal import ensure_list
 from typing import Dict, Iterable, List, Set, cast
 
 from followthemoney.types.url import UrlType
@@ -78,7 +77,6 @@ class Registry(object):
 
     def get_types(self, names: Iterable[str]) -> List[PropertyType]:
         """Get a list of all property type objects linked to a set of names."""
-        names = ensure_list(names)
         types = [self.get(n) for n in names]
         return [t for t in types if t is not None]
 

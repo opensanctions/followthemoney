@@ -2,8 +2,7 @@ import re
 from typing import Any, Optional, TYPE_CHECKING
 
 from followthemoney.types.common import PropertyType
-from followthemoney.value import Value
-from followthemoney.util import ENTITY_ID_LEN, get_entity_id, sanitize_text
+from followthemoney.util import ENTITY_ID_LEN, get_entity_id
 from followthemoney.util import gettext, defer as _
 from followthemoney.exc import InvalidData
 
@@ -31,12 +30,9 @@ class EntityType(PropertyType):
     max_length = ENTITY_ID_LEN
 
     def validate(
-        self, value: Value, fuzzy: bool = False, format: Optional[str] = None
+        self, value: str, fuzzy: bool = False, format: Optional[str] = None
     ) -> bool:
-        text = sanitize_text(value)
-        if text is None:
-            return False
-        return self.REGEX.match(text) is not None
+        return self.REGEX.match(value) is not None
 
     def clean(
         self,

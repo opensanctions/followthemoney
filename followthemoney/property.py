@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, List, Optional, TypedDict
 
 from followthemoney.exc import InvalidData, InvalidModel
 from followthemoney.types import registry
-from followthemoney.util import gettext, get_entity_id, const
+from followthemoney.util import gettext, const
 
 if TYPE_CHECKING:
     from followthemoney.schema import Schema
@@ -194,23 +194,18 @@ class Property:
         """Return a user-friendly caption for the given value."""
         return self.type.caption(value, format=self.format)
 
-    def validate(self, data: List[Any]) -> Optional[str]:
+    def validate(self, data: List[str]) -> Optional[str]:
         """Validate that the data should be stored.
 
         Since the types system doesn't really have validation, this currently
         tries to normalize the value to see if it passes strict parsing.
         """
-        values = []
+        if self.stub:
+            return gettext("Property cannot be written")
         for val in data:
-            if self.stub:
-                return gettext("Property cannot be written")
-            val = get_entity_id(val)
-            if val is None:
-                continue
             if not self.type.validate(val):
-                return gettext("Invalid value")
-            if val is not None:
-                values.append(val)
+                err = gettext("Invalid value:")
+                return f"{err} {val!r}"
         return None
 
     def __eq__(self, other: Any) -> bool:

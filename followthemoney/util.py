@@ -2,13 +2,14 @@ import os
 import sys
 import logging
 import unicodedata
+from threading import local
 from hashlib import sha1
 from babel import Locale
+from decimal import Decimal
 from gettext import translation
-
-from threading import local
+from datetime import datetime, date
 from typing import cast, Dict, Any, List, Optional, TypeVar, Union
-from normality import stringify
+from normality import predict_encoding, stringify
 from normality.cleaning import remove_unsafe_chars
 from rigour.env import ENCODING
 from banal import is_mapping, unique_list, ensure_list
@@ -58,21 +59,38 @@ def get_locale() -> Locale:
     return Locale.parse(state.locale)
 
 
-def sanitize_text(value: Any, encoding: str = ENCODING) -> Optional[str]:
-    text = stringify(value, encoding_default=encoding)
-    if text is None:
-        return None
+def _clean_text(text: str) -> Optional[str]:
     try:
         text = unicodedata.normalize("NFC", text)
     except (SystemError, Exception) as ex:
         log.warning("Cannot NFC text: %s", ex)
         return None
     text = remove_unsafe_chars(text)
-    byte_text = text.encode("utf-8", "replace")
-    text = byte_text.decode("utf-8", "replace")
+    text = text.strip()
     if len(text) == 0:
+        # XXX: is this really a good idea?
         return None
     return text
+
+
+def sanitize_text(value: Any, encoding: Optional[str] = None) -> Optional[str]:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        return _clean_text(value)
+    if isinstance(value, (date, datetime)):
+        return value.isoformat()
+    elif isinstance(value, float):
+        # Avoid trailing zeros and limit to 3 decimal places:
+        return format(value, ".3f").rstrip("0").rstrip(".")
+    elif isinstance(value, Decimal):
+        return value.to_eng_string()
+    elif isinstance(value, bytes):
+        if encoding is None:
+            encoding = predict_encoding(value, default=ENCODING)
+        value = value.decode(encoding, "replace")
+        return _clean_text(value)
+    return _clean_text(str(value))
 
 
 def key_bytes(key: Any) -> bytes:

@@ -71,10 +71,10 @@ def test_schema_basics():
 def test_schema_validate():
     thing = model.schemata["Thing"]
     data = {"properties": {"name": ["Banana"]}}
-    thing.validate(data)
+    thing.validate(data)  # type: ignore
 
     with raises(InvalidData):
-        thing.validate({"properties": {"name": None}})
+        thing.validate({"properties": {"country": ["Banana"]}})  # type: ignore
 
 
 def test_model_common_schema():
@@ -121,7 +121,9 @@ def test_make_entity():
 def test_model_to_dict():
     thing = model.schemata["Thing"]
     data = thing.to_dict()
+    assert "label" in data, data
     assert data["label"] == thing.label, data
+    assert "properties" in data, data
     assert len(data["properties"]) == len(list(thing.properties)), data
 
 
