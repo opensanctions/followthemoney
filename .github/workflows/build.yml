@@ -89,7 +89,7 @@ jobs:
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
           npm run build
-          npm publish
+          npm publish --access public
         env:
           CI: true
           NPM_AUTH_TOKEN: ${{ secrets.npm_auth_token }}

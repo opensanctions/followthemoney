@@ -67,7 +67,6 @@
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.4",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.0.3",
     "colors": "^1.4.0",
     "cross-env": "^10.0.0",
     "eslint": "^10.0.2",

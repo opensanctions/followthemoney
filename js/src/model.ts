@@ -1,4 +1,3 @@
-import { randomUUID as nodeRandomUUID } from 'crypto';
 import { Entity, IEntityDatum } from './entity';
 import { Namespace } from './namespace';
 import { Property } from './property';
@@ -98,10 +97,7 @@ export class Model {
    * @returns a new UUID.
    */
   generateRandomId(): string {
-    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-      return crypto.randomUUID(); // Browser
-    }
-    return nodeRandomUUID();  // Node.js
+    return crypto.randomUUID();
   }
 
   /**
