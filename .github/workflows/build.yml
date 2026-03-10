@@ -17,6 +17,7 @@ jobs:
           - "3.10"
           - "3.11"
           - "3.12"
+          - "3.13"
     steps:
       - uses: actions/checkout@v6
       - name: Show ref
@@ -80,6 +81,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
         run: |
+          npm install -g npm@latest
           npm install
           npm run build
       - name: Run the tests
