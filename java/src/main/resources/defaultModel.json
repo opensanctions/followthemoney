@@ -1807,6 +1807,14 @@
           "qname": "CryptoWallet:balanceDate",
           "type": "date"
         },
+        "blockchain": {
+          "description": "The blockchain or distributed ledger system on which the wallet operates",
+          "label": "Blockchain",
+          "maxLength": 1024,
+          "name": "blockchain",
+          "qname": "CryptoWallet:blockchain",
+          "type": "string"
+        },
         "creationDate": {
           "label": "Creation date",
           "matchable": true,
@@ -1815,11 +1823,28 @@
           "qname": "CryptoWallet:creationDate",
           "type": "date"
         },
+        "cryptoAddress": {
+          "description": "The crypto address of the wallet",
+          "label": "Crypto address",
+          "matchable": true,
+          "maxLength": 512,
+          "name": "cryptoAddress",
+          "qname": "CryptoWallet:cryptoAddress",
+          "type": "identifier"
+        },
         "currencySymbol": {
           "label": "Currency short code",
           "maxLength": 1024,
           "name": "currencySymbol",
           "qname": "CryptoWallet:currencySymbol",
+          "type": "string"
+        },
+        "custodyType": {
+          "description": "Type of custody arrangement for the wallet (e.g., self-custody, custodial service)",
+          "label": "Custody type",
+          "maxLength": 1024,
+          "name": "custodyType",
+          "qname": "CryptoWallet:custodyType",
           "type": "string"
         },
         "holder": {
@@ -1850,7 +1875,7 @@
           "description": "Public key used to identify the wallet",
           "label": "Address",
           "matchable": true,
-          "maxLength": 128,
+          "maxLength": 512,
           "name": "publicKey",
           "qname": "CryptoWallet:publicKey",
           "type": "identifier"
@@ -4568,6 +4593,15 @@
           "qname": "Occupancy:declarationDate",
           "type": "date"
         },
+        "electionDate": {
+          "description": "Election date for the position, if applicable",
+          "label": "Election date",
+          "matchable": true,
+          "maxLength": 32,
+          "name": "electionDate",
+          "qname": "Occupancy:electionDate",
+          "type": "date"
+        },
         "holder": {
           "label": "Holder",
           "matchable": true,
@@ -4577,6 +4611,24 @@
           "range": "Person",
           "reverse": "positionOccupancies",
           "type": "entity"
+        },
+        "periodEnd": {
+          "description": "End date of the period for which the position is occupied",
+          "label": "Period end",
+          "matchable": true,
+          "maxLength": 32,
+          "name": "periodEnd",
+          "qname": "Occupancy:periodEnd",
+          "type": "date"
+        },
+        "periodStart": {
+          "description": "Start date of the period for which the position is occupied",
+          "label": "Period start",
+          "matchable": true,
+          "maxLength": 32,
+          "name": "periodStart",
+          "qname": "Occupancy:periodStart",
+          "type": "date"
         },
         "politicalGroup": {
           "description": "Caucus, faction or parliamentary group of the holder",
@@ -8288,6 +8340,9 @@
         "role.lobby": "Lobbyist",
         "role.oligarch": "Oligarch",
         "role.pep": "PEP",
+        "role.pep.frmr": "Former PEP",
+        "role.pep.intl": "International PEP",
+        "role.pep.natl": "National PEP",
         "role.pol": "Politician",
         "role.rca": "Close Associate",
         "role.spy": "Spy",
