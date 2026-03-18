@@ -47,6 +47,18 @@ Occupancy:
       description: "If established by an asset declaration"
       type: date
       matchable: false
+    electionDate:
+      label: "Election date"
+      description: "Election date for the position, if applicable"
+      type: date
+    periodStart:
+      label: "Period start"
+      description: "Start date of the period for which the position is occupied"
+      type: date
+    periodEnd:
+      label: "Period end"
+      description: "End date of the period for which the position is occupied"
+      type: date
     constituency:
       # https://www.popoloproject.com/specs/membership.html#classes-and-properties
       label: "Constituency"
