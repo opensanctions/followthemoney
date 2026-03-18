@@ -24,7 +24,12 @@ CryptoWallet:
       label: Address
       description: Public key used to identify the wallet
       type: identifier
-      maxLength: 128
+      maxLength: 512
+    cryptoAddress:
+      label: Crypto address
+      description: "The crypto address of the wallet"
+      type: identifier
+      maxLength: 512
     privateKey:
       label: Private key
     accountId:
@@ -36,6 +41,9 @@ CryptoWallet:
       type: date
     currencySymbol:
       label: Currency short code
+    blockchain:
+      label: Blockchain
+      description: "The blockchain or distributed ledger system on which the wallet operates"
     managingExchange:
       label: Managing exchange
     holder:
@@ -51,3 +59,6 @@ CryptoWallet:
     balanceDate:
       label: Balance date
       type: date
+    custodyType:
+      label: Custody type
+      description: "Type of custody arrangement for the wallet (e.g., self-custody, custodial service)"
