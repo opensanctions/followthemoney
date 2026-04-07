@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "es6",
     "module": "esnext",
     "lib": [
@@ -21,7 +21,8 @@
     "outDir": "./dist",
     "typeRoots": [
       "./node_modules/@types"
-    ]
+    ],
+    "rootDir": "./src"
   },
   "include": [
     "./src"
