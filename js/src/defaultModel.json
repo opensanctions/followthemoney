@@ -7449,6 +7449,7 @@
         "owner"
       ],
       "label": "Vehicle",
+      "matchable": true,
       "plural": "Vehicles",
       "properties": {
         "buildDate": {
