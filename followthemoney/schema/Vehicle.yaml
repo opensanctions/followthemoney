@@ -3,7 +3,7 @@ Vehicle:
   plural: Vehicles
   extends:
     - Asset
-  matchable: false
+  matchable: true
   featured:
     - type
     - name
