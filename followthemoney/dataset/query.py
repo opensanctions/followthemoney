@@ -8,6 +8,7 @@ See https://followthemoney.tech/docs/metadata/#dataset-query-dsl for full
 documentation and examples.
 """
 
+from collections.abc import Mapping, Sequence
 from typing import Any, Dict, List, Set, TYPE_CHECKING, Union
 
 from followthemoney.dataset.dataset import DS
@@ -27,13 +28,13 @@ def validate_query(query: Any) -> None:
         if len(query) == 0:
             raise InvalidDatasetQuery("Empty string in query")
         return
-    if isinstance(query, list):
+    if isinstance(query, Sequence):
         if len(query) == 0:
             raise InvalidDatasetQuery("Empty array in query")
         for item in query:
             validate_query(item)
         return
-    if isinstance(query, dict):
+    if isinstance(query, Mapping):
         if len(query) != 1:
             raise InvalidDatasetQuery("Operator object must have exactly one key")
         key = next(iter(query))
@@ -43,8 +44,10 @@ def validate_query(query: Any) -> None:
         if key == "not":
             validate_query(value)
         else:
-            if not isinstance(value, list) or len(value) == 0:
-                raise InvalidDatasetQuery("Operator %r requires a non-empty array" % key)
+            if not isinstance(value, Sequence) or isinstance(value, str) or len(value) == 0:
+                raise InvalidDatasetQuery(
+                    "Operator %r requires a non-empty array" % key
+                )
             for item in value:
                 validate_query(item)
         return
@@ -79,12 +82,12 @@ def _evaluate(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
     """Recursively evaluate a query AST against a catalog."""
     if isinstance(query, str):
         return _resolve_leaf(catalog, query)
-    if isinstance(query, list):
+    if isinstance(query, Sequence):
         result: Set[DS] = set()
         for item in query:
             result.update(_evaluate(catalog, item))
         return result
-    if isinstance(query, dict):
+    if isinstance(query, Mapping):
         key = next(iter(query))
         value = query[key]
         if key == "or":
