@@ -182,7 +182,7 @@ class JSONStatementWriter(StatementWriter):
         self.fh.write(out)
 
     def close(self) -> None:
-        self.fh.close()
+        self.fh.flush()
 
 
 class CSVStatementWriter(StatementWriter):
@@ -202,7 +202,7 @@ class CSVStatementWriter(StatementWriter):
     def close(self) -> None:
         if len(self._batch) > 0:
             self.writer.writerows(self._batch)
-        self.fh.close()
+        self.fh.flush()
 
 
 class PackStatementWriter(StatementWriter):
@@ -257,4 +257,4 @@ class PackStatementWriter(StatementWriter):
 
     def close(self) -> None:
         self.flush()
-        self.fh.close()
+        self.fh.flush()
