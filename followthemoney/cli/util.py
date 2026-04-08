@@ -10,6 +10,7 @@ from typing import Any, BinaryIO, Generator, List, Optional, TextIO, Type
 from banal import is_mapping, is_listish, ensure_list
 
 from followthemoney.export.common import Exporter
+from followthemoney.entity import ValueEntity
 from followthemoney.proxy import E, EntityProxy
 from followthemoney.util import MEGABYTE, PathLike
 
@@ -107,7 +108,7 @@ def path_writer(path: PathLike) -> Generator[BinaryIO, None, None]:
 
 def export_stream(exporter: Exporter, path: Path) -> None:
     try:
-        for entity in path_entities(path, EntityProxy):
+        for entity in path_entities(path, ValueEntity):
             exporter.write(entity)
     except BrokenPipeError:
         raise click.Abort()

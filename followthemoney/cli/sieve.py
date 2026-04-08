@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Iterable, Optional
 
 from followthemoney import model
-from followthemoney.proxy import EntityProxy
+from followthemoney.entity import ValueEntity
 from followthemoney.types import registry
 from followthemoney.cli.cli import cli
 from followthemoney.cli.util import InPath, OutPath, path_entities
@@ -11,11 +11,11 @@ from followthemoney.cli.util import path_writer, write_entity
 
 
 def sieve_entity(
-    entity: EntityProxy,
+    entity: ValueEntity,
     schemata: Iterable[str],
     properties: Iterable[str],
     types: Iterable[str],
-) -> Optional[EntityProxy]:
+) -> Optional[ValueEntity]:
     for schema in schemata:
         if entity.schema.is_a(schema):
             return None
@@ -59,7 +59,7 @@ def sieve(
 ) -> None:
     try:
         with path_writer(outfile) as outfh:
-            for entity in path_entities(infile, EntityProxy):
+            for entity in path_entities(infile, ValueEntity):
                 sieved = sieve_entity(entity, schema, property, type)
                 if sieved is not None:
                     write_entity(outfh, sieved)

@@ -2,7 +2,8 @@ import click
 from pathlib import Path
 from typing import Dict, Optional, Type
 
-from followthemoney.proxy import EntityProxy, E
+from followthemoney.proxy import E
+from followthemoney.entity import ValueEntity
 from followthemoney.namespace import Namespace
 from followthemoney.cli.cli import cli
 from followthemoney.cli.util import InPath, OutPath, path_entities
@@ -32,11 +33,11 @@ def sorted_aggregate(path: Path, outpath: Path, entity_type: Type[E]) -> None:
 @click.option("-i", "--infile", type=InPath, default="-")
 @click.option("-o", "--outfile", type=OutPath, default="-")
 def aggregate(infile: Path, outfile: Path) -> None:
-    buffer: Dict[str, EntityProxy] = {}
+    buffer: Dict[str, ValueEntity] = {}
     namespace = Namespace(None)
     try:
         with path_writer(outfile) as outfh:
-            for entity in path_entities(infile, EntityProxy):
+            for entity in path_entities(infile, ValueEntity):
                 entity = namespace.apply(entity)
                 if entity.id in buffer:
                     buffer[entity.id].merge(entity)
@@ -53,4 +54,4 @@ def aggregate(infile: Path, outfile: Path) -> None:
 @click.option("-i", "--infile", type=InPath, default="-")
 @click.option("-o", "--outfile", type=OutPath, default="-")
 def sorted_aggregate_(infile: Path, outfile: Path) -> None:
-    sorted_aggregate(infile, outfile, EntityProxy)
+    sorted_aggregate(infile, outfile, ValueEntity)

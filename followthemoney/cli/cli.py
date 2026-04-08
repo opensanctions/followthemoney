@@ -10,7 +10,6 @@ from followthemoney.entity import ValueEntity
 from followthemoney.namespace import Namespace
 from followthemoney.cli.util import InPath, OutPath, path_entities
 from followthemoney.cli.util import path_writer, write_entity
-from followthemoney.proxy import EntityProxy
 
 
 @click.group(help="Utility for FollowTheMoney graph data")
@@ -50,7 +49,7 @@ def sign(infile: Path, outfile: Path, signature: Optional[str]) -> None:
     ns = Namespace(signature)
     try:
         with path_writer(outfile) as outfh:
-            for entity in path_entities(infile, EntityProxy):
+            for entity in path_entities(infile, ValueEntity):
                 signed = ns.apply(entity)
                 write_entity(outfh, signed)
     except BrokenPipeError:
@@ -63,7 +62,7 @@ def pretty(infile: Path) -> None:
     stdout = click.get_binary_stream("stdout")
     try:
         f = orjson.OPT_INDENT_2 | orjson.OPT_APPEND_NEWLINE
-        for entity in path_entities(infile, EntityProxy):
+        for entity in path_entities(infile, ValueEntity):
             data = orjson.dumps(entity.to_dict(), option=f)
             stdout.write(data)
     except BrokenPipeError:
