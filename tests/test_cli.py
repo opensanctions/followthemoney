@@ -56,37 +56,6 @@ def test_sign(cli_runner: CliRunner, entity_jsonl: bytes) -> None:
     assert "." in entity["id"]
 
 
-def test_import_vis(cli_runner: CliRunner, tmp_path: Path) -> None:
-    vis_data = {
-        "entities": [
-            {"id": "vis1", "schema": "Person", "properties": {"name": ["Test"]}},
-        ]
-    }
-    vis_file = tmp_path / "test.vis"
-    vis_file.write_bytes(orjson.dumps(vis_data))
-    result = cli_runner.invoke(cli, ["import-vis", "-i", str(vis_file)])
-    assert result.exit_code == 0, result.output
-    entity = orjson.loads(result.output_bytes.strip())
-    assert entity["schema"] == "Person"
-    assert entity["properties"]["name"] == ["Test"]
-
-
-def test_import_vis_layout(cli_runner: CliRunner, tmp_path: Path) -> None:
-    vis_data = {
-        "layout": {
-            "entities": [
-                {"id": "v1", "schema": "Company", "properties": {"name": ["ACME"]}},
-            ]
-        }
-    }
-    vis_file = tmp_path / "layout.vis"
-    vis_file.write_bytes(orjson.dumps(vis_data))
-    result = cli_runner.invoke(cli, ["import-vis", "-i", str(vis_file)])
-    assert result.exit_code == 0, result.output
-    entity = orjson.loads(result.output_bytes.strip())
-    assert entity["schema"] == "Company"
-
-
 # --- Sieve ---
 
 

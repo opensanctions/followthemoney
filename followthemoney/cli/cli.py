@@ -3,8 +3,7 @@ import click
 import orjson
 import logging
 from pathlib import Path
-from typing import Optional, BinaryIO, List, Any, Dict
-from banal import ensure_list
+from typing import Optional, BinaryIO
 
 from followthemoney import model
 from followthemoney.entity import ValueEntity
@@ -41,23 +40,6 @@ def validate(infile: Path, outfile: Path) -> None:
     except BrokenPipeError:
         raise click.Abort()
 
-
-@cli.command("import-vis", help="Load a .VIS file and get entities")
-@click.option("-i", "--infile", type=InPath, default="-")  # noqa
-@click.option("-o", "--outfile", type=OutPath, default="-")  # noqa
-def import_vis(infile: Path, outfile: Path) -> None:
-    with path_writer(outfile) as outfh:
-        with open(infile, "rb") as infh:
-            data: Dict[str, Any] = orjson.loads(infh.read())
-            if "entities" in data:
-                entities: List[Dict[str, Any]] = data.get("entities", data)
-            elif "layout" in data:
-                entities = data.get("layout", {}).get("entities", data)
-            else:
-                raise click.ClickException("No entities found in VIS file")
-            for entity_data in ensure_list(entities):
-                entity = EntityProxy.from_dict(entity_data)
-                write_entity(outfh, entity)
 
 
 @cli.command("sign", help="Apply a HMAC signature to entity IDs")
