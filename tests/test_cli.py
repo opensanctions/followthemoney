@@ -1,3 +1,4 @@
+import copy
 import os
 import yaml
 import orjson
@@ -164,7 +165,7 @@ def test_map_csv(cli_runner: CliRunner, tmp_path: Path) -> None:
 
 def test_map(cli_runner: CliRunner, tmp_path: Path) -> None:
     csv_url = "file://" + str(FIXTURES_PATH / "links.csv")
-    mapping = dict(LINKS_MAPPING)
+    mapping = copy.deepcopy(LINKS_MAPPING)
     mapping["test_links"]["queries"][0]["csv_url"] = csv_url
     mapping_path = tmp_path / "mapping.yml"
     mapping_path.write_text(yaml.dump(mapping))
