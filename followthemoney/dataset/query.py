@@ -60,10 +60,10 @@ def _resolve_leaf(catalog: "DataCatalog[DS]", leaf: str) -> Set[DS]:
             if tag in ds.model.tags:
                 result.update(ds.leaves)
         return result
-    ds = catalog.get(leaf)
-    if ds is None:
+    dataset = catalog.get(leaf)
+    if dataset is None:
         raise InvalidDatasetQuery("Unknown dataset: %r" % leaf)
-    return ds.leaves
+    return dataset.leaves
 
 
 def _universe(catalog: "DataCatalog[DS]") -> Set[DS]:
