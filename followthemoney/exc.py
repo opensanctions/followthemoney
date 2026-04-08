@@ -35,3 +35,9 @@ class InvalidMapping(FollowTheMoneyException):
     """A data mapping was invalid."""
 
     pass
+
+
+class InvalidDatasetQuery(FollowTheMoneyException):
+    """A dataset query DSL expression was invalid."""
+
+    pass

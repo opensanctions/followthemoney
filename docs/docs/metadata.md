@@ -50,6 +50,105 @@ The most important piece of metadata for any dataset is its `name`. Names are lo
 |             | `size`            | Size of the resource in bytes                          |
 
 
+## Dataset query DSL
+
+The Python library includes a small JSON-based query DSL for filtering datasets by name, collection membership, or tags. It is available as `followthemoney.dataset.evaluate_query`:
+
+```python
+from followthemoney.dataset import DataCatalog, Dataset, evaluate_query
+
+catalog = DataCatalog.from_path(Dataset, "catalog.yml")
+results = evaluate_query(catalog, {"and": ["#issuer.eu", "#list.sanction"]})
+```
+
+### Grammar
+
+A query is a recursive structure with three operators and string leaves:
+
+```
+DatasetQuery = str | list[DatasetQuery]
+             | {"or": list[DatasetQuery]}
+             | {"and": list[DatasetQuery]}
+             | {"not": DatasetQuery}
+```
+
+### Leaf values
+
+| Pattern | Meaning | Example |
+|---------|---------|---------|
+| `"datasetname"` | A specific dataset by slug | `"us_ofac_sdn"` |
+| `"collectionname"` | A collection, expanded to its leaf datasets | `"sanctions"` |
+| `"#scope.value"` | All datasets matching a tag | `"#issuer.eu"` |
+
+The `#` prefix is query syntax only — the stored tag value is `issuer.eu`, not `#issuer.eu`. Collections are always expanded to their leaf datasets.
+
+### Operators
+
+**`or`** — union of all sub-queries:
+
+```json
+{"or": ["#list.sanction", "#list.debarment"]}
+```
+
+**`and`** — intersection of all sub-queries:
+
+```json
+{"and": ["#issuer.eu", "#list.sanction"]}
+```
+
+**`not`** — complement (all datasets in the catalog *except* the matched ones):
+
+```json
+{"not": "lt_fiu_sanctions"}
+```
+
+A bare list is shorthand for `or`, so `["a", "b"]` is equivalent to `{"or": ["a", "b"]}`.
+
+### Examples
+
+A single dataset:
+
+```json
+"us_ofac_sdn"
+```
+
+Multiple datasets:
+
+```json
+["us_ofac_sdn", "eu_fsf", "gb_hmt_sanctions"]
+```
+
+All datasets tagged as sanctions:
+
+```json
+"#list.sanction"
+```
+
+EU-issued sanctions lists:
+
+```json
+{"and": ["#issuer.eu", "#list.sanction"]}
+```
+
+Western sanctions and debarments, excluding a specific dataset and all Russian-issued sources:
+
+```json
+{"and": [
+    {"or": ["#issuer.west", "#list.sanction", "#list.debarment"]},
+    {"not": "lt_fiu_sanctions"},
+    {"not": "#issuer.ru"}
+]}
+```
+
+Exclude multiple datasets at once using nested `not`/`or`:
+
+```json
+{"and": [
+    "#list.sanction",
+    {"not": {"or": ["lt_fiu_sanctions", "ru_fedsfm"]}}
+]}
+```
+
 ## Relevant standards
 
 The dataset specification in FtM is largely based on Google's [schema.org/Dataset](https://schema.org/Dataset), which allows for SEO-friendly markup on dataset pages. Various similar specifications exist, for example the W3C's [Data Catalog Vocabulary (DCAT)](https://www.w3.org/TR/vocab-dcat-3/) and the [Frictionless Data Package](https://specs.frictionlessdata.io/data-package/).
