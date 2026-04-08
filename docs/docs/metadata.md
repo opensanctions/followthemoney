@@ -149,6 +149,39 @@ Exclude multiple datasets at once using nested `not`/`or`:
 ]}
 ```
 
+### String syntax
+
+For use in URLs, CLI arguments, or configuration files, queries can also be written as compact strings using `parse_query`:
+
+```python
+from followthemoney.dataset import parse_query, evaluate_query
+
+query = parse_query("(#issuer.west|#list.sanction)-lt_fiu-#issuer.ru")
+results = evaluate_query(catalog, query)
+```
+
+The string syntax uses three operators, listed by precedence (high to low):
+
+| Operator | Meaning | JSON equivalent |
+|----------|---------|-----------------|
+| `()` | Grouping | Nesting |
+| `&` | Intersection | `and` |
+| `-` | Subtraction | `and` + `not` |
+| `\|` | Union | `or` |
+
+`&` and `-` bind tighter than `|`, so `a|b&c` is parsed as `a|(b&c)`.
+
+Subtraction desugars into `and` + `not`:
+
+| String | JSON AST |
+|--------|----------|
+| `sanctions` | `"sanctions"` |
+| `a\|b\|c` | `{"or": ["a", "b", "c"]}` |
+| `a&b` | `{"and": ["a", "b"]}` |
+| `a-b` | `{"and": ["a", {"not": "b"}]}` |
+| `(a\|b)-c` | `{"and": [{"or": ["a", "b"]}, {"not": "c"}]}` |
+| `(#issuer.west\|#list.sanction)-lt_fiu-#issuer.ru` | `{"and": [{"or": ["#issuer.west", "#list.sanction"]}, {"not": "lt_fiu"}, {"not": "#issuer.ru"}]}` |
+
 ## Relevant standards
 
 The dataset specification in FtM is largely based on Google's [schema.org/Dataset](https://schema.org/Dataset), which allows for SEO-friendly markup on dataset pages. Various similar specifications exist, for example the W3C's [Data Catalog Vocabulary (DCAT)](https://www.w3.org/TR/vocab-dcat-3/) and the [Frictionless Data Package](https://specs.frictionlessdata.io/data-package/).

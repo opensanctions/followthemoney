@@ -1,6 +1,7 @@
 import pytest
 from followthemoney.dataset import Dataset, DataCatalog
 from followthemoney.dataset.query import evaluate_query, validate_query
+from followthemoney.dataset.parse import parse_query
 from followthemoney.exc import InvalidDatasetQuery
 
 
@@ -170,3 +171,114 @@ def test_validate_query_accepts_complex_query():
             {"not": "lt_fiu"},
         ]
     })
+
+
+# --- parse_query tests ---
+
+
+def test_parse_single_leaf():
+    assert parse_query("sanctions") == "sanctions"
+
+
+def test_parse_tag():
+    assert parse_query("#issuer.eu") == "#issuer.eu"
+
+
+def test_parse_or():
+    assert parse_query("a|b|c") == {"or": ["a", "b", "c"]}
+
+
+def test_parse_and():
+    assert parse_query("a&b") == {"and": ["a", "b"]}
+
+
+def test_parse_subtract():
+    assert parse_query("a-b") == {"and": ["a", {"not": "b"}]}
+
+
+def test_parse_subtract_chain():
+    assert parse_query("a-b-c") == {"and": ["a", {"not": "b"}, {"not": "c"}]}
+
+
+def test_parse_and_with_subtract():
+    assert parse_query("a&b-c") == {"and": ["a", "b", {"not": "c"}]}
+
+
+def test_parse_precedence_or_lower_than_and():
+    assert parse_query("a|b&c") == {"or": ["a", {"and": ["b", "c"]}]}
+
+
+def test_parse_parens():
+    assert parse_query("(a|b)-c") == {"and": [{"or": ["a", "b"]}, {"not": "c"}]}
+
+
+def test_parse_nested_parens():
+    assert parse_query("(a&(b|c))-d") == {
+        "and": [{"and": ["a", {"or": ["b", "c"]}]}, {"not": "d"}]
+    }
+
+
+def test_parse_issue_example():
+    result = parse_query("(#issuer.west|#list.sanction|#list.debarment)-lt_fiu-#issuer.ru")
+    assert result == {
+        "and": [
+            {"or": ["#issuer.west", "#list.sanction", "#list.debarment"]},
+            {"not": "lt_fiu"},
+            {"not": "#issuer.ru"},
+        ]
+    }
+
+
+def test_parse_whitespace_tolerance():
+    assert parse_query("a | b & c") == parse_query("a|b&c")
+
+
+def test_parse_roundtrip_with_evaluate(catalog):
+    result = evaluate_query(
+        catalog,
+        parse_query("(#issuer.west|#list.sanction)-lt_fiu-#issuer.ru"),
+    )
+    assert names(result) == {"us_ofac_sdn", "eu_fsf", "gb_hmt", "world_bank_debarred"}
+
+
+def test_parse_empty_string():
+    with pytest.raises(InvalidDatasetQuery, match="Empty query"):
+        parse_query("")
+
+
+def test_parse_empty_whitespace():
+    with pytest.raises(InvalidDatasetQuery, match="Empty query"):
+        parse_query("   ")
+
+
+def test_parse_unmatched_open_paren():
+    with pytest.raises(InvalidDatasetQuery, match="Expected"):
+        parse_query("(a|b")
+
+
+def test_parse_unmatched_close_paren():
+    with pytest.raises(InvalidDatasetQuery, match="Unexpected character"):
+        parse_query("a|b)")
+
+
+def test_parse_deeply_nested_parens():
+    assert parse_query("((a|b)&(c|d))-e") == {
+        "and": [
+            {"and": [{"or": ["a", "b"]}, {"or": ["c", "d"]}]},
+            {"not": "e"},
+        ]
+    }
+
+
+def test_parse_redundant_parens():
+    assert parse_query("((a))") == "a"
+
+
+def test_parse_empty_parens():
+    with pytest.raises(InvalidDatasetQuery, match="Expected identifier"):
+        parse_query("()")
+
+
+def test_parse_trailing_operator():
+    with pytest.raises(InvalidDatasetQuery, match="Expected identifier"):
+        parse_query("a|")
