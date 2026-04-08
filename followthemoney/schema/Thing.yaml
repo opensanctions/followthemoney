@@ -66,6 +66,7 @@ Thing:
     wikipediaUrl:
       label: Wikipedia Article
       type: url
+      matchable: false
     wikidataId:
       label: Wikidata ID
       type: identifier
