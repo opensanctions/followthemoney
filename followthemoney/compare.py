@@ -61,7 +61,7 @@ def compare_scores(left: EntityProxy, right: EntityProxy) -> Scores:
 
 
 def _compare(scores: Scores, weights: Weights, n_std: int = 1) -> float:
-    if not scores or not any(scores.values()):
+    if len(scores) == 0 or not any(scores.values()):
         return 0.0
     prob = 0.0
     for field, weight in weights.items():
@@ -122,9 +122,9 @@ def _normalize_names(
 def compare_group(
     group_type: PropertyType, left_values: List[str], right_values: List[str]
 ) -> Optional[float]:
-    if not left_values and not right_values:
+    if len(left_values) == 0 and len(right_values) == 0:
         raise ValueError("At least one proxy must have property type: %s", group_type)
-    elif not left_values or not right_values:
+    elif len(left_values) == 0 or len(right_values) == 0:
         return None
     return group_type.compare_sets(left_values, right_values)
 
@@ -135,9 +135,9 @@ def compare_names(
     result = 0.0
     left_list = list(islice(_normalize_names(common, left.names), max_names))
     right_list = list(islice(_normalize_names(common, right.names), max_names))
-    if not left_list and not right_list:
+    if len(left_list) == 0 and len(right_list) == 0:
         raise ValueError("At least one proxy must have name properties")
-    elif not left_list or not right_list:
+    elif len(left_list) == 0 or len(right_list) == 0:
         return None
     for left_val, right_val in product(left_list, right_list):
         similarity = registry.name.compare(left_val, right_val)
@@ -153,9 +153,9 @@ def compare_names(
 def compare_countries(left: EntityProxy, right: EntityProxy) -> Optional[float]:
     left_countries = left.country_hints
     right_countries = right.country_hints
-    if not left_countries and not right_countries:
+    if len(left_countries) == 0 and len(right_countries) == 0:
         raise ValueError("At least one proxy must have country properties")
-    elif not left_countries or not right_countries:
+    elif len(left_countries) == 0 or len(right_countries) == 0:
         return None
     intersection = territories_intersect(left_countries, right_countries)
     union = left_countries.union(right_countries)

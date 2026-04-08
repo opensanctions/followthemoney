@@ -48,9 +48,9 @@ class EntityMapping(object):
 
         self.keys = keys_values(data, "key", "keys")
         self.id_column = stringify(data.get("id_column"))
-        if not len(self.keys) and self.id_column is None:
+        if len(self.keys) == 0 and self.id_column is None:
             raise InvalidMapping("No keys or ID: %r" % name)
-        if len(self.keys) and self.id_column is not None:
+        if len(self.keys) > 0 and self.id_column is not None:
             msg = "Please use only keys or id_column, not both: %r" % name
             raise InvalidMapping(msg)
 
@@ -95,7 +95,7 @@ class EntityMapping(object):
         digest = self.seed.copy()
         has_value = False
         for value in sorted(values):
-            if len(value):
+            if len(value) > 0:
                 has_value = True
                 digest.update(value)
         if has_value:

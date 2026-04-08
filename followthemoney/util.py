@@ -110,7 +110,7 @@ def join_text(*parts: Any, sep: str = " ") -> Optional[str]:
         text = stringify(part)
         if text is not None:
             texts.append(text)
-    if not len(texts):
+    if len(texts) == 0:
         return None
     return sep.join(texts)
 

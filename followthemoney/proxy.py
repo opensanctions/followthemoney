@@ -377,7 +377,7 @@ class EntityProxy(object):
         data: Dict[str, List[str]] = {}
         for group, type_ in registry.groups.items():
             values = self.get_type_values(type_, matchable=matchable)
-            if len(values):
+            if len(values) > 0:
                 data[group] = values
         return data
 
@@ -404,7 +404,7 @@ class EntityProxy(object):
         country that may be associated with the entity. This list can be used
         for a more generous matching approach than the actual country values."""
         countries = set(self.countries)
-        if not len(countries):
+        if len(countries) == 0:
             for prop, value in self.itervalues():
                 if not prop.matchable:
                     continue

@@ -326,9 +326,9 @@ class Schema:
     def temporal_start(self) -> List[str]:
         """The entity properties to be used as the start when representing the entity
         in a timeline."""
-        if not len(self._temporal_start):
+        if len(self._temporal_start) == 0:
             for parent in self.extends:
-                if len(parent.temporal_start):
+                if len(parent.temporal_start) > 0:
                     return parent.temporal_start
         return self._temporal_start
 
@@ -336,9 +336,9 @@ class Schema:
     def temporal_end(self) -> List[str]:
         """The entity properties to be used as the end when representing the entity
         in a timeline."""
-        if not len(self._temporal_end):
+        if len(self._temporal_end) == 0:
             for parent in self.extends:
-                if len(parent.temporal_end):
+                if len(parent.temporal_end) > 0:
                     return parent.temporal_end
         return self._temporal_end
 
@@ -427,7 +427,7 @@ class Schema:
                     error = gettext("Required")
             if error is not None:
                 errors[prop_name] = error
-        if len(errors):
+        if len(errors) > 0:
             msg = gettext("Entity validation failed")
             raise InvalidData(msg, errors={"properties": errors})
         return None
@@ -448,16 +448,16 @@ class Schema:
                 "label": self.edge_label,
                 "directed": self.edge_directed,
             }
-        if len(self.temporal_start) or len(self.temporal_end):
+        if len(self.temporal_start) > 0 or len(self.temporal_end) > 0:
             data["temporalExtent"] = {
                 "start": self.temporal_start,
                 "end": self.temporal_end,
             }
-        if len(self.featured):
+        if len(self.featured) > 0:
             data["featured"] = self.featured
-        if len(self.required):
+        if len(self.required) > 0:
             data["required"] = self.required
-        if len(self.caption):
+        if len(self.caption) > 0:
             data["caption"] = self.caption
         if self.description:
             data["description"] = self.description

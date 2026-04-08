@@ -8,7 +8,7 @@ def get_env_list(name: str, default: List[str] = []) -> List[str]:
     value = env_opt(name)
     if value is not None:
         values = value.split(":")
-        if len(values):
+        if len(values) > 0:
             return values
     return default
 

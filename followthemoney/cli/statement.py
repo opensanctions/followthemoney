@@ -63,6 +63,6 @@ def statements_aggregate(
                 write_entity(outfh, entity)
                 statements = []
             statements.append(stmt)
-        if len(statements):
+        if len(statements) > 0:
             entity = StatementEntity.from_statements(dataset_, statements)
             write_entity(outfh, entity)

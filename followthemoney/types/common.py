@@ -156,7 +156,7 @@ class PropertyType(object):
         results = []
         for le, ri in product(left, right):
             results.append(self.compare(le, ri))
-        if not len(results):
+        if len(results) == 0:
             return 0.0
         return func(results)
 

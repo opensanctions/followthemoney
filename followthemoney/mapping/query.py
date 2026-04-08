@@ -26,7 +26,7 @@ class QueryMapping:
             self.entities.append(entity)
             self.refs.update(entity.refs)
 
-        if not len(self.entities):
+        if len(self.entities) == 0:
             raise InvalidMapping("No entity mappings are defined.")
 
         # Check if the provided links satisfy the ranges of the given

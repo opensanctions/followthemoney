@@ -36,11 +36,11 @@ def simplify_provenance(proxy: E) -> E:
     fields, we can logically conclude which one is the most meaningful."""
     for prop_name in PROV_MAX_DATES:
         values = proxy.pop(prop_name, quiet=True)
-        if len(values):
+        if len(values) > 0:
             proxy.set(prop_name, max(values), cleaned=True)
     for prop_name in PROV_MIN_DATES:
         values = proxy.pop(prop_name, quiet=True)
-        if len(values):
+        if len(values) > 0:
             proxy.set(prop_name, min(values), cleaned=True)
     return proxy
 
@@ -159,14 +159,14 @@ def combine_names(entity: E) -> E:
         names_seq.append(entity.get("fatherName"))
         names_seq.append(entity.get("motherName"))
         names_seq.append(last_names)
-        names_seq = [n for n in names_seq if len(n)]
+        names_seq = [n for n in names_seq if len(n) > 0]
         for pairing in product(*names_seq):
             name = squash_spaces(" ".join(pairing))
-            if len(name):
+            if len(name) > 0:
                 entity.add("alias", name)
 
         # If no first name is given, at least add the last name:
-        if not entity.get_type_values(registry.name) and len(last_names):
+        if not entity.get_type_values(registry.name) and len(last_names) > 0:
             entity.add("alias", last_names)
     return entity
 

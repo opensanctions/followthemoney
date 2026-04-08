@@ -103,7 +103,7 @@ class SQLSource(Source):
             rp = conn.execution_options(stream_results=True).execute(q)
             while True:
                 rows = rp.fetchmany(size=DATA_PAGE)
-                if not len(rows):
+                if len(rows) == 0:
                     break
                 for row in rows:
                     row_map = row._mapping

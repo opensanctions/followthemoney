@@ -57,7 +57,7 @@ class NameType(PropertyType):
         """Compare two names for similarity."""
         left_clean = " ".join(tokenize_name(left.lower()))
         right_clean = " ".join(tokenize_name(right.lower()))
-        if not len(left_clean) or not len(right_clean):
+        if len(left_clean) == 0 or len(right_clean) == 0:
             return 0.0
         return levenshtein_similarity(
             left_clean,

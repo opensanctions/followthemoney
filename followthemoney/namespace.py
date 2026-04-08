@@ -63,7 +63,7 @@ class Namespace(object):
 
     def signature(self, entity_id: str) -> Optional[str]:
         """Generate a namespace-specific signature."""
-        if not len(self.bname) or entity_id is None:
+        if len(self.bname) == 0 or entity_id is None:
             return None
         digest = self.hmac.copy()
         digest.update(key_bytes(entity_id))
@@ -75,7 +75,7 @@ class Namespace(object):
         if entity_id is None:
             return None
         parsed_id, _ = self.parse(entity_id)
-        if not len(self.bname):
+        if len(self.bname) == 0:
             return parsed_id
         if parsed_id is None:
             return None

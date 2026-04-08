@@ -29,7 +29,7 @@ class CSVSource(Source):
         for url in keys_values(data, "csv_url", "csv_urls"):
             self.urls.add(cast(str, os.path.expandvars(url)))
 
-        if not len(self.urls):
+        if len(self.urls) == 0:
             raise InvalidMapping("No CSV URLs are specified.")
 
         self.filters_set = self._parse_filters(self.filters)

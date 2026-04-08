@@ -65,7 +65,7 @@ class DatasetModel(BaseModel):
         # derive deprecated from deprecation notice:
         if self.deprecation is not None:
             self.deprecation = self.deprecation.strip()
-            if not len(self.deprecation):
+            if len(self.deprecation) == 0:
                 self.deprecation = None
         self.deprecated = self.deprecation is not None or self.deprecated
         if self.deprecated and (self.coverage is None or self.coverage.end is None):
