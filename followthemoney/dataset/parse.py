@@ -1,7 +1,7 @@
 """String query parser for the dataset filter DSL.
 
 Parses compact string expressions like ``(#issuer.west|#list.sanction)-lt_fiu``
-into a ``DatasetQuery`` JSON AST that can be evaluated with ``evaluate_query``.
+into a ``DatasetQuery`` that can be evaluated with ``evaluate_query``.
 
 See https://followthemoney.tech/docs/metadata/#dataset-query-dsl for full
 documentation and examples.

@@ -52,7 +52,7 @@ The most important piece of metadata for any dataset is its `name`. Names are lo
 
 ## Dataset query DSL
 
-The Python library includes a small JSON-based query DSL for filtering datasets by name, collection membership, or tags. It is available as `followthemoney.dataset.evaluate_query`:
+The Python library includes a small query DSL for filtering datasets by name, collection membership, or tags. It is available as `followthemoney.dataset.evaluate_query`:
 
 ```python
 from followthemoney.dataset import DataCatalog, Dataset, evaluate_query
@@ -78,7 +78,7 @@ DatasetQuery = str | list[DatasetQuery]
 |---------|---------|---------|
 | `"datasetname"` | A specific dataset by slug | `"us_ofac_sdn"` |
 | `"collectionname"` | A collection, expanded to its leaf datasets | `"sanctions"` |
-| `"#scope.value"` | All datasets matching a tag | `"#issuer.eu"` |
+| `"#tag"` | All datasets matching a tag | `"#issuer.eu"` |
 
 The `#` prefix is query syntax only — the stored tag value is `issuer.eu`, not `#issuer.eu`. Collections are always expanded to their leaf datasets.
 

@@ -1,7 +1,7 @@
-"""Dataset filter DSL — JSON AST evaluation.
+"""Dataset filter DSL — AST evaluation.
 
 Provides ``evaluate_query(catalog, query)`` to filter datasets using a recursive
-JSON structure with ``or``, ``and``, and ``not`` operators. Leaf values are
+dictionary structure with ``or``, ``and``, and ``not`` operators. Leaf values are
 dataset names, collection names (expanded to leaves), or ``#tag`` selectors.
 
 See https://followthemoney.tech/docs/metadata/#dataset-query-dsl for full
@@ -9,6 +9,7 @@ documentation and examples.
 """
 
 from collections.abc import Mapping, Sequence
+import functools
 from typing import Any, Dict, List, Set, TYPE_CHECKING, Union
 
 from followthemoney.dataset.dataset import DS
@@ -91,15 +92,11 @@ def _evaluate(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
         key = next(iter(query))
         value = query[key]
         if key == "or":
-            result = set()
-            for item in value:
-                result.update(_evaluate(catalog, item))
-            return result
+            results = [_evaluate(catalog, item) for item in value]
+            return functools.reduce(set.union, results)
         if key == "and":
-            result = _evaluate(catalog, value[0])
-            for item in value[1:]:
-                result = result & _evaluate(catalog, item)
-            return result
+            results = [_evaluate(catalog, item) for item in value]
+            return functools.reduce(set.intersection, results)
         if key == "not":
             return _universe(catalog) - _evaluate(catalog, value)
     raise InvalidDatasetQuery("Invalid query node type: %s" % type(query).__name__)
@@ -108,7 +105,7 @@ def _evaluate(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
 def evaluate_query(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
     """Evaluate a query AST against a catalog, returning matching leaf datasets.
 
-    The query is a JSON-like structure using "or", "and", and "not" operators.
+    The query is a dictionary-like structure using "or", "and", and "not" operators.
     Leaf strings are dataset names, collection names, or "#tag" selectors.
     A bare list is treated as an implicit "or".
     """
