@@ -2,6 +2,7 @@ from followthemoney.mapping.source import Record, Source
 from typing import TYPE_CHECKING, Any, List, Optional, Set, Dict
 
 from followthemoney.proxy import EntityProxy
+from followthemoney.entity import ValueEntity
 from followthemoney.mapping.entity import EntityMapping
 from followthemoney.mapping.sql import SQLSource
 from followthemoney.mapping.csv import CSVSource
@@ -15,13 +16,19 @@ class QueryMapping:
     __slots__ = ("model", "data", "refs", "entities", "source")
 
     def __init__(
-        self, model: "Model", data: Dict[str, Any], key_prefix: Optional[str] = None
+        self,
+        model: "Model",
+        data: Dict[str, Any],
+        key_prefix: Optional[str] = None,
+        dataset: Optional[str] = None,
     ) -> None:
         self.model = model
         self.refs: Set[str] = set()
         self.entities: List[EntityMapping] = []
         for name, edata in data.get("entities", {}).items():
-            entity = EntityMapping(model, self, name, edata, key_prefix=key_prefix)
+            entity = EntityMapping(
+                model, self, name, edata, key_prefix=key_prefix, dataset=dataset
+            )
 
             self.entities.append(entity)
             self.refs.update(entity.refs)
@@ -60,10 +67,12 @@ class QueryMapping:
             return CSVSource(self, data)
         raise InvalidMapping("Cannot determine mapping type: %r" % data)
 
-    def map(self, record: Record) -> Dict[str, EntityProxy]:
+    def map(self, record: Record) -> Dict[str, ValueEntity]:
         data: Dict[str, EntityProxy] = {}
+        result: Dict[str, ValueEntity] = {}
         for entity in self.entities:
             mapped = entity.map(record, data)
             if mapped is not None:
                 data[entity.name] = mapped
-        return data
+                result[entity.name] = mapped
+        return result

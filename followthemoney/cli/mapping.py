@@ -2,7 +2,7 @@ import sys
 import click
 from pathlib import Path
 from banal import keys_values
-from typing import Generator, List, TextIO, Tuple
+from typing import Generator, List, Optional, TextIO, Tuple
 from contextlib import contextmanager
 
 from followthemoney import model
@@ -25,6 +25,7 @@ def input_file(path: Path) -> Generator[TextIO, None, None]:
 
 @cli.command("map", help="Execute a mapping file and emit objects")
 @click.option("-o", "--outfile", type=OutPath, default="-")
+@click.option("-d", "--dataset", type=str, default=None, help="Dataset name")
 @click.option(
     "--sign/--no-sign",
     is_flag=True,
@@ -32,14 +33,19 @@ def input_file(path: Path) -> Generator[TextIO, None, None]:
     help="Apply HMAC signature",
 )
 @click.argument("mapping_yaml", type=click.Path(exists=True, path_type=Path))
-def run_mapping(outfile: Path, mapping_yaml: Path, sign: bool = True) -> None:
+def run_mapping(
+    outfile: Path, mapping_yaml: Path, dataset: Optional[str], sign: bool = True
+) -> None:
     config = load_mapping_file(mapping_yaml)
     try:
         with path_writer(outfile) as outfh:
-            for dataset, meta in config.items():
-                ns = Namespace(dataset)
+            for config_dataset, meta in config.items():
+                ds = dataset or config_dataset
+                ns = Namespace(ds)
                 for mapping in keys_values(meta, "queries", "query"):
-                    entities = model.map_entities(mapping, key_prefix=dataset)
+                    entities = model.map_entities(
+                        mapping, key_prefix=ds, dataset=ds
+                    )
                     for entity in entities:
                         if sign:
                             entity = ns.apply(entity)
@@ -53,23 +59,25 @@ def run_mapping(outfile: Path, mapping_yaml: Path, sign: bool = True) -> None:
 @cli.command("map-csv", help="Map CSV data from stdin and emit objects")
 @click.option("-i", "--infile", type=InPath, default="-")
 @click.option("-o", "--outfile", type=OutPath, default="-")
+@click.option("-d", "--dataset", type=str, default=None, help="Dataset name")
 @click.option(
     "--sign/--no-sign", is_flag=True, default=True, help="Apply HMAC signature"
 )
 @click.argument("mapping_yaml", type=click.Path(exists=True, path_type=Path))
 def stream_mapping(
-    infile: Path, outfile: Path, mapping_yaml: Path, sign: bool = True
+    infile: Path, outfile: Path, mapping_yaml: Path, dataset: Optional[str], sign: bool = True
 ) -> None:
     queries: List[Tuple[str, QueryMapping, CSVSource]] = []
     config = load_mapping_file(mapping_yaml)
-    for dataset, meta in config.items():
+    for config_dataset, meta in config.items():
+        ds = dataset or config_dataset
         for data in keys_values(meta, "queries", "query"):
             data.pop("database", None)
             data["csv_url"] = "/dev/null"
-            query = model.make_mapping(data, key_prefix=dataset)
+            query = model.make_mapping(data, key_prefix=ds, dataset=ds)
             source = query.source
             assert isinstance(source, CSVSource)
-            queries.append((dataset, query, source))
+            queries.append((ds, query, source))
 
     try:
         with path_writer(outfile) as outfh:

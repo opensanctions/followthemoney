@@ -111,3 +111,37 @@ def evaluate_query(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
     """
     validate_query(query)
     return _evaluate(catalog, query)
+
+
+def _match(query: DatasetQuery, datasets: Set[str]) -> bool:
+    """Recursively match a query AST against a set of dataset names."""
+    if isinstance(query, str):
+        if query.startswith("#"):
+            raise InvalidDatasetQuery("Tag selectors require a catalog: %r" % query)
+        return query in datasets
+    if isinstance(query, Sequence):
+        return any(_match(item, datasets) for item in query)
+    if isinstance(query, Mapping):
+        key = next(iter(query))
+        value = query[key]
+        if key == "or":
+            return any(_match(item, datasets) for item in value)
+        if key == "and":
+            return all(_match(item, datasets) for item in value)
+        if key == "not":
+            return not _match(value, datasets)
+    raise InvalidDatasetQuery("Invalid query node type: %s" % type(query).__name__)
+
+
+def match_datasets(query: DatasetQuery, datasets: Set[str]) -> bool:
+    """Test whether a set of dataset names matches a query.
+
+    Like ``evaluate_query`` but works against plain name strings instead of
+    a full catalog. Tag selectors (``#...``) are not supported.
+
+    The caller is responsible for validating the query once upfront via
+    ``validate_query`` or ``parse_query`` (which produces valid ASTs by
+    construction). This function skips validation so it can be used in
+    tight loops over millions of entities.
+    """
+    return _match(query, datasets)

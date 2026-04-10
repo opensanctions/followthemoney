@@ -15,6 +15,7 @@ from followthemoney.util import const
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
+    from followthemoney.entity import ValueEntity
     from followthemoney.mapping import QueryMapping
 
 
@@ -103,18 +104,24 @@ class Model(object):
         return schemata
 
     def make_mapping(
-        self, mapping: Dict[str, Any], key_prefix: Optional[str] = None
+        self,
+        mapping: Dict[str, Any],
+        key_prefix: Optional[str] = None,
+        dataset: Optional[str] = None,
     ) -> "QueryMapping":
         """Parse a mapping that applies (tabular) source data to the model."""
         from followthemoney.mapping import QueryMapping
 
-        return QueryMapping(self, mapping, key_prefix=key_prefix)
+        return QueryMapping(self, mapping, key_prefix=key_prefix, dataset=dataset)
 
     def map_entities(
-        self, mapping: Dict[str, Any], key_prefix: Optional[str] = None
-    ) -> Generator["EntityProxy", None, None]:
+        self,
+        mapping: Dict[str, Any],
+        key_prefix: Optional[str] = None,
+        dataset: Optional[str] = None,
+    ) -> Generator["ValueEntity", None, None]:
         """Given a mapping, yield a series of entities from the data source."""
-        gen = self.make_mapping(mapping, key_prefix=key_prefix)
+        gen = self.make_mapping(mapping, key_prefix=key_prefix, dataset=dataset)
         for record in gen.source.records:
             for entity in gen.map(record).values():
                 yield entity

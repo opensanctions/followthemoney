@@ -86,6 +86,35 @@ def test_sieve_by_type(cli_runner: CliRunner, entity_jsonl: bytes) -> None:
     assert "name" not in entity["properties"]
 
 
+def test_sieve_by_dataset(cli_runner: CliRunner) -> None:
+    entities = [
+        {"id": "a1", "schema": "Company", "datasets": ["alpha"], "properties": {"name": ["A Corp"]}},
+        {"id": "b1", "schema": "Company", "datasets": ["beta"], "properties": {"name": ["B Corp"]}},
+        {"id": "c1", "schema": "Company", "datasets": ["alpha", "beta"], "properties": {"name": ["C Corp"]}},
+    ]
+    input_data = b"\n".join(orjson.dumps(e) for e in entities) + b"\n"
+
+    # Include only alpha
+    result = cli_runner.invoke(cli, ["sieve", "-d", "alpha"], input=input_data)
+    assert result.exit_code == 0, result.output
+    lines = result.output_bytes.strip().split(b"\n")
+    ids = {orjson.loads(l)["id"] for l in lines}
+    assert ids == {"a1", "c1"}
+
+    # Union: alpha|beta matches all
+    result = cli_runner.invoke(cli, ["sieve", "-d", "alpha|beta"], input=input_data)
+    assert result.exit_code == 0, result.output
+    lines = result.output_bytes.strip().split(b"\n")
+    assert len(lines) == 3
+
+    # Subtraction: alpha-beta
+    result = cli_runner.invoke(cli, ["sieve", "-d", "alpha-beta"], input=input_data)
+    assert result.exit_code == 0, result.output
+    lines = result.output_bytes.strip().split(b"\n")
+    ids = {orjson.loads(l)["id"] for l in lines}
+    assert ids == {"a1"}
+
+
 # --- Aggregation ---
 
 

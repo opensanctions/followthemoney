@@ -3,6 +3,7 @@ import yaml
 import responses
 from unittest import TestCase
 from followthemoney import model
+from followthemoney.entity import ValueEntity
 from followthemoney.exc import InvalidMapping
 
 
@@ -230,3 +231,53 @@ class MappingTestCase(TestCase):
         self.assertCountEqual(
             entities[0].get("notes"), ["brown", "black", "blue"]
         )  # noqa
+
+    def test_mapping_emits_value_entity(self):
+        mapping = model.make_mapping(self.kek_mapping)
+        record = {
+            "comp.id": 4,
+            "sub.id": "7.4",
+            "comp.name": "Pets.com Ltd",
+            "shares.share": "40%",
+            "comp.url": "https://pets.com",
+            "sub.name": "DogFood Sales Corp.",
+            "comp.address": "10 Broadstreet, 20388 Washington, DC",
+        }
+        entities = mapping.map(record)
+        for entity in entities.values():
+            assert isinstance(entity, ValueEntity)
+            assert len(entity.datasets) == 0
+
+    def test_mapping_sets_dataset(self):
+        mapping = model.make_mapping(self.kek_mapping, dataset="test_ds")
+        record = {
+            "comp.id": 4,
+            "sub.id": "7.4",
+            "comp.name": "Pets.com Ltd",
+            "shares.share": "40%",
+            "comp.url": "https://pets.com",
+            "sub.name": "DogFood Sales Corp.",
+            "comp.address": "10 Broadstreet, 20388 Washington, DC",
+        }
+        entities = mapping.map(record)
+        for entity in entities.values():
+            assert isinstance(entity, ValueEntity)
+            assert "test_ds" in entity.datasets
+
+    def test_map_entities_sets_dataset(self):
+        url = "file://" + os.path.join(self.fixture_path, "links.csv")
+        mapping = {
+            "csv_url": url,
+            "entities": {
+                "director": {
+                    "schema": "Person",
+                    "key": "id",
+                    "properties": {"name": {"column": "name"}},
+                },
+            },
+        }
+        entities = list(model.map_entities(mapping, dataset="my_source"))
+        assert len(entities) > 0
+        for entity in entities:
+            assert isinstance(entity, ValueEntity)
+            assert "my_source" in entity.datasets

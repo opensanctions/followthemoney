@@ -8,6 +8,7 @@ from normality import stringify
 from followthemoney.types import registry
 from followthemoney.util import key_bytes
 from followthemoney.proxy import EntityProxy
+from followthemoney.entity import ValueEntity
 from followthemoney.mapping.property import PropertyMapping
 from followthemoney.mapping.source import Record
 from followthemoney.exc import InvalidMapping
@@ -27,6 +28,7 @@ class EntityMapping(object):
         "keys",
         "id_column",
         "schema",
+        "dataset",
         "refs",
         "dependencies",
         "properties",
@@ -39,9 +41,11 @@ class EntityMapping(object):
         name: str,
         data: Dict[str, Any],
         key_prefix: Optional[str] = None,
+        dataset: Optional[str] = None,
     ) -> None:
         self.model = model
         self.name = name
+        self.dataset = dataset
 
         self.seed = sha1(key_bytes(key_prefix))
         self.seed.update(key_bytes(data.get("key_literal")))
@@ -104,8 +108,11 @@ class EntityMapping(object):
 
     def map(
         self, record: Record, entities: Dict[str, EntityProxy]
-    ) -> Optional[EntityProxy]:
-        proxy = self.model.make_entity(self.schema)
+    ) -> Optional[ValueEntity]:
+        data: Dict[str, Any] = {}
+        if self.dataset is not None:
+            data["datasets"] = [self.dataset]
+        proxy = ValueEntity(self.schema, data, key_prefix=None, cleaned=True)
 
         # THIS IS HACKY
         # Some of the converters, e.g. for phone numbers, work better if they

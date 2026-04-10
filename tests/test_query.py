@@ -1,6 +1,6 @@
 import pytest
 from followthemoney.dataset import Dataset, DataCatalog
-from followthemoney.dataset.query import evaluate_query, validate_query
+from followthemoney.dataset.query import evaluate_query, match_datasets, validate_query
 from followthemoney.dataset.parse import parse_query
 from followthemoney.exc import InvalidDatasetQuery
 
@@ -282,3 +282,48 @@ def test_parse_empty_parens():
 def test_parse_trailing_operator():
     with pytest.raises(InvalidDatasetQuery, match="Expected identifier"):
         parse_query("a|")
+
+
+# --- match_datasets tests ---
+
+
+def test_match_single_name():
+    assert match_datasets("alpha", {"alpha", "beta"}) is True
+    assert match_datasets("gamma", {"alpha", "beta"}) is False
+
+
+def test_match_or():
+    query = parse_query("alpha|gamma")
+    assert match_datasets(query, {"alpha"}) is True
+    assert match_datasets(query, {"gamma"}) is True
+    assert match_datasets(query, {"beta"}) is False
+
+
+def test_match_and():
+    query = parse_query("alpha&beta")
+    assert match_datasets(query, {"alpha", "beta"}) is True
+    assert match_datasets(query, {"alpha"}) is False
+
+
+def test_match_subtraction():
+    query = parse_query("alpha-beta")
+    assert match_datasets(query, {"alpha"}) is True
+    assert match_datasets(query, {"alpha", "beta"}) is False
+    assert match_datasets(query, {"beta"}) is False
+
+
+def test_match_complex():
+    query = parse_query("(alpha|beta)-gamma")
+    assert match_datasets(query, {"alpha"}) is True
+    assert match_datasets(query, {"beta"}) is True
+    assert match_datasets(query, {"alpha", "gamma"}) is False
+    assert match_datasets(query, {"gamma"}) is False
+
+
+def test_match_empty_datasets():
+    assert match_datasets("alpha", set()) is False
+
+
+def test_match_tag_raises():
+    with pytest.raises(InvalidDatasetQuery, match="Tag selectors require a catalog"):
+        match_datasets("#issuer.eu", {"alpha"})
