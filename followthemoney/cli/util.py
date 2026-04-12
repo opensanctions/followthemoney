@@ -134,6 +134,8 @@ def resolve_includes(file_path: PathLike, data: Any) -> Any:
         return [resolve_includes(file_path, i) for i in data]
     if isinstance(data, dict):
         for include_path in ensure_list(data.pop("include", [])):
+            if include_path is None:
+                continue
             dir_prefix = os.path.dirname(file_path)
             include_path = os.path.join(dir_prefix, include_path)
             data.update(load_mapping_file(include_path))
