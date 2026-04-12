@@ -1,5 +1,5 @@
 import re
-from banal import is_mapping, as_bool
+from banal import as_bool
 from rigour.ids import get_identifier_format
 from typing import TYPE_CHECKING, Any, List, Optional, TypedDict
 
@@ -163,7 +163,7 @@ class Property:
                 self.range = model.get(self._range)
 
             if self.reverse is None and self.range and self._reverse:
-                if not is_mapping(self._reverse):
+                if not isinstance(self._reverse, dict):
                     raise InvalidModel("Invalid reverse: %s" % self)
                 self.reverse = self.range._add_reverse(model, self._reverse, self)
 

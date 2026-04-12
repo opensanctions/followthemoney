@@ -8,11 +8,12 @@ from babel import Locale
 from decimal import Decimal
 from gettext import translation
 from datetime import datetime, date
+from collections.abc import Mapping
 from typing import cast, Dict, Any, List, Optional, TypeVar, Union
 from normality import predict_encoding, stringify
 from normality.cleaning import remove_unsafe_chars
 from rigour.env import ENCODING
-from banal import is_mapping, unique_list, ensure_list
+from banal import unique_list, ensure_list
 
 MEGABYTE = 1024 * 1024
 PROP_VALUE_MAX = 30 * MEGABYTE
@@ -122,7 +123,7 @@ def const_case(text: str) -> str:
 
 def get_entity_id(obj: Any) -> Optional[str]:
     """Given an entity-ish object, try to get the ID."""
-    if is_mapping(obj):
+    if isinstance(obj, Mapping):
         obj = obj.get("id")
     else:
         try:

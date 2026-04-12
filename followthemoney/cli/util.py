@@ -6,8 +6,9 @@ import click
 import orjson
 from pathlib import Path
 from warnings import warn
+from collections.abc import Mapping
 from typing import Any, BinaryIO, Generator, List, Optional, TextIO, Type
-from banal import is_mapping, is_listish, ensure_list
+from banal import is_listish, ensure_list
 
 from followthemoney.export.common import Exporter
 from followthemoney.entity import ValueEntity
@@ -38,7 +39,7 @@ def write_entity(fh: BinaryIO, entity: EntityProxy) -> None:
 
 
 def _read_one(data: Any, cleaned: bool = True) -> Generator[EntityProxy, None, None]:
-    if is_mapping(data) and "schema" in data:
+    if isinstance(data, dict) and "schema" in data:
         yield EntityProxy.from_dict(data, cleaned=cleaned)
 
 
@@ -52,7 +53,7 @@ def read_entities(
             return
         data = json.loads(line)
         entities = ensure_list(data)
-        if is_mapping(data):
+        if isinstance(data, Mapping):
             if "entities" in data:
                 entities = data.get("entities", data)
             if "layout" in data:
@@ -131,7 +132,7 @@ def resolve_includes(file_path: PathLike, data: Any) -> Any:
     multiple smaller fragments that are easier to maintain."""
     if is_listish(data):
         return [resolve_includes(file_path, i) for i in data]
-    if is_mapping(data):
+    if isinstance(data, dict):
         include_paths: List[str] = ensure_list(data.pop("include", []))
         for include_path in include_paths:
             dir_prefix = os.path.dirname(file_path)

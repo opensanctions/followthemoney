@@ -49,6 +49,11 @@ Docs: https://followthemoney.tech ([source](docs/))
 - Docstrings on classes and modules; omit on trivial functions. Explain the *why*, not the *how*
 - Subject/context argument first, then operation (e.g. `evaluate_query(catalog, query)`)
 
+## Stability constraints
+
+- **Never change entity ID generation or checksums** — `make_entity_id`, `compute_key`, `EntityProxy.checksum`, and `ValueEntity.checksum` produce hashes that are stored in databases and used for deduplication across a large installed base. Changing them invalidates all existing data. Even bug fixes to hashing (e.g. the known key-sorting collision in `compute_key`) require a coordinated migration, not a silent fix.
+- **Namespace signing is load-bearing** — `Namespace.apply()` signs entity IDs with HMAC. OpenAleph and other downstream systems rely on signed IDs being stable.
+
 ## Data model essentials
 
 - **All property values are `List[str]`** — even numbers, dates, booleans. The type system cleans on input and interprets on output. Don't store native Python types.
