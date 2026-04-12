@@ -5379,6 +5379,14 @@
           "stub": true,
           "type": "entity"
         },
+        "biography": {
+          "description": "A biographical narrative of the person.",
+          "label": "Biography",
+          "maxLength": 65000,
+          "name": "biography",
+          "qname": "Person:biography",
+          "type": "text"
+        },
         "birthCountry": {
           "label": "Country of birth",
           "matchable": true,

@@ -71,7 +71,12 @@ Person:
       type: date
     position:
       label: Position
+      matchable: fals
+    biography:
+      label: Biography
+      description: A biographical narrative of the person.
       matchable: false
+      type: text
     # OS note: the distinction between nationality and citizenship is pretty fine, the two props
     # exist mainly so that we can preserve the distinction if it exists in source data.
     # Nationality is a broader concept of being "of a country", citizenship narrower (as in holding
