@@ -7,7 +7,7 @@ import orjson
 from pathlib import Path
 from warnings import warn
 from collections.abc import Mapping
-from typing import Any, BinaryIO, Generator, List, Optional, TextIO, Type
+from typing import Any, BinaryIO, Generator, Optional, TextIO, Type
 from banal import is_listish, ensure_list
 
 from followthemoney.export.common import Exporter
@@ -133,8 +133,7 @@ def resolve_includes(file_path: PathLike, data: Any) -> Any:
     if is_listish(data):
         return [resolve_includes(file_path, i) for i in data]
     if isinstance(data, dict):
-        include_paths: List[str] = ensure_list(data.pop("include", []))
-        for include_path in include_paths:
+        for include_path in ensure_list(data.pop("include", [])):
             dir_prefix = os.path.dirname(file_path)
             include_path = os.path.join(dir_prefix, include_path)
             data.update(load_mapping_file(include_path))
