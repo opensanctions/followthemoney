@@ -1,13 +1,10 @@
 from contextlib import contextmanager
 import os
-import json
 import yaml
 import click
 import orjson
 from pathlib import Path
-from warnings import warn
-from collections.abc import Mapping
-from typing import Any, BinaryIO, Generator, Optional, TextIO, Type
+from typing import Any, BinaryIO, Generator, Type
 from banal import is_listish, ensure_list
 
 from followthemoney.export.common import Exporter
@@ -20,14 +17,6 @@ InPath = click.Path(dir_okay=False, readable=True, path_type=Path, allow_dash=Tr
 OutPath = click.Path(dir_okay=False, writable=True, path_type=Path, allow_dash=True)
 
 
-def write_object(stream: TextIO, obj: Any) -> None:
-    warn("write_object() is deprecated.", DeprecationWarning, stacklevel=2)
-    if hasattr(obj, "to_dict"):
-        obj = obj.to_dict()
-    data = json.dumps(obj)
-    stream.write(data + "\n")
-
-
 def write_entity(fh: BinaryIO, entity: EntityProxy) -> None:
     data = entity.to_dict()
     entity_id = data.pop("id")
@@ -36,43 +25,6 @@ def write_entity(fh: BinaryIO, entity: EntityProxy) -> None:
     sort_data.update(data)
     out = orjson.dumps(sort_data, option=orjson.OPT_APPEND_NEWLINE)
     fh.write(out)
-
-
-def _read_one(data: Any, cleaned: bool = True) -> Generator[EntityProxy, None, None]:
-    if isinstance(data, dict) and "schema" in data:
-        yield EntityProxy.from_dict(data, cleaned=cleaned)
-
-
-def read_entities(
-    stream: TextIO, cleaned: bool = True, max_line: int = MAX_LINE
-) -> Generator[EntityProxy, None, None]:
-    warn("read_entities() is deprecated.", DeprecationWarning, stacklevel=2)
-    while True:
-        line = stream.readline(max_line)
-        if not line:
-            return
-        data = json.loads(line)
-        entities = ensure_list(data)
-        if isinstance(data, Mapping):
-            if "entities" in data:
-                entities = data.get("entities", data)
-            if "layout" in data:
-                entities = data.get("layout", {}).get("entities", data)
-        for entity in ensure_list(entities):
-            yield from _read_one(entity, cleaned=cleaned)
-
-
-def read_entity(
-    stream: TextIO, cleaned: bool = True, max_line: int = MAX_LINE
-) -> Optional[Any]:
-    warn("read_entity() is deprecated.", DeprecationWarning, stacklevel=2)
-    line = stream.readline(max_line)
-    if not line:
-        return None
-    data = json.loads(line)
-    for entity in _read_one(data, cleaned=cleaned):
-        return entity
-    return data
 
 
 def binary_entities(
