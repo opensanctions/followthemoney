@@ -1,12 +1,18 @@
 # Datasets and data catalogs
 
-FollowTheMoney entities are often grouped into datasets, which might can the source or purpose of the set. Providing metadata on the sources can add to the usability of FtM data products, so we've set up a simple specification for metadata exchange.
+FollowTheMoney entities are almost always grouped into datasets — the unit of provenance, versioning, and access control in most systems that use FtM data. A dataset describes where the entities came from, who published them, what time range they cover, and how the reader can obtain them.
 
-Since normal FtM entity streams do not contain dataset metadata, a [ValueEntity][followthemoney.entity.ValueEntity] exists, which puts in place a link between dataset metadata and individual entities. Users of the [statement data model](statements.md) need to specify a dataset for each statement they generate.
+Entity objects record dataset membership as part of their structure. A [`ValueEntity`][followthemoney.entity.ValueEntity] carries the set of datasets it belongs to as an entity-level `datasets` field. A [`StatementEntity`][followthemoney.statement.entity.StatementEntity] records dataset membership per statement, so a single entity can carry values attributed to different sources. See [Entity representations](index.md#entity-representations) for the full distinction.
 
 ## Data catalogs
 
-Metadata is published in two different forms: as a dataset index file, or as a data catalog. Catalogs combine the metadata for multiple datasets into one file, with metadata for each dataset included in an array named `datasets`.
+Metadata is published in two forms: as a standalone dataset index file, or as a data catalog. A catalog combines the metadata for multiple datasets into one document, with per-dataset metadata contained in a top-level `datasets` array.
+
+## Collections
+
+A **collection** is a dataset whose purpose is to group other datasets. Its metadata looks like any other dataset — it has a `name`, `title`, `description`, and so on — but it also lists its member datasets under `children` (or the alias `datasets:` in catalog YAML). When a query or an export targets a collection, it resolves transitively to the leaf datasets the collection contains.
+
+There is no separate schema or class for collections; they are regular `Dataset` instances that happen to contain others. The `children` field can be nested, so collections of collections are valid. A dataset can belong to multiple collections without duplication.
 
 ## Dataset metadata {: #dataset}
 
@@ -186,4 +192,8 @@ Subtraction desugars into `and` + `not`:
 
 The dataset specification in FtM is largely based on Google's [schema.org/Dataset](https://schema.org/Dataset), which allows for SEO-friendly markup on dataset pages. Various similar specifications exist, for example the W3C's [Data Catalog Vocabulary (DCAT)](https://www.w3.org/TR/vocab-dcat-3/) and the [Frictionless Data Package](https://specs.frictionlessdata.io/data-package/).
 
-All of these specifications are roughly compatible, and it should be easy to import or export FtM metadata into any of them. 
+All of these specifications are roughly compatible, and it should be easy to import or export FtM metadata into any of them.
+
+## Python API
+
+For programmatic construction, loading, and filtering of catalogs, see the [dataset API reference](../python/dataset.md). It covers `DataCatalog` (including `from_path()` for loading catalog YAML), `Dataset`, the `DataResource`/`DataPublisher`/`DataCoverage` sub-objects, and the `evaluate_query` / `match_datasets` / `parse_query` / `validate_query` query helpers.

@@ -26,7 +26,17 @@ class PropertyTypeToDict(TypedDict, total=False):
 
 
 class PropertyType(object):
-    """Base class for all property types."""
+    """Base class for all FtM property types.
+
+    Every property defined on a schema has a `type` attribute that points to a
+    `PropertyType` instance. The type is responsible for cleaning incoming values,
+    validating them, comparing them against other values of the same type, and
+    producing display labels and graph node IDs.
+
+    Concrete types (`NameType`, `DateType`, `CountryType`, etc.) are instantiated
+    once at module load and exposed as singletons on the `registry`. Application
+    code should access them by name — `registry.name`, `registry.date`,
+    `registry.country` — rather than instantiating them directly."""
 
     name: str = const("any")
     """A machine-facing, variable safe name for the given type."""
@@ -93,8 +103,18 @@ class PropertyType(object):
         format: Optional[str] = None,
         proxy: Optional["EntityProxy"] = None,
     ) -> Optional[str]:
-        """Create a clean version of a value of the type, suitable for storage
-        in an entity proxy."""
+        """Convert a raw value into its canonical form for storage on an entity.
+
+        Returns `None` if the value is empty or cannot be interpreted as this type.
+        The `fuzzy` flag loosens validation for types that support it (dates,
+        identifiers). `format` supplies a type-specific hint — for example, a
+        `strptime` format string for dates. `proxy` is the entity the value is
+        being added to, which some types use for context-aware cleaning (address
+        normalization can use the entity's country, for example).
+
+        This method converts the input to a string, drops null-equivalents, and
+        then delegates to `clean_text`. Subclasses normally override `clean_text`
+        rather than this method."""
         text = sanitize_text(raw)
         if text is None:
             return None
@@ -107,15 +127,21 @@ class PropertyType(object):
         format: Optional[str] = None,
         proxy: Optional["EntityProxy"] = None,
     ) -> Optional[str]:
-        """Specific types can apply their own cleaning routines here (this is called
-        by ``clean`` after the value has been converted to a string and null values
-        have been filtered)."""
+        """Type-specific cleaning hook.
+
+        Override this in subclasses to normalize a non-null string value into the
+        type's canonical representation. Return `None` to reject the value. The
+        base implementation is a pass-through. `clean()` calls this after
+        stringifying the input and filtering nulls."""
         return text
 
     def join(self, values: Sequence[str]) -> str:
-        """Helper function for converting multi-valued FtM data into formats that
-        allow only a single value per field (e.g. CSV). This is not fully reversible
-        and should be used as a last option."""
+        """Render multiple values of this type as a single string.
+
+        Used when flattening multi-valued properties into formats that allow only
+        one value per cell (CSV, some RDF serializations). Values are joined with
+        `; `. The transformation is not reversible — use only at the final
+        serialization step."""
         return "; ".join(values)
 
     def _specificity(self, value: str) -> float:
@@ -132,7 +158,10 @@ class PropertyType(object):
         return self._specificity(value)
 
     def compare_safe(self, left: Optional[str], right: Optional[str]) -> float:
-        """Compare, but support None values on either side of the comparison."""
+        """Variant of `compare()` that accepts `None` on either side.
+
+        Returns `0.0` if either argument is missing. Otherwise delegates to
+        `compare()`."""
         left = stringify(left)
         right = stringify(right)
         if left is None or right is None:
@@ -140,8 +169,22 @@ class PropertyType(object):
         return self.compare(left, right)
 
     def compare(self, left: str, right: str) -> float:
-        """Comparisons are a float between 0 and 1. They can assume
-        that the given data is cleaned, but not normalised."""
+        """Score the similarity of two values of this type.
+
+        Returns a float in `[0.0, 1.0]`: `0.0` means the values carry no evidence
+        of matching, `1.0` means they are identical in the strongest
+        type-specific sense. Intermediate values quantify partial similarity —
+        for names, the Levenshtein ratio; for countries, territory overlap; for
+        dates, precision-aware proximity.
+
+        The base implementation does a lowercase equality check weighted by
+        `specificity()`, so a match on a longer, more specific value scores higher
+        than a match on a short one. Subclasses override this for richer
+        comparisons.
+
+        Values are assumed to be cleaned (output of `clean()`) but not further
+        normalized — `compare` is the right place to apply type-specific
+        normalization before matching."""
         if left.lower() == right.lower():
             return 1.0 * self.specificity(left)
         return 0.0
@@ -152,7 +195,12 @@ class PropertyType(object):
         right: Sequence[str],
         func: Callable[[Sequence[float]], float] = max,
     ) -> float:
-        """Compare two sets of values and select the highest-scored result."""
+        """Score the similarity of two value sets by reducing pairwise comparisons.
+
+        Every element of `left` is compared to every element of `right`, and the
+        resulting scores are reduced with `func` — `max` by default, so the best
+        pairwise match wins. Returns `0.0` if either set is empty. Pass `func=sum`
+        or a statistical mean for alternative aggregation strategies."""
         results = []
         for le, ri in product(left, right):
             results.append(self.compare(le, ri))
@@ -166,13 +214,24 @@ class PropertyType(object):
         return None
 
     def pick(self, values: Sequence[str]) -> Optional[str]:
-        """Pick the best value to show to the user."""
+        """Choose the best representative value from a set of alternatives.
+
+        Used when a UI needs to display a single value for a multi-valued
+        property, or when reducing a set of similar values to a canonical form
+        (for example, picking the most complete variant of a name). Subclasses
+        that support picking — notably `NameType` — implement type-specific
+        heuristics. The base implementation raises `NotImplementedError`."""
         raise NotImplementedError
 
     def node_id(self, value: str) -> Optional[str]:
-        """Return an ID suitable to identify this entity as a typed node in a
-        graph representation of some FtM data. It's usually the same as the the
-        RDF form."""
+        """Build a graph node ID for a typed property value.
+
+        Used by graph exporters (Cypher, GEXF, Neo4J bulk) when [reifying](
+        ../docs/cli.md#graph-exports-cypher-gexf-neo4j-bulk) property values
+        into their own graph nodes — for example, turning every phone number
+        mentioned by any entity into a single node connected to the entities
+        that carry it. The default encoding is `{type}:{value}`, matching the
+        RDF URN form."""
         return f"{self.name}:{value}"
 
     def node_id_safe(self, value: Optional[str]) -> Optional[str]:

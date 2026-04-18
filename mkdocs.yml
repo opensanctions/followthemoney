@@ -86,6 +86,7 @@ nav:
           - Entity: python/entity.md
           - Property: python/property.md
           - Statements: python/statements.md
+          - Datasets: python/dataset.md
           - Type registry: python/registry.md
           - Other functions: python/lib.md
       - Other bindings: libraries.md

@@ -68,6 +68,17 @@ This is addressed by making interstitial entities. In the example above, an {{ s
 
 ## Streams
 
-Many tools in the FtM ecosystem use streams of entities to transfer or store information. Entity streams are simply sequences of entity objects that have been serialised to JSON as single lines without any indentation, each entity separated by a newline.
+Many tools in the FtM ecosystem use streams of entities to transfer or store information. Entity streams are sequences of entity objects serialized to JSON as single lines without indentation, separated by newlines.
 
-Entity streams are read and produced by virtually every part of the [CLI](cli.md), the Aleph API, and they're also supported by the ingestors. When stored to disk as a file, the extensions .ftm or .ijson should be used.
+Entity streams are read and produced by virtually every part of the [CLI](cli.md), by the OpenAleph API, and by ingestors. When stored to disk, use the extensions `.ftm` or `.ijson`. The writer emits `id` as the first key on every line, so a plain `sort` orders the stream by entity ID — this property is what makes [sort-based aggregation](cli.md#aggregating-fragments) practical on datasets larger than memory.
+
+## Entity representations
+
+In the Python library, the same data model can be manipulated through two entity classes with different tradeoffs:
+
+- [`ValueEntity`][followthemoney.entity.ValueEntity] stores property values as flat lists of strings. Dataset membership, first-seen, and last-seen timestamps live as entity-level fields. This is the default representation for most workflows — streaming, aggregation, exports, display — and it is what the [`ftm`](cli.md) CLI emits and consumes.
+- [`StatementEntity`][followthemoney.statement.entity.StatementEntity] stores each property value as an individual [statement](statements.md), carrying per-value provenance: which dataset it came from, when it was first and last seen, the original unnormalized text, the language, and the statement origin within the pipeline. A `StatementEntity` can be unrolled into its constituent statements and reassembled from them, which is what enables canonical-ID deduplication and file-based entity aggregation over huge datasets.
+
+Use `ValueEntity` by default. Reach for `StatementEntity` when the pipeline needs to retain per-value provenance (data journalism, sanctions lists with multiple source attributions), when building crawlers that integrate many overlapping sources, or when working with systems — like [`nomenklatura`](https://github.com/opensanctions/nomenklatura) — that deduplicate by assigning canonical IDs across source entities.
+
+Both classes derive from `EntityProxy` and share the same property access API (`add()`, `get()`, `pop()`, `iterprops()`, `schema`, `id`). `EntityProxy` itself is being phased out as a direct dependency — new code should subclass or instantiate `ValueEntity` or `StatementEntity` rather than `EntityProxy`.
