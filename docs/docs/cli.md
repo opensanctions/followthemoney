@@ -1,223 +1,310 @@
 # Command-line tool
 
-The `ftm` command-line tool can be used to generate, process and export [streams of entities](index.md) in a line-based JSON format. Typical uses would include:
+The `ftm` command generates, transforms, and exports [streams of entities](index.md) in line-based JSON. Typical uses:
 
-* Generating entities by applying an [entity mapping to structured data tables](mappings.md) (CSV, SQL).
-* Converting an existing stream of entities into another format, such as CSV, Excel, Gephi GEXF or Neo4J's Cypher language.
-* Converting data in complex formats, such as the Open Contracting Data Standard, into entities.
+- Convert structured tables (CSV, SQL) into entities by applying a [mapping](mappings.md).
+- Reshape, aggregate, validate, or filter an existing entity stream.
+- Export a stream to another format — CSV, Excel, Gephi GEXF, Cypher for Neo4J, or RDF.
+
+Every command reads from stdin and writes to stdout unless told otherwise, so commands chain with pipes. Almost every command accepts `-i/--infile` and `-o/--outfile`; pass `-` to force stdin or stdout explicitly.
 
 ## Installation
 
-To install `ftm`, you need to have Python 3 installed and working on your computer. You may also want to create a virtual environment using virtualenv or pyenv. With that done, type:
+`ftm` ships with the `followthemoney` Python package:
 
 ```bash
 pip install followthemoney
 ftm --help
 ```
 
-!!! info
-    `followthemoney` transliterates text from various scripts to support the comparison of names and other data. For this reason, the projects depends on `pyicu`, a Python binding for the International Components for Unicode tool.
+`followthemoney` transliterates text between scripts to support fuzzy name comparison, which requires the `pyicu` bindings and a system-level ICU library. On Debian-based systems:
 
-    On a Debian-based Linux system, installing ICU is relatively simple:
+```bash
+apt install libicu-dev
+pip install pyicu
+```
 
-    ```bash
-    apt install libicu-dev
-    pip install pyicu
-    ```
+For other platforms, see the [pyicu installation notes](https://gitlab.pyicu.org/main/pyicu#installing-pyicu).
 
-    For other platforms, please [refer to the pyciu documentation](https://gitlab.pyicu.org/main/pyicu#installing-pyicu) to get help with the required steps.
+## The entity stream format
 
+Commands exchange entities as newline-delimited JSON — one entity object per line, no pretty-printing. Files in this format use the extension `.ijson` or `.ftm`. A single entity looks like this:
 
-## Executing a data mapping
+```json
+{"id": "person-1", "schema": "Person", "properties": {"name": ["Jane Doe"]}}
+```
 
-Probably the most common task for `ftm` is to generate entities from some structured data source. This is done using a YAML-formatted mapping file, [described here](mappings.md). With such a YAML file in hand, you can generate entities like this:
+Streams can be piped through multiple commands without decoding overhead, and large files can be processed incrementally. If you need a human-readable view, pipe through [`ftm pretty`](#formatting-streams).
+
+The writer always emits `id` as the first key in each line. Because the lines are sortable as plain text — every line starts with `{"id":"<id>"` — a standard `sort` pipeline orders an entity stream by ID without any JSON-aware tooling. The same property holds for line-based statement streams, which begin with `{"canonical_id":"<id>"`.
+
+This matters because Unix `sort` is fast, uses external merge sort to spill to disk when the input exceeds memory, and parallelizes across cores with `--parallel`. It scales to datasets of tens or hundreds of gigabytes without special infrastructure, which is what makes [`ftm sorted-aggregate`](#aggregating-fragments) and [`ftm aggregate-statements`](#statement-based-workflows) practical beyond what `ftm aggregate` can handle in memory.
+
+## Generating entities from tables
+
+### Executing a mapping
+
+Mappings project structured data (CSV or SQL) into FtM entities according to a [YAML mapping file](mappings.md). Run a mapping with `ftm map`:
 
 ```bash
 curl -o md_companies.yml https://raw.githubusercontent.com/alephdata/aleph/main/mappings/md_companies.yml
-ftm map md_companies.yml
+ftm map md_companies.yml > moldova.ijson
 ```
 
-This will yield a line-based JSON stream of every company in Moldova, their directors and principal shareholders.
+This produces a stream of `Company`, `LegalEntity`, and relational entities covering Moldovan companies and their directors.
 
-![Screenshot of a terminal window. The terminal shows the output of the `ftm map` command to generate the Moldovan company data.](../public/images/docs/cli/mapping-result.png)
+![Terminal showing the JSON output of `ftm map` for the Moldovan companies mapping.](../public/images/docs/cli/mapping-result.png)
 
-You might note, however, that this actually generates multiple [entity fragments](fragments.md) for each company (i.e. multiple entities with the same ID). This is due to the way the `md_companies` mapping is written: each query section generates a partial company record. In order to mitigate this, you will need to perform entity aggregation:
+By default, `ftm map` signs every entity ID with the dataset's namespace, so IDs are unique within that dataset. Pass `--no-sign` to emit bare IDs instead — useful when downstream tools handle their own namespacing, or when you want the IDs to match across producers.
+
+The dataset name comes from the top-level key in the mapping file. Override it with `-d/--dataset` when generating the same entities under a different dataset label:
 
 ```bash
-curl -o md_companies.yml https://raw.githubusercontent.com/alephdata/aleph/main/mappings/md_companies.yml
-ftm map md_companies.yml | ftm aggregate > moldova.ijson
+ftm map -d md_companies_test md_companies.yml > staging.ijson
 ```
 
-The invocation of `ftm aggregate` will retain the entire dataset in memory, which is impossible to do for large databases. In such cases, it's recommended to use an on-disk entity aggregation tool, `followthemoney-store`.
+A mapping often generates multiple fragments per entity — one from each query that touches the entity. See [Aggregating fragments](#aggregating-fragments) for how to merge them.
 
-### Loading data from a local CSV file
+### Mapping from a local CSV
 
-Another peculiarity of `ftm map` is that the source data is actually referenced within the YAML mapping file as an absolute URL. While this makes sense for data sourced from a SQL database or a public CSV file, you might sometimes want to map a local CSV file instead. For this, a modified version of `ftm map` is provided, `ftm map-csv`. It ignores the specified source URLs and reads data from standard input:
+`ftm map-csv` runs the same logic against CSV data piped in on stdin, ignoring any `csv_url` in the mapping file:
 
 ```bash
-cat people_of_interest.csv | ftm map-csv people_of_interest.yml | ftm aggregate
+cat people_of_interest.csv | ftm map-csv people_of_interest.yml > people.ijson
 ```
 
-See the [mappings documentation](mappings.md) for more detail the mapping syntax and usage.
+This is the right tool when the source data is local, private, or dynamically produced.
 
-## Exporting entities to Excel or CSV
+### Mapping file structure
 
-FollowTheMoney data can be exported to tabular formats, such as modern Excel (XLSX) files, and comma-separated values (CSV). Since each schema of entities has a different set of properties it makes sense to turn each schema into a separate table: `People` go into one, `Directorships` into another.
+See the [mappings reference](mappings.md) for the YAML schema, including keys, filters, property transformations, and multi-table joins.
 
-To export to an Excel file, use the `ftm export-excel` command:
+## Validating and formatting streams
+
+### Re-parsing and validating
+
+`ftm validate` re-parses an entity stream, running every property value through its type's cleaner and dropping invalid values. Use it as a safety net before loading data into an index or a downstream system:
 
 ```bash
-curl -o us_ofac.ijson https://storage.googleapis.com/occrp-data-exports/us_ofac/us_ofac.json
+cat raw.ijson | ftm validate > clean.ijson
+```
+
+If a producer emits unclean data — stray whitespace, invalid country codes, malformed dates — validation normalizes what it can and drops the rest.
+
+### Formatting for humans
+
+`ftm pretty` indents each entity over multiple lines and is intended for eyeballing a stream in a terminal:
+
+```bash
+head -n 5 moldova.ijson | ftm pretty
+```
+
+Do not feed the output back into another `ftm` command — indented JSON is not a valid entity stream.
+
+### Dumping the schema model
+
+`ftm dump-model` writes the full FtM schema definition as a single JSON document:
+
+```bash
+ftm dump-model -o model.json
+```
+
+This is the same model described by the [schema explorer](../explorer/schemata/index.md), serialized for tools that want to consume it programmatically.
+
+## Namespace signing
+
+`ftm sign` applies an HMAC signature to every entity ID in a stream, scoping the IDs to a named [namespace](namespace.md):
+
+```bash
+cat entities.ijson | ftm sign -s md_companies > signed.ijson
+```
+
+Pass the namespace key with `-s/--signature`. Omitting it passes IDs through unchanged. Entity-typed property values are rewritten alongside the top-level IDs, so cross-entity references stay consistent within the namespace.
+
+Use this when ingesting into a system (OpenAleph, multi-tenant yente) that expects signed IDs but your producer does not sign on emission.
+
+## Aggregating fragments
+
+When a mapping or pipeline emits multiple records for the same entity ID, those records need to be merged before indexing. Two commands handle this:
+
+- `ftm aggregate` buffers the entire stream in memory, merging fragments as they arrive. Order-independent but memory-bound.
+- `ftm sorted-aggregate` walks the stream once, buffering one entity at a time and merging any incoming fragment whose ID matches the buffered one. It emits the buffered entity as soon as a different ID appears. This runs in constant memory, but it only merges fragments whose occurrences are *adjacent* in the input. If the input is not sorted by ID, non-adjacent fragments of the same entity pass through unmerged without any warning.
+
+```bash
+cat moldova.ijson | ftm aggregate > moldova.aggregated.ijson
+```
+
+For streaming aggregation on a sorted input, Unix `sort` is sufficient because each JSONL line begins with the `id` field:
+
+```bash
+sort moldova.ijson | ftm sorted-aggregate > moldova.aggregated.ijson
+```
+
+!!! warning
+    `ftm aggregate` holds the entire dataset in memory. For datasets that exceed available RAM, sort the stream first and use `ftm sorted-aggregate`, or use an on-disk store (see [Aggregating large datasets](#aggregating-large-datasets)).
+
+## Filtering entities
+
+`ftm sieve` removes schemas, properties, property types, or datasets from a stream:
+
+```bash
+# Drop all Passport entities
+cat entities.ijson | ftm sieve -s Passport > filtered.ijson
+
+# Strip note properties and phone numbers
+cat entities.ijson | ftm sieve -p notes -t phone > redacted.ijson
+
+# Keep only entities that are in dataset A but not dataset B
+cat entities.ijson | ftm sieve -d 'a-b' > scoped.ijson
+```
+
+The `-d/--datasets` expression uses the [dataset query syntax](metadata.md): `a|b` for union, `a-b` for difference, `a&b` for intersection.
+
+## Statement-based workflows
+
+The [statement data model](statements.md) records each claim about an entity as an individual row with provenance. Three commands move between entity streams and statements:
+
+- `ftm statements` decomposes an entity stream into a statement table.
+- `ftm format-statements` converts statement tables between CSV, Parquet, and other formats.
+- `ftm aggregate-statements` rolls a sorted statement table back into an entity stream.
+
+A typical pipeline:
+
+```bash
+# Entities → statements (CSV, attributed to dataset 'md_companies')
+cat moldova.ijson | ftm statements -d md_companies > statements.csv
+
+# Statements → entities, reconstructing full records
+ftm aggregate-statements -i statements.csv > rebuilt.ijson
+```
+
+`ftm aggregate-statements` expects the statement stream to be sorted by the canonical entity ID. If it is not, pre-sort it the same way as for `ftm sorted-aggregate`.
+
+## Exporting to other formats
+
+### Tabular exports: CSV and Excel
+
+Each FtM schema has a distinct set of properties, so tabular exports produce one table per schema: `Person.csv`, `Company.csv`, `Ownership.csv`, and so on.
+
+Write to an Excel workbook:
+
+```bash
 cat us_ofac.ijson | ftm validate | ftm export-excel -o OFAC.xlsx
 ```
 
-Since writing the binary data of an Excel file to standard output is awkward, it is mandatory to include a file name with the `-o` option.
-
-![Screenshot of Microsoft Excel showing the export from the example above. The Excel file has multiple sheets, one for each entity type (e.g. People, Companies, and Ownerships).](../public/images/docs/cli/export-excel.png)
+![Excel workbook with one sheet per schema — People, Companies, Ownerships.](../public/images/docs/cli/export-excel.png)
 
 !!! warning
-    When exporting to Excel format, it's easy to generate a workbook larger than what Microsoft Excel and similar office programs can actually open. Only export small and mid-size datasets.
+    Excel has a hard limit of roughly one million rows per sheet, and most office programs struggle with workbooks larger than a few hundred megabytes. Export only small- and mid-size datasets to Excel.
 
-When exporting to CSV format using `ftm export-csv`, the exporter will usually generate multiple output files, one for each schema of entities present in the input stream of FollowTheMoney entities. To handle this, it expects to be given a directory name:
+Write a directory of CSV files:
 
 ```bash
-curl -o us_ofac.ijson https://storage.googleapis.com/occrp-data-exports/us_ofac/us_ofac.json
 cat us_ofac.ijson | ftm validate | ftm export-csv -o OFAC/
 ```
 
-In the given directory, you will find files names `Person.csv`, `LegalEntity.csv`, `Vessel.csv`, etc.
+Each file in `OFAC/` is named after its schema and contains one row per entity of that schema.
 
-## Exporting data to a network graph
+### Graph exports: Cypher, GEXF, Neo4J bulk
 
-FollowTheMoney sees every unit of information as an entity with a set of properties. To analyse this information as a network with nodes and edges, we need to decide what logic should rule the transformation of entities into nodes and edges. Different strategies are available:
+FtM sees every unit of information as an entity with properties. To analyze a stream as a graph, you need to decide which entities and which property types become nodes and edges:
 
-* Some entity schemata, such as {{ schema_ref('Directorship') }}, {{ schema_ref('Ownership') }}, {{ schema_ref('Family') }} or {{ schema_ref('Payment') }}, contain annotations that define how they can be transformed into an edge with a source and target.
-* Entities also naturally reference others. For example, an {{ schema_ref('Email') }} has an `emitters` property that refers to a {{ schema_ref('LegalEntity') }}, the sender. The `emitters` property connects the two entities and can also be turned into an edge.
-* Finally, some types of properties (e.g. {{ type_ref('email') }}, {{ type_ref('identifier') }}, {{ type_ref('name') }}) can be formed into nodes, with edges formed towards each node that derives from an entity with that property value. For example, an {{ type_ref('address') }} node for "40 Wall Street" would show links to all the companies registered there, or a node representing the name "Frank Smith" would connect all the documents mentioning that name. It rarely makes sense to turn all property types into nodes, so the set of types that need to be [reified](<https://en.wikipedia.org/wiki/Reification_(computer_science)>) can be passed as options into the graph exporter.
+- Some schemas (`Directorship`, `Ownership`, `Family`, `Payment`, `Membership`, `Email`) carry edge annotations and naturally become edges between their referenced entities.
+- Entity-typed properties (for example, `Email:emitters`) also form edges.
+- Some property types (`email`, `identifier`, `name`, `address`) can be [reified](<https://en.wikipedia.org/wiki/Reification_(computer_science)>) into nodes of their own, with edges from each entity that carries that value. Pass these with repeated `-e/--edge-types` flags.
 
-### Cypher commands for Neo4J
+#### Cypher for Neo4J
 
-[Neo4J](https://neo4j.com/) is a popular open source graph database that can be queried and edited [using the Cypher language](https://neo4j.com/docs/cypher-refcard/current/). It can be used as a database backend or queried directly to perform advanced analysis, e.g. to find all paths between two entities.
-
-The example below uses Neo4J's `cypher-shell` command to load the US sanctions list into a local instance of the database:
+Export a Cypher script that loads the data into a running Neo4J instance:
 
 ```bash
-curl -o us_ofac.ijson https://storage.googleapis.com/occrp-data-exports/us_ofac/us_ofac.json
 cat us_ofac.ijson | ftm export-cypher | cypher-shell -u user -p password
 ```
 
-![Screenshot of FtM entities imported to a Neo4J instance.](../public/images/docs/cli/export-cypher.png)
-
-By default, this will only make explicit edges based on entity to entity relationships. If you want to reify specific property types, use the `-e` option:
+To reify specific property types into their own nodes:
 
 ```bash
-cat us_ofac.ijson | ftm export-cypher -e name -e iban -e entity -e address
+cat us_ofac.ijson | ftm export-cypher -e name -e iban -e address
 ```
 
-When working with file-based datasets, you may want to delete folder hierarchies from the imported data in Neo4J to avoid file co-location biasing path and density analyses:
+![FtM entities loaded into a Neo4J browser view.](../public/images/docs/cli/export-cypher.png)
 
-```
-# Delete folder hierarchies:
+When working with data that contains document folder hierarchies (Aleph-style), the folder structure can dominate any path analysis. Remove it with Cypher:
+
+```cypher
 MATCH ()-[r:ANCESTORS]-() DELETE r;
 MATCH ()-[r:PARENT]-() DELETE r;
-# Delete entities representing individual pages:
 MATCH (n:Page) DETACH DELETE n;
-# Delete names or email only used once:
-MATCH (n:name) WHERE size((n)--()) <= 1 DETACH DELETE (n);
-MATCH (n:email) WHERE size((n)--()) <= 1 DETACH DELETE (n);
+// Delete reified value nodes that connect to only one entity:
+MATCH (n:name)    WHERE size((n)--()) <= 1 DETACH DELETE (n);
+MATCH (n:email)   WHERE size((n)--()) <= 1 DETACH DELETE (n);
 MATCH (n:address) WHERE size((n)--()) <= 1 DETACH DELETE (n);
-# ... for all reified value types ...
 ```
 
-At any time, you can flush the entire Neo4J and start from scratch:
+To reset the database:
 
-```
+```cypher
 MATCH (n) DETACH DELETE n;
 ```
 
-#### Bulk loading data
+#### Neo4J bulk import
 
-Another option for loading data to Neo4J is to export a set of entities into CSV files and then using the `neo4-admin import` command to load them into an empty database. This requires shutting down the Neo4J server and then running a command that will write the new database.
-
-In order to generate data in CSV format suitable for Neo4J import, use the following command:
+For datasets too large for interactive `cypher-shell` loading, produce a directory of CSV files plus a shell script that invokes `neo4j-admin import`:
 
 ```bash
-cat us_ofac.ijson | ftm export-neo4j-bulk -o folder_name -e iban -e entity -e address
+cat us_ofac.ijson | ftm export-neo4j-bulk -o neo4j_import/ -e iban -e address
 ```
 
-This will generate a set of CSV files in a folder, and include a shell script file that describes the `neo4-admin` import command that should be used to load the data into a graph store.
+This requires stopping the Neo4J server and running the generated script against an empty database.
 
-### GEXF for Gephi/Sigma.js
+#### GEXF for Gephi
 
-[GEXF](https://gephi.org/gexf/format/) (Graph Exchange XML Format) is a file format used by the network analysis software [Gephi](https://gephi.org/) and other tools developed in the periphery of the [Media Lab at Sciences Po](http://tools.medialab.sciences-po.fr/). Gephi is particularly suited to do quantitative analysis of graphs with tens of thousands of nodes. It can calculate network metrics like centrality or PageRank, or generate complex visual layouts.
-
-The command line works analogous to the Neo4J export, also accepting the `-e` flag for property types that should be turned into nodes:
+[GEXF](https://gephi.org/gexf/format/) is the graph format used by [Gephi](https://gephi.org/) and related tools. Use it for quantitative graph analysis — centrality, PageRank, force-directed layouts — on graphs of tens of thousands of nodes:
 
 ```bash
-curl -o us_ofac.ijson https://storage.googleapis.com/occrp-data-exports/us_ofac/us_ofac.json
 cat us_ofac.ijson | ftm validate | ftm export-gexf -e iban -o ofac.gexf
 ```
 
-![Screenshot of Gephi. A small trove of emails has been visualized as a network. The entity schema type has been used to color nodes, while the size is based on the amount of inbound links (i.e. In-Degree).](../public/images/docs/cli/export-gephi.png)
+![Gephi visualization of a sanctions-list graph, colored by entity schema, sized by in-degree.](../public/images/docs/cli/export-gephi.png)
 
-## Exporting entities to RDF/Linked Data
+### RDF export
 
-Entity streams of FollowTheMoney data can also be exported to linked data in the `NTriples` format.
-
-```bash
-curl -o us_ofac.ijson https://storage.googleapis.com/occrp-data-exports/us_ofac/us_ofac.json
-cat us_ofac.ijson | ftm validate | ftm export-rdf
-```
-
-It is unclear to the author why this functionality exists, it was just really easy to implement. For those developers who enjoy working with RDF, it might be worthwhile to point out that the underlying ontology (FollowTheMoney) is also regularly published in [RDF/XML](https://followthemoney.tech/ns/ftm.xml) format.
-
-By default, the RDF exporter tries to map each entity property to a fully-qualified RDF predicate. Schemas include some mappings to FOAF and similar ontologies.
-
-## Importing Open Contracting data
-
-The [Open Contracting Data Standard](https://standard.open-contracting.org/latest/en/) (OCDS) is commonly serialised as a series of JSON objects. `ftm` includes a function to transform a stream of OCDS objects into {{ schema_ref('Contract') }} and {{ schema_ref('ContractAward') }} entities. This was developed in particular to import data from the DIGIWHIST [OpenTender.eu](https://opentender.eu/all/download) site, so other implementations of OCDS may require extending the importer to accommodate other formats.
-
-Here's how you can convert all Cyprus government procurement data to FollowTheMoney objects:
+Entity streams can be exported as NTriples:
 
 ```bash
-curl -o CY_ocds_data.json.tar.gz https://opentender.eu/data/files/CY_ocds_data.json.tar.gz
-tar xvfz CY_ocds_data.json.tar.gz
-cat CY_ocds_data.json | ftm import-ocds | ftm aggregate >cy_contracts.ijson
+cat us_ofac.ijson | ftm validate | ftm export-rdf > ofac.nt
 ```
 
-Depending on how large the OCDS dataset is, you may want to use `followthemoney-store` instead of `ftm aggregate`.
+The exporter maps each property to a fully qualified RDF predicate by default; pass `--unqualified` to emit short predicate names instead. The underlying FtM ontology is also published as [RDF/XML](https://followthemoney.tech/ns/ftm.xml), with mappings to FOAF and related vocabularies.
 
-## Aggregating entities using ftm-store
+## Aggregating large datasets
 
-While the method of streaming FollowTheMoney entities is very convenient, there are situations where not all information about an entity is known at the time at which it is generated. For example, think of a [mapping](mappings.md) that loads company names from one CSV file, while the corresponding addresses are in a second, separate CSV table. In such cases, it is easier to generate two entities with the same ID and to merge them later.
+`ftm aggregate` holds the full dataset in memory, which is impractical beyond tens of millions of entities or when fragments are produced by multiple workers. The separate [`followthemoney-store`](https://github.com/alephdata/followthemoney-store) package provides on-disk aggregation backed by SQLite or PostgreSQL.
 
-Merging such entity fragments requires sorting all the entities in the given dataset by their ID in order to aggregate their properties. For small datasets, this can be done in application memory using the `ftm aggregate`command.
-
-Once the dataset size approaches the amount of available memory, however, sorting must be performed on disk. This is also true when entity fragments are generated on different nodes in a computing cluster.
-
-For this purpose, `followthemoney-store` is available as a Python library and a command line tool. It can use any SQL database as a backend, with a local SQLite file set as a default. When using PostgreSQL as a database, `followthemoney-store` can use its built-in upsert functionality, making the backend more performant than others.
-
-To use `followthemoney-store` with SQLite, install it like this:
+Install with SQLite support:
 
 ```bash
 pip install followthemoney-store
 ```
 
-For PostgreSQL support, use the following settings:
+With PostgreSQL, which supports upserts and performs better under write contention:
 
 ```bash
 pip install followthemoney-store[postgresql]
 export FTM_STORE_URI=postgresql://localhost/followthemoney
 ```
 
-Once installed, you can operate the `followthemoney-store` command in read or write mode:
+A typical write-then-iterate flow:
 
 ```bash
-curl -o us_ofac.ijson https://storage.googleapis.com/occrp-data-exports/us_ofac/us_ofac.json
 cat us_ofac.ijson | ftm store write -d us_ofac
-ftm store iterate -d us_ofac | alephclient write-entities -f us_ofac
+ftm store iterate -d us_ofac > aggregated.ijson
 ftm store delete -d us_ofac
 ```
 
 !!! warning
-  When aggregating entities with large fragments of text, a size limit applies. By default, no entity is allowed to grow larger than 50MB of raw text. Additional text fragments are discarded with a warning.
+    When aggregating entities with very large text fragments, a per-entity size limit applies. Entities larger than 50 MB of raw text have additional fragments discarded with a warning written to stderr.
+
+## Extending the CLI
+
+`ftm` discovers additional commands through the `followthemoney.cli` Python entry-point group. Packages that install Click commands under this group appear automatically in `ftm --help` after installation. [`followthemoney-store`](https://github.com/alephdata/followthemoney-store) registers the `ftm store` subcommand this way, and [zavod](https://zavod.opensanctions.org/) adds its own commands in environments where it is installed.

@@ -143,6 +143,9 @@ class Statement(object):
         return self._external
 
     def to_dict(self) -> StatementDict:
+        # `canonical_id` is emitted first so each JSONL line is byte-sortable
+        # by canonical ID with plain `sort`. `ftm aggregate-statements` depends
+        # on this.
         return {
             "canonical_id": self.canonical_id,
             "entity_id": self._entity_id,
