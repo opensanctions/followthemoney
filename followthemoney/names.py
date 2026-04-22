@@ -41,7 +41,15 @@ PART_TAG_PROPS: Tuple[Tuple[str, Tuple[NamePartTag, ...]], ...] = (
 
 
 def schema_type_tag(schema: Schema) -> NameTypeTag:
-    """Return the name type tag for the given schema."""
+    """Return the [NameTypeTag][rigour.names.NameTypeTag] for a schema.
+
+    Args:
+        schema: Any FTM schema.
+
+    Returns:
+        `PER`, `ORG`, `ENT`, `OBJ`, or `UNK` depending on the
+        schema's position in the hierarchy.
+    """
     if schema.is_a("Person"):
         return NameTypeTag.PER
     elif schema.is_a("Organization"):
@@ -60,32 +68,52 @@ def entity_names(
     *,
     matchable: bool = True,
     infer_initials: bool = False,
+    symbols: bool = True,
     phonetics: bool = True,
     numerics: bool = True,
     consolidate: bool = True,
 ) -> Set[Name]:
     """Build tagged rigour `Name` objects from an FTM entity.
 
-    Used by matchers (nomenklatura) and indexers (yente) to get a
-    uniform set of `Name` objects for an entity, with structural
-    part annotations already applied. Flags forward to
-    `rigour.names.analyze_names`; see its docstring for their
-    semantics.
+    Args:
+        entity: Any FTM entity (`ValueEntity` or `StatementEntity`).
+        props: Property names that feed the primary name pool. `None`
+            (default) takes all name-typed properties off the entity,
+            honouring `matchable`.
+        matchable: `True` (default) restricts the name properties used
+            to those marked `matchable` in the schema.
+        infer_initials: When `True`, every single-character latin
+            name part is tagged with an `INITIAL` symbol — query-
+            side behaviour, where `"J Smith"` arrives without a
+            label on `"J"`. Default `False`; indexers and the
+            candidate side of a matcher leave it at the default.
+            Ignored for non-person names. No-op when `symbols`
+            is `False`.
+        symbols: Master switch for symbol emission. `True`
+            (default) runs the tagger's match-and-apply pass and
+            the INITIAL / NUMERIC emitters. `False` suppresses all
+            symbols (`name.symbols` and `name.spans` stay empty);
+            `part_tags` and structural `NamePartTag` labelling
+            still apply.
+        phonetics: When `True` (default), each `NamePart.metaphone`
+            is populated. Callers that feed `part.metaphone` into
+            downstream fields (e.g. yente's `name_phonemes` ES
+            field) keep the default; callers that never read the
+            property can pass `False` to skip the computation.
+        numerics: When `True` (default), numeric-looking name parts
+            that the tagger's ordinal list didn't cover pick up a
+            `Symbol(NUMERIC, int_value)`. `False` keeps the cheaper
+            `NamePartTag.NUM` structural annotation but drops the
+            symbol — use when numeric-symbol overlap isn't part of
+            downstream scoring.
+        consolidate: When `True` (default), short names that are
+            substrings of longer names in the result are dropped.
+            **Indexers should pass `False`** to preserve partial-
+            name recall (so `"John Smith"` can still match
+            `"John K Smith"` from the other side).
 
-    `props` selects which properties feed the primary name pool.
-    `None` (default) takes all name-typed properties off the entity,
-    honouring `matchable`. An explicit tuple bypasses the `matchable`
-    filter and reads exactly those props. Tuple (not list) so the
-    signature stays hashable for the surrounding `lru_cache`.
-
-    `matchable=True` (default) restricts to `name`, `alias`,
-    `previousName`. `matchable=False` additionally pulls in the
-    non-matchable name-typed properties — `weakAlias` and
-    `abbreviation` — as standalone names.
-
-    `PART_TAG_PROPS` always runs regardless of `props` / `matchable`
-    — structural annotations from `firstName`, `lastName`,
-    `fatherName`, … are orthogonal to the main-name pool.
+    Returns:
+        A de-duplicated set of tagged `Name` objects.
     """
     type_tag = schema_type_tag(entity.schema)
 
@@ -109,6 +137,7 @@ def entity_names(
         names,
         part_tags,
         infer_initials=infer_initials,
+        symbols=symbols,
         phonetics=phonetics,
         numerics=numerics,
         consolidate=consolidate,
