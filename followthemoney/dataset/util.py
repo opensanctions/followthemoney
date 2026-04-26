@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 from normality import slugify_text
 from typing import Annotated, Any
 from rigour.time import datetime_iso
@@ -48,7 +48,7 @@ Url = Annotated[str, AfterValidator(type_check_http_url)]
 
 def serialize_dt(dt: datetime) -> str:
     if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=UTC)
+        dt = dt.replace(tzinfo=timezone.utc)
     text = datetime_iso(dt)
     assert text is not None, "Invalid datetime: %r" % dt
     return text
