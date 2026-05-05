@@ -53,7 +53,7 @@ Occupancy:
       type: date
     periodStart:
       label: "Period start"
-      description: "Start date of the fixed office term (e.g. a parliamentary session). Unlike startDate, which tracks when an individual's mandate begins, periodStart refers to the term itself and is the same for everyone holding the position during that period"
+      description: "Start date of the fixed office term (e.g. a parliamentary session). Unlike `startDate`, which tracks when an individual's mandate begins, `periodStart` refers to the term itself and is the same for everyone holding the position during that period."
       type: date
     periodEnd:
       label: "Period end"
