@@ -57,7 +57,7 @@ Occupancy:
       type: date
     periodEnd:
       label: "Period end"
-      description: "End date of the fixed office term. Unlike endDate, which tracks when an individual's mandate ends, periodEnd refers to the term itself and is the same for everyone holding the position during that period"
+      description: "End date of the fixed office term. Unlike `endDate`, which tracks when an individual's mandate ends, `periodEnd` refers to the term itself and is the same for everyone holding the position during that period."
       type: date
     constituency:
       # https://www.popoloproject.com/specs/membership.html#classes-and-properties
