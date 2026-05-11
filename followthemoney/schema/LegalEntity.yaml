@@ -168,6 +168,11 @@ LegalEntity:
       type: identifier
       format: ogrn
       maxLength: 32
+    okvedCode:
+      label: "OKVED"
+      description: "Russian industry classifier code for economic activities"
+      type: identifier
+      matchable: false
     leiCode:
       # cf. https://www.gleif.org/en/about-lei/introducing-the-legal-entity-identifier-lei
       label: "LEI"
