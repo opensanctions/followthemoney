@@ -1222,14 +1222,6 @@
           "qname": "Company:oksmCode",
           "type": "string"
         },
-        "okvedCode": {
-          "description": "(RU, ОКВЭД) Russian classifier that categorizes businesses by their (primary and secondary) economic activities",
-          "label": "OKVED(2) Classifier",
-          "maxLength": 1024,
-          "name": "okvedCode",
-          "qname": "Company:okvedCode",
-          "type": "string"
-        },
         "pfrNumber": {
           "description": "(RU, ПФР) Pension Fund Registration number. AAA-BBB-CCCCCC, where AAA is organisation region, BBB is district, and CCCCCC is the number at a specific branch.",
           "label": "PFR Number",

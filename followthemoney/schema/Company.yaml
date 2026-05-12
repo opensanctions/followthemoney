@@ -65,10 +65,6 @@ Company:
       description: "(RU, КПП) Russian code issued by the tax authority, identifies the reason for registration at the Federal Tax Service. A company may have multiple KPP codes (e.g. for different branches), and the codes are not unique across companies."
       type: identifier
       matchable: false
-    okvedCode:
-      label: "OKVED(2) Classifier"
-      description: "(RU, ОКВЭД) Russian classifier that categorizes businesses by their (primary and secondary) economic activities"
-      matchable: false
     okopfCode:
       label: "OKOPF"
       description: "(RU, ОКОПФ) Russian classifier that categorizes different types of legal entities in Russia based on their organizational and legal structure"
