@@ -23,10 +23,13 @@ Occupancy:
   temporalExtent:
     start:
       - startDate
+      - periodStart
+      - electionDate
       - declarationDate
       - date
     end:
       - endDate
+      - periodEnd
   properties:
     holder:
       label: "Holder"

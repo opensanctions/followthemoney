@@ -4670,10 +4670,13 @@
       ],
       "temporalExtent": {
         "end": [
-          "endDate"
+          "endDate",
+          "periodEnd"
         ],
         "start": [
           "startDate",
+          "periodStart",
+          "electionDate",
           "declarationDate",
           "date"
         ]
