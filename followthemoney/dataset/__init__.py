@@ -6,6 +6,7 @@ from followthemoney.dataset.coverage import DataCoverage
 from followthemoney.dataset.query import DatasetQuery, evaluate_query, match_datasets
 from followthemoney.dataset.query import validate_query
 from followthemoney.dataset.parse import parse_query
+from followthemoney.dataset.versions import Version, VersionHistory
 
 UndefinedDataset = Dataset.make({"name": Dataset.UNDEFINED})
 
@@ -22,4 +23,6 @@ __all__ = [
     "match_datasets",
     "parse_query",
     "validate_query",
+    "Version",
+    "VersionHistory",
 ]
