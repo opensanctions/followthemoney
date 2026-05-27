@@ -7,6 +7,7 @@ Ownership:
   featured:
     - owner
     - asset
+    - role
     - percentage
     - startDate
     - endDate
@@ -32,7 +33,7 @@ Ownership:
       label: "Asset"
       reverse:
         name: ownershipAsset
-        label: "Owners"
+        label: "Ownership and Control"
       type: entity
       range: Asset
     percentage:
