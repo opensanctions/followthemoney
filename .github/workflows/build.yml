@@ -7,6 +7,8 @@ permissions:
   id-token: write
   packages: write
   contents: read
+  attestations: write
+  artifact-metadata: write
 
 jobs:
   python:
@@ -53,9 +55,26 @@ jobs:
       - name: Partial mypy type-check
         run: |
           make typecheck
-      - name: Build a followthemoney distribution
-        run: |
-          python3 -m build --wheel
+
+  # Single wheel/sdist build for PyPI. Pure-Python wheels are py3-none-any, so
+  # building once (not once per matrix shard) is correct and keeps the
+  # build-provenance attestation tied to a single set of artifact bytes.
+  wheel:
+    name: wheel + sdist
+    runs-on: ubuntu-latest
+    needs: python
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Install build tool
+        run: python -m pip install --upgrade pip build
+      - name: Build wheel and sdist
+        run: python3 -m build
+      - uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: 'dist/*'
       - name: Publish followthemoney to PyPI
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1
@@ -87,11 +106,20 @@ jobs:
       - name: Run the tests
         run: |
           npm run test:prod && npm run lint
+      - name: Pack tarball
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        id: pack
+        run: |
+          TARBALL=$(npm pack --silent)
+          echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
+      - uses: actions/attest-build-provenance@v4
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        with:
+          subject-path: js/${{ steps.pack.outputs.tarball }}
       - name: Publish to NPM
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         run: |
-          npm run build
-          npm publish --access public
+          npm publish --access public "./${{ steps.pack.outputs.tarball }}"
 
   java:
     runs-on: ubuntu-latest
@@ -159,6 +187,7 @@ jobs:
           platforms: linux/amd64
           cache-from: type=gha
       - name: Build and push docker image
+        id: push
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
         uses: docker/build-push-action@v7
         with:
@@ -169,3 +198,26 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Attest build provenance to OCI registry
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-name: ghcr.io/opensanctions/followthemoney
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+      - name: Generate CycloneDX SBOM for image
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+        uses: anchore/sbom-action@v0
+        with:
+          image: ghcr.io/opensanctions/followthemoney@${{ steps.push.outputs.digest }}
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
+          upload-artifact: false
+      - name: Attest SBOM to OCI registry
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+        uses: actions/attest-sbom@v2
+        with:
+          subject-name: ghcr.io/opensanctions/followthemoney
+          subject-digest: ${{ steps.push.outputs.digest }}
+          sbom-path: sbom.cdx.json
+          push-to-registry: true
