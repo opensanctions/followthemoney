@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 class ModelToDict(TypedDict):
     schemata: Dict[str, SchemaToDict]
     types: Dict[str, PropertyTypeToDict]
+    version: str
 
 
 class Model(object):
@@ -179,7 +180,10 @@ class Model(object):
 
     def to_dict(self) -> ModelToDict:
         """Return metadata for all schemata and properties, in a serializable form."""
+        from followthemoney import __version__
+
         return {
+            "version": __version__,
             "schemata": {s.name: s.to_dict() for s in self.schemata.values()},
             "types": {t.name: t.to_dict() for t in registry.types},
         }

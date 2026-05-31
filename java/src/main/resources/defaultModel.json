@@ -8373,5 +8373,6 @@
       "pivot": true,
       "plural": "URLs"
     }
-  }
+  },
+  "version": "4.8.3"
 }
