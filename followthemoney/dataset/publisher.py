@@ -10,7 +10,7 @@ class DataPublisher(BaseModel):
     """Publisher information, eg. the government authority."""
 
     name: str
-    url: Optional[Url] = None
+    url: Url
     name_en: Optional[str] = None
     acronym: Optional[str] = None
     description: Optional[str] = None
@@ -19,7 +19,7 @@ class DataPublisher(BaseModel):
     logo_url: Optional[Url] = None
 
     # Re: the type: ignore, see https://github.com/python/mypy/issues/1362 and https://docs.pydantic.dev/2.0/usage/computed_fields/
-    @computed_field # type: ignore[prop-decorator]
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def country_label(self) -> Optional[str]:
         if self.country is None:
