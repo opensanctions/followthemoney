@@ -93,6 +93,7 @@ class TopicType(EnumType):
         "export.control.linked": _("Export control-linked"),
         "export.risk": _("Trade risk"),
         "invest.risk": _("Investment risk"),
+        "invest.ban": _("Investment ban"),
         "debarment": _("Debarred entity"),
         "poi": _("Person of interest"),
     }
@@ -112,6 +113,7 @@ class TopicType(EnumType):
         "export.control.linked",
         "export.risk",
         "invest.risk",
+        "invest.ban",
         "poi",
         "mare.detained",
         "mare.shadow",
