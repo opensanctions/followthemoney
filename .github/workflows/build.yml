@@ -235,7 +235,7 @@ jobs:
           upload-artifact: false
       - name: Attest SBOM to OCI registry
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-        uses: actions/attest-sbom@v2
+        uses: actions/attest@v4
         with:
           subject-name: ghcr.io/opensanctions/followthemoney
           subject-digest: ${{ steps.push.outputs.digest }}
