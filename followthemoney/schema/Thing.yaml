@@ -115,6 +115,16 @@ Thing:
         label: "Derived entities"
       type: entity
       range: Document
+    riskSource:
+      label: Risk source
+      description: "The directly-designated entity from which this entity's risk classification ultimately derives, e.g. the sanctioned owner at the origin of an ownership chain. See also the `topics` property."
+      # No reverse property is defined deliberately: the inverse of this link is a
+      # one-to-many fan-out (a hub like a major sanctioned conglomerate is the risk
+      # source for thousands of entities), which would bloat inverted/nested views.
+      # Without a reverse, `get_inverted` skips it across the stack.
+      type: entity
+      range: Thing
+      matchable: false
     indexText:
       # This is a leaked abstraction from aleph. The idea is to have some
       # additional text field that can be used to associate searchable text

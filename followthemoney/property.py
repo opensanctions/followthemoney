@@ -141,7 +141,10 @@ class Property:
 
         #: When a property points to another schema, a stub reverse property is
         #: added as a place to store metadata to help display the link in inverted
-        #: views.
+        #: views. This is optional: a property may deliberately omit its ``reverse``
+        #: when the inverse is an unbounded one-to-many fan-out that should not be
+        #: materialised (a hub entity referenced by thousands of others). Without a
+        #: reverse, the link is not surfaced by inverted lookups (``get_inverted``).
         self._reverse = data.get("reverse")
         self.reverse: Optional["Property"] = None
 

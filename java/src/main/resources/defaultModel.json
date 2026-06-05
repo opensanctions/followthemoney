@@ -7056,6 +7056,15 @@
           "qname": "Thing:retrievedAt",
           "type": "date"
         },
+        "riskSource": {
+          "description": "The directly-designated entity from which this entity's risk classification ultimately derives, e.g. the sanctioned owner at the origin of an ownership chain. See also the `topics` property.",
+          "label": "Risk source",
+          "maxLength": 200,
+          "name": "riskSource",
+          "qname": "Thing:riskSource",
+          "range": "Thing",
+          "type": "entity"
+        },
         "risks": {
           "label": "Risks",
           "matchable": true,

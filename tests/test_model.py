@@ -163,6 +163,20 @@ def test_model_reverse_properties():
     assert rev.reverse == prop, rev
 
 
+def test_risk_source_property():
+    thing = model.schemata["Thing"]
+    prop = thing.get("riskSource")
+    assert prop is not None, prop
+    assert prop.stub is False, prop
+    assert prop.range == thing, prop
+    assert prop.matchable is False, prop
+
+    # Deliberately reverse-less: the inverse is a one-to-many hub fan-out that
+    # would bloat inverted/nested views, so `get_inverted` must skip it.
+    assert prop.reverse is None, prop
+    assert "riskLinked" not in thing.properties
+
+
 def test_matchable():
     le = model.schemata["LegalEntity"]
     company = model.schemata["Company"]
