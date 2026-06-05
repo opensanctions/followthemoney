@@ -87,6 +87,7 @@ class TopicType(EnumType):
         "mil": _("Military"),
         "sanction": _("Sanctioned entity"),
         "sanction.linked": _("Sanction-linked entity"),
+        "sanction.control": _("Sanction ownership or control"),
         "sanction.counter": _("Counter-sanctioned entity"),
         "export.control": _("Export controlled"),
         # For BIS 50% rule:
@@ -122,6 +123,7 @@ class TopicType(EnumType):
         "role.oligarch",
         "role.pep",
         "role.rca",
+        "sanction.control",
         "sanction.counter",
         "sanction.linked",
         "sanction",
