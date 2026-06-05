@@ -8369,6 +8369,7 @@
         "role.rca": "Close Associate",
         "role.spy": "Spy",
         "sanction": "Sanctioned entity",
+        "sanction.control": "Sanction ownership or control",
         "sanction.counter": "Counter-sanctioned entity",
         "sanction.linked": "Sanction-linked entity",
         "wanted": "Wanted"
