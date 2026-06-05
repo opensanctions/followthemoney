@@ -171,13 +171,10 @@ def test_risk_source_property():
     assert prop.range == thing, prop
     assert prop.matchable is False, prop
 
-    rev = prop.reverse
-    assert rev is not None
-    assert rev.name == "riskLinked", rev
-    assert rev.range == thing, rev
-    assert rev.stub is True, rev
-    assert rev.reverse == prop, rev
-    assert rev.validate(["some-entity-id"]) is not None, rev
+    # Deliberately reverse-less: the inverse is a one-to-many hub fan-out that
+    # would bloat inverted/nested views, so `get_inverted` must skip it.
+    assert prop.reverse is None, prop
+    assert "riskLinked" not in thing.properties
 
 
 def test_matchable():

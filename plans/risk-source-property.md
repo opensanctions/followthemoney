@@ -50,17 +50,46 @@ riskSource:
   description: "The directly-designated entity from which this entity's risk
     classification ultimately derives, e.g. the sanctioned person at the origin of an
     ownership chain. See also the `topics` property."
-  reverse:
-    name: riskLinked
-    label: "Risk-linked entities"
+  # No reverse defined — deliberately. See "No reverse property" below.
   type: entity
   range: Thing
   matchable: false
 ```
 
 `A riskSource B` reads "B is the source of A's risk." A is the derived entity
-(subsidiary); B is the directly-designated entity at the origin of the chain. The
-reverse stub (`B.riskDerived`) lists every entity whose risk derives from B.
+(subsidiary); B is the directly-designated entity at the origin of the chain.
+
+### No reverse property (deliberate)
+
+Unlike every other entity-pointer property in the model, `riskSource` defines **no
+`reverse`**. This is the crux of the design, not an omission.
+
+The inverse of `riskSource` is a **one-to-many hub fan-out**: a major sanctioned
+conglomerate (think a state energy company with thousands of subsidiaries and board
+members) is the `riskSource` of thousands of entities. A reverse property would
+materialize all of them as inverted edges. The nested-targets exporter
+(`zavod/exporters/nested.py` → `Entity.to_nested_dict` → `View.get_adjacent`) inlines
+every adjacent entity at depth 1, so the hub's `targets.nested.json` object would
+balloon with thousands of full entity dicts — largely *duplicating* the fan-out that
+already exists via its `Ownership`/`Directorship` reverse edges.
+
+The asymmetry is the point: `riskSource` is **many-to-few forward** (each entity has
+one or a few ultimate sources) but **one-to-many reverse**. The forward direction is
+bounded and safe to inline; the reverse is the explosion this property was built to
+*avoid*. Re-introducing it via a reverse defeats the purpose.
+
+Dropping the reverse resolves this at the schema level, with no changes to
+nomenklatura or zavod: every store backend's `get_inverted` yields a reverse edge
+only when `prop.reverse is not None`, and the same guard holds in yente's nested
+search and the fragment exporter. `reverse` is `Optional` by design and the whole
+stack already handles `None`; verified empirically that a 2,000-entity hub produces
+zero inverted/adjacent results and that serialization, graph building, and model dump
+are unaffected.
+
+The trade-off: the cheap store-level inverse query "what is sanctioned because of X"
+is no longer available — but that query *is* the pathological hub fan-out. It is
+better served deliberately (filter `topics` + `riskSource == X` in search/SQL) than
+by inline graph expansion.
 
 ### Settled
 
@@ -84,9 +113,9 @@ reverse stub (`B.riskDerived`) lists every entity whose risk derives from B.
   directly sanctioned and can be the origin of a derived flag, so the range stays
   broad rather than narrowing to `LegalEntity`.
 
-- **Reverse `riskLinked` / "Risk-linked entities"** — confirmed. Harmonizes with the
-  existing `sanction.linked` "linked" vocabulary, and avoids collision with `proof`'s
-  reverse (`proven` / "Derived entities").
+- **No reverse property** — confirmed (see "No reverse property", above). An earlier
+  draft proposed a `riskLinked` reverse; it was dropped to prevent hub fan-out in
+  inverted/nested views.
 
 ### Multi-value is a feature, not a quirk
 
@@ -101,14 +130,13 @@ risk sources, and the property records all of them.
    (after `proof`, alongside the other entity-pointer properties).
 2. **Regenerate generated artifacts** — `make default-model`, which runs
    `ftm dump-model` into `js/src/defaultModel.json` and
-   `java/src/main/resources/defaultModel.json`, then `contrib/gen_docs.py`. The
-   reverse stub `riskDerived` will appear automatically.
+   `java/src/main/resources/defaultModel.json`, then `contrib/gen_docs.py`. No reverse
+   stub is generated.
 3. **Translations** — `make translate` (`pybabel extract`) to add the new label
    strings to the catalog; translation across locales is a follow-up, not a blocker.
 4. **Tests** — assert the schema loads, `model.get("Thing").get("riskSource")`
-   resolves with `range == Thing` and `matchable is False`, the reverse stub
-   `riskDerived` exists and is a stub (writing to it raises), and a round-trip
-   `entity.add("riskSource", other_id)` works. Mirror existing entity-property tests.
+   resolves with `range == Thing` and `matchable is False`, and that `prop.reverse is
+   None` (no `riskLinked` stub on `Thing`). Mirror existing entity-property tests.
 
 ## Downstream impact
 
@@ -121,6 +149,9 @@ risk sources, and the property records all of them.
   scoring — intended.
 - **yente / API:** the property is exposed automatically via the model; no code
   change needed.
+- **Nested / inverted views:** with no reverse, hub entities accumulate no inverted
+  `riskSource` edges, so `nested.py` and yente nested search are unaffected (see "No
+  reverse property", above).
 - **JS / Java consumers:** pick up the property from the regenerated `defaultModel.json`.
 
 ## Populating `riskSource` (out of scope — opensanctions repo)
