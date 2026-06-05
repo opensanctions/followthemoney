@@ -115,6 +115,15 @@ Thing:
         label: "Derived entities"
       type: entity
       range: Document
+    riskSource:
+      label: Risk source
+      description: "The directly-designated entity from which this entity's risk classification ultimately derives, e.g. the sanctioned owner at the origin of an ownership chain. See also the `topics` property."
+      reverse:
+        name: riskLinked
+        label: "Risk-linked entities"
+      type: entity
+      range: Thing
+      matchable: false
     indexText:
       # This is a leaked abstraction from aleph. The idea is to have some
       # additional text field that can be used to associate searchable text

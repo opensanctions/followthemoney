@@ -163,6 +163,23 @@ def test_model_reverse_properties():
     assert rev.reverse == prop, rev
 
 
+def test_risk_source_property():
+    thing = model.schemata["Thing"]
+    prop = thing.get("riskSource")
+    assert prop is not None, prop
+    assert prop.stub is False, prop
+    assert prop.range == thing, prop
+    assert prop.matchable is False, prop
+
+    rev = prop.reverse
+    assert rev is not None
+    assert rev.name == "riskLinked", rev
+    assert rev.range == thing, rev
+    assert rev.stub is True, rev
+    assert rev.reverse == prop, rev
+    assert rev.validate(["some-entity-id"]) is not None, rev
+
+
 def test_matchable():
     le = model.schemata["LegalEntity"]
     company = model.schemata["Company"]
