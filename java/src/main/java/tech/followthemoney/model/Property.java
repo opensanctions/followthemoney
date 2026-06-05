@@ -34,9 +34,9 @@ public class Property {
             throw new IllegalArgumentException("Only entity properties can be stubs: " + type.getName());
         }
         if (type.isEntity()) {
-            if (reverse.isEmpty()) {
-                throw new IllegalArgumentException("Entity properties must have a reverse property");
-            }
+            // A reverse property is optional: a property may deliberately omit it when
+            // the inverse would be an unbounded one-to-many hub fan-out. getReverse()
+            // returns Optional.empty() in that case.
             if (range.isEmpty()) {
                 throw new IllegalArgumentException("Entity properties must have a range");
             }
