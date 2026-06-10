@@ -36,7 +36,7 @@ Commands exchange entities as newline-delimited JSON — one entity object per l
 
 Streams can be piped through multiple commands without decoding overhead, and large files can be processed incrementally. If you need a human-readable view, pipe through [`ftm pretty`](#formatting-streams).
 
-The writer always emits `id` as the first key in each line. Because the lines are sortable as plain text — every line starts with `{"id":"<id>"` — a standard `sort` pipeline orders an entity stream by ID without any JSON-aware tooling. The same property holds for line-based statement streams, which begin with `{"canonical_id":"<id>"`.
+The writer always emits `id` as the first key in each line. Because the lines are sortable as plain text (every line starts with `{"id":"<id>"`), a standard `sort` pipeline orders an entity stream by ID without any JSON-aware tooling. The same property holds for line-based statement streams, which begin with `{"canonical_id":"<id>"`.
 
 This matters because Unix `sort` is fast, uses external merge sort to spill to disk when the input exceeds memory, and parallelizes across cores with `--parallel`. It scales to datasets of tens or hundreds of gigabytes without special infrastructure, which is what makes [`ftm sorted-aggregate`](#aggregating-fragments) and [`ftm aggregate-statements`](#statement-based-workflows) practical beyond what `ftm aggregate` can handle in memory.
 
@@ -44,7 +44,7 @@ This matters because Unix `sort` is fast, uses external merge sort to spill to d
 
 ### Executing a mapping
 
-Mappings project structured data (CSV or SQL) into FtM entities according to a [YAML mapping file](mappings.md). Run a mapping with `ftm map`:
+Mappings project structured data (CSV or SQL) into FollowTheMoney (FtM) entities according to a [YAML mapping file](mappings.md). Run a mapping with `ftm map`:
 
 ```bash
 curl -o md_companies.yml https://raw.githubusercontent.com/alephdata/aleph/main/mappings/md_companies.yml
@@ -89,7 +89,7 @@ See the [mappings reference](mappings.md) for the YAML schema, including keys, f
 cat raw.ijson | ftm validate > clean.ijson
 ```
 
-If a producer emits unclean data — stray whitespace, invalid country codes, malformed dates — validation normalizes what it can and drops the rest.
+If a producer emits unclean data (stray whitespace, invalid country codes, malformed dates), validation normalizes what it can and drops the rest.
 
 ### Formatting for humans
 
@@ -110,6 +110,26 @@ ftm dump-model -o model.json
 ```
 
 This is the same model described by the [schema explorer](../explorer/schemata/index.md), serialized for tools that want to consume it programmatically.
+
+## Exploring the schema model
+
+Where `ftm dump-model` emits the entire model at once, `ftm ref` lets you browse it one question at a time: which schemata exist, what properties a `Person` accepts, what type a property holds, what values an enum allows. It reads the model compiled into the installed `followthemoney` package, so it is always in sync with your version, works offline, and needs no API key. It is built for coding agents and humans who want an answer without reading the YAML sources or piping `dump-model` through `jq`.
+
+Every `ref` command prints a table when attached to a terminal and JSON when piped or when `--json` is passed. So `ftm ref schema Person` is readable at a prompt, and `ftm ref schema Person | jq` produces JSON for tooling:
+
+```bash
+ftm ref                       # model overview + the subcommand index
+ftm ref schemata              # every schema, with matchable/abstract flags
+ftm ref schemata --matchable  # only schemata that can be matched
+ftm ref schema Person         # one schema, with all inherited properties
+ftm ref types                 # every property type
+ftm ref type country          # one type, including its enum values
+ftm ref prop Person:nationality   # one property's full definition
+```
+
+`ftm ref schema NAME` lists the complete property set: own properties plus everything inherited from ancestor schemata. That is exactly the set of fields you can set on an entity of that schema. Stub (reverse-edge) properties are hidden by default; pass `--stubs` to include them. A property is addressed by its qualified `Schema:property` name, and inherited names resolve against the schema you ask about: `ftm ref prop Person:name` works even though `name` is defined on `Thing`.
+
+Unknown names produce a `Did you mean: …?` suggestion and exit with a usage error, so a mistyped schema or property fails fast rather than silently returning nothing.
 
 ## Namespace signing
 
@@ -259,7 +279,7 @@ This requires stopping the Neo4J server and running the generated script against
 
 #### GEXF for Gephi
 
-[GEXF](https://gephi.org/gexf/format/) is the graph format used by [Gephi](https://gephi.org/) and related tools. Use it for quantitative graph analysis — centrality, PageRank, force-directed layouts — on graphs of tens of thousands of nodes:
+[GEXF](https://gephi.org/gexf/format/) is the graph format used by [Gephi](https://gephi.org/) and related tools. Use it for quantitative graph analysis (centrality, PageRank, force-directed layouts) on graphs of tens of thousands of nodes:
 
 ```bash
 cat us_ofac.ijson | ftm validate | ftm export-gexf -e iban -o ofac.gexf

@@ -40,6 +40,7 @@ dependencies = [
     "openpyxl >= 3.0.5, < 4.0.0",
     "orjson >= 3.10.0, < 4.0",
     "pydantic >=2.11.0, < 3.0.0",
+    "rich >= 13.0.0, < 15.0.0",
 ]
 
 [project.urls]
@@ -94,6 +95,7 @@ rdf = "followthemoney.cli.exports:export_rdf"
 gexf = "followthemoney.cli.exports:export_gexf"
 cypher = "followthemoney.cli.exports:export_cypher"
 statements = "followthemoney.cli.statement:entity_statements"
+ref = "followthemoney.cli.ref:ref"
 
 [tool.hatch.build.targets.sdist]
 only-include = ["followthemoney", "LICENSE", "README.md"]
