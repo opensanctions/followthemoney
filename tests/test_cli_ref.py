@@ -26,6 +26,10 @@ def test_ref_schemata_list(cli_runner: CliRunner) -> None:
     names = {e["name"] for e in data}
     assert "Person" in names
     assert "Thing" in names
+    # extends lists all ancestors, matching the schema detail view.
+    person = next(e for e in data if e["name"] == "Person")
+    assert "LegalEntity" in person["extends"]
+    assert "Thing" in person["extends"]
 
 
 def test_ref_schemata_matchable_filter(cli_runner: CliRunner) -> None:

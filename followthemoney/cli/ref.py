@@ -105,8 +105,11 @@ def ref(ctx: click.Context, json_flag: bool) -> None:
         ("schemata", "List all schemata."),
         ("schema NAME", "Show one schema and all its properties."),
         ("types [NAME]", "List property types, or detail one."),
-        ("type NAME", "Detail one property type (alias)."),
-        ("prop QNAME", "Show one property, e.g. Person:name."),
+        (
+            "type NAME",
+            "Detail one property type: possible values, and which properties use it.",
+        ),
+        ("prop QNAME", "Show property details, e.g. Person:name."),
     ]
     if _json_mode(ctx, json_flag):
         emit_json(
@@ -124,9 +127,7 @@ def ref(ctx: click.Context, json_flag: bool) -> None:
 
 @ref.command("schemata", help="List all schemata in the model.")
 @click.option("--matchable", is_flag=True, help="Only matchable schemata.")
-@click.option(
-    "--abstract/--no-abstract", default=None, help="Filter by abstract flag."
-)
+@click.option("--abstract/--no-abstract", default=None, help="Filter by abstract flag.")
 @JSON_OPTION
 @click.pass_context
 def ref_schemata(
@@ -146,7 +147,8 @@ def ref_schemata(
                 "label": schema.label,
                 "matchable": schema.matchable,
                 "abstract": schema.abstract,
-                "extends": sorted(s.name for s in schema.extends),
+                # All ancestors (transitive), not just direct parents.
+                "extends": sorted(s.name for s in schema.schemata if s != schema),
                 "description": (schema.description or "").strip(),
             }
         )
@@ -281,7 +283,9 @@ def _type_detail(ctx: click.Context, name: str, json_flag: bool) -> None:
         values = type_.names
         rows = [[code, label] for code, label in sorted(values.items())]
         print_table(
-            rows, headers=["value", "label"], caption=f"{len(values)} supported value(s)"
+            rows,
+            headers=["value", "label"],
+            caption=f"{len(values)} supported value(s)",
         )
 
 
