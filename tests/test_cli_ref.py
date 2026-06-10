@@ -45,7 +45,7 @@ def test_ref_schema_includes_inherited(cli_runner: CliRunner) -> None:
     # `name` is inherited from Thing; it must appear with its origin schema.
     assert "name" in prop_names
     name_prop = next(p for p in data["properties"] if p["name"] == "name")
-    assert name_prop["from_schema"] == "Thing"
+    assert name_prop["schema"] == "Thing"
 
 
 def test_ref_schema_hides_stubs_by_default(cli_runner: CliRunner) -> None:
@@ -77,8 +77,13 @@ def test_ref_types_list_elides_large_enums(cli_runner: CliRunner) -> None:
 def test_ref_type_detail_has_values_and_props(cli_runner: CliRunner) -> None:
     data = _json(cli_runner, ["ref", "types", "topic"])
     assert data["name"] == "topic"
+    assert data["enum"] is True
     assert len(data["values"]) > 0
     assert any(p["name"] == "topics" for p in data["properties"])
+    # A non-enum type reports enum=false and carries no values.
+    name_type = _json(cli_runner, ["ref", "type", "name"])
+    assert name_type["enum"] is False
+    assert "values" not in name_type
 
 
 def test_ref_type_singular_alias(cli_runner: CliRunner) -> None:

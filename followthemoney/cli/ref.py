@@ -20,6 +20,7 @@ from followthemoney.types import registry
 from followthemoney.types.common import EnumType
 from followthemoney.schema import Schema
 from followthemoney.property import Property
+from followthemoney.cli.cli import cli
 from followthemoney.cli.render import is_json_mode, emit_json, print_table
 
 JSON_OPTION = click.option(
@@ -79,13 +80,13 @@ def _prop_flags(prop: Property) -> str:
 
 
 def _prop_payload(prop: Property) -> Dict[str, Any]:
-    """JSON shape for a property within a schema listing: to_dict + origin."""
+    """JSON shape for a property within a schema listing: to_dict + origin schema."""
     data: Dict[str, Any] = dict(prop.to_dict())
-    data["from_schema"] = prop.schema.name
+    data["schema"] = prop.schema.name
     return data
 
 
-@click.group("ref", invoke_without_command=True, help="Browse the FtM model offline.")
+@cli.group("ref", invoke_without_command=True, help="Browse the FtM model offline.")
 @JSON_OPTION
 @click.pass_context
 def ref(ctx: click.Context, json_flag: bool) -> None:
@@ -181,35 +182,27 @@ def ref_schema(ctx: click.Context, name: str, stubs: bool, json_flag: bool) -> N
         return
 
     props = [p for p in schema.sorted_properties if stubs or not p.stub]
-    summary: Dict[str, Any] = {
-        "name": schema.name,
-        "label": schema.label,
-        "description": (schema.description or "").strip(),
-        "matchable": schema.matchable,
-        "abstract": schema.abstract,
-        "hidden": schema.hidden,
-        "generated": schema.generated,
-        "deprecated": schema.deprecated,
-        # All ancestors (transitive), not just direct parents.
-        "extends": sorted(s.name for s in schema.schemata if s != schema),
-        "descendants": sorted(s.name for s in schema.descendants),
-        "featured": list(schema.featured),
-        "required": list(schema.required),
-        "properties": [_prop_payload(p) for p in props],
-    }
+    # Start from the model's own serialization so new schema fields flow through
+    # automatically; override the few views `ref` presents differently.
+    extends = sorted(s.name for s in schema.schemata if s != schema)
+    summary: Dict[str, Any] = dict(schema.to_dict())
+    summary["name"] = schema.name
+    summary["extends"] = extends  # all ancestors, not just direct parents
+    summary["descendants"] = sorted(s.name for s in schema.descendants)
+    summary["properties"] = [_prop_payload(p) for p in props]
 
     if _json_mode(ctx, json_flag):
         emit_json(summary)
         return
 
     click.echo(f"{schema.name}  ({schema.label})")
-    if summary["description"]:
-        click.echo(summary["description"])
+    if schema.description:
+        click.echo(schema.description.strip())
     click.echo("")
     click.echo(f"  matchable:    {'yes' if schema.matchable else 'no'}")
-    click.echo(f"  extends:      {', '.join(summary['extends']) or '(none)'}")
-    click.echo(f"  featured:     {', '.join(summary['featured']) or '(none)'}")
-    click.echo(f"  required:     {', '.join(summary['required']) or '(none)'}")
+    click.echo(f"  extends:      {', '.join(extends) or '(none)'}")
+    click.echo(f"  featured:     {', '.join(schema.featured) or '(none)'}")
+    click.echo(f"  required:     {', '.join(schema.required) or '(none)'}")
     click.echo("")
     rows = [
         [
@@ -242,6 +235,7 @@ def _type_detail(ctx: click.Context, name: str, json_flag: bool) -> None:
         )
         return
 
+    is_enum = isinstance(type_, EnumType)
     using = sorted(
         (
             {"qname": p.qname, "schema": p.schema.name, "name": p.name}
@@ -250,8 +244,10 @@ def _type_detail(ctx: click.Context, name: str, json_flag: bool) -> None:
         ),
         key=lambda p: p["qname"],
     )
+    # to_dict() omits the type's own name; carry it so the payload self-identifies.
     data: Dict[str, Any] = dict(type_.to_dict())
     data["name"] = type_.name
+    data["enum"] = is_enum
     data["properties"] = using
 
     if _json_mode(ctx, json_flag):
@@ -264,16 +260,9 @@ def _type_detail(ctx: click.Context, name: str, json_flag: bool) -> None:
     click.echo("")
     click.echo(f"  matchable:  {'yes' if type_.matchable else 'no'}")
     click.echo(f"  pivot:      {'yes' if type_.pivot else 'no'}")
+    click.echo(f"  enum:       {'yes' if is_enum else 'no'}")
     click.echo(f"  group:      {type_.group or '(none)'}")
     click.echo("")
-
-    if isinstance(type_, EnumType):
-        values = type_.names
-        rows = [[code, label] for code, label in sorted(values.items())]
-        print_table(
-            rows, headers=["value", "label"], caption=f"{len(values)} enum value(s)"
-        )
-        click.echo("")
 
     prop_rows = [[p["qname"], p["schema"]] for p in using]
     print_table(
@@ -281,6 +270,14 @@ def _type_detail(ctx: click.Context, name: str, json_flag: bool) -> None:
         headers=["property", "schema"],
         caption=f"{len(using)} property/properties of type {type_.name!r}",
     )
+
+    if isinstance(type_, EnumType):
+        click.echo("")
+        values = type_.names
+        rows = [[code, label] for code, label in sorted(values.items())]
+        print_table(
+            rows, headers=["value", "label"], caption=f"{len(values)} supported value(s)"
+        )
 
 
 @ref.command("types", help="List property types, or detail one with [NAME].")
@@ -411,11 +408,3 @@ def ref_prop(ctx: click.Context, qname: str, json_flag: bool) -> None:
             headers=["value", "label"],
             caption=f"{len(prop.type.names)} value(s) for type {prop.type.name!r}",
         )
-
-
-# Attach to the root CLI group so `ftm ref ...` works whether the command is
-# loaded via the entry point or by importing this module directly (tests).
-from followthemoney.cli.cli import cli  # noqa: E402
-
-if "ref" not in cli.commands:
-    cli.add_command(ref)
