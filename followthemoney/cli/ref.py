@@ -21,7 +21,12 @@ from followthemoney.types.common import EnumType
 from followthemoney.schema import Schema
 from followthemoney.property import Property
 from followthemoney.cli.cli import cli
-from followthemoney.cli.render import is_json_mode, emit_json, print_table
+from followthemoney.cli.render import (
+    is_json_mode,
+    emit_json,
+    print_markdown,
+    print_table,
+)
 
 JSON_OPTION = click.option(
     "--json", "json_flag", is_flag=True, default=False, help="Emit JSON output."
@@ -197,7 +202,7 @@ def ref_schema(ctx: click.Context, name: str, stubs: bool, json_flag: bool) -> N
 
     click.echo(f"{schema.name}  ({schema.label})")
     if schema.description:
-        click.echo(schema.description.strip())
+        print_markdown(schema.description.strip())
     click.echo("")
     click.echo(f"  matchable:    {'yes' if schema.matchable else 'no'}")
     click.echo(f"  extends:      {', '.join(extends) or '(none)'}")
@@ -256,7 +261,7 @@ def _type_detail(ctx: click.Context, name: str, json_flag: bool) -> None:
 
     click.echo(f"{type_.name}  ({type_.label})")
     if type_.docs:
-        click.echo(type_.docs)
+        print_markdown(type_.docs)
     click.echo("")
     click.echo(f"  matchable:  {'yes' if type_.matchable else 'no'}")
     click.echo(f"  pivot:      {'yes' if type_.pivot else 'no'}")
@@ -382,7 +387,7 @@ def ref_prop(ctx: click.Context, qname: str, json_flag: bool) -> None:
 
     click.echo(f"{prop.qname}  ({prop.label})")
     if prop.description:
-        click.echo(prop.description.strip())
+        print_markdown(prop.description.strip())
     click.echo("")
     click.echo(f"  type:       {prop.type.name}")
     click.echo(f"  matchable:  {'yes' if prop.matchable else 'no'}")

@@ -10,6 +10,7 @@ import orjson
 from typing import Any, List, Optional, Sequence
 
 from rich.console import Console
+from rich.markdown import Markdown
 from rich.table import Table
 
 
@@ -26,6 +27,15 @@ def emit_json(data: Any) -> None:
     """Write ``data`` to stdout as indented, key-sorted JSON with a newline."""
     opt = orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS | orjson.OPT_APPEND_NEWLINE
     sys.stdout.buffer.write(orjson.dumps(data, option=opt))
+
+
+def print_markdown(text: str) -> None:
+    """Render a markdown description block to stdout.
+
+    Schema, property, and type descriptions are authored in markdown; use this
+    for the standalone description blocks in the `ref` detail views so emphasis,
+    code spans, and lists format on a terminal. JSON output keeps the raw text."""
+    Console().print(Markdown(text))
 
 
 def print_table(
