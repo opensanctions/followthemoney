@@ -71,7 +71,7 @@ Person:
       type: date
     position:
       label: Position
-      matchable: fals
+      matchable: false
     biography:
       label: Biography
       description: A biographical narrative of the person.
