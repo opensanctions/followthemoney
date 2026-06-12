@@ -436,9 +436,7 @@ class EntityProxy(object):
         Only :class:`~followthemoney.statement.StatementEntity` tracks
         statements; a plain proxy carries provenance at the entity level only
         and cannot reconstruct it per value, so it has nothing faithful to emit."""
-        raise NotImplementedError(
-            "Statement serialisation requires a StatementEntity."
-        )
+        raise NotImplementedError("Statement serialisation requires a StatementEntity.")
 
     def to_full_dict(self, matchable: bool = False) -> Dict[str, Any]:
         """Return a serialised version of the entity with inverted type groups mixed

@@ -17,9 +17,7 @@ InPath = click.Path(dir_okay=False, readable=True, path_type=Path, allow_dash=Tr
 OutPath = click.Path(dir_okay=False, writable=True, path_type=Path, allow_dash=True)
 
 
-def write_entity(
-    fh: BinaryIO, entity: EntityProxy, statements: bool = False
-) -> None:
+def write_entity(fh: BinaryIO, entity: EntityProxy, statements: bool = False) -> None:
     data = entity.to_statement_dict() if statements else entity.to_dict()
     entity_id = data.pop("id")
     assert entity_id is not None, data
