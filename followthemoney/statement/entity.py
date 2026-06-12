@@ -466,8 +466,12 @@ class StatementEntity(EntityProxy):
 
     def to_statement_dict(self) -> Dict[str, Any]:
         """Return a dictionary representation of the entity's statements."""
-        data = self.to_context_dict()
-        data["statements"] = [stmt.to_dict() for stmt in self.statements]
+        data = {
+            "id": self.id,
+            "caption": self.caption,
+            "schema": self.schema.name,
+            "statements": [stmt.to_dict() for stmt in self._iter_stmt()],
+        }
         return data
 
     def _checksum_digest(self) -> "_Hash":

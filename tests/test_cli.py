@@ -136,6 +136,55 @@ def test_sorted_aggregate(cli_runner: CliRunner, entity_jsonl: bytes) -> None:
     assert len(lines) == 5607
 
 
+def test_aggregate_statements_provenance(
+    cli_runner: CliRunner, tmp_path: Path
+) -> None:
+    # An entity whose values come from two different datasets. Aggregating to the
+    # flat form collapses provenance into an entity-level `datasets` list that a
+    # statement store can't restore; `-s` keeps the statements so it can.
+    from followthemoney.dataset import Dataset
+    from followthemoney.statement import CSV, Statement, StatementEntity
+    from followthemoney.statement import write_statements
+
+    stmts = [
+        Statement(
+            entity_id="p1", canonical_id="p1", schema="Person",
+            prop="name", value="John Doe", dataset="ds_a",
+        ),
+        Statement(
+            entity_id="p1", canonical_id="p1", schema="Person",
+            prop="birthDate", value="1976", dataset="ds_b",
+        ),
+    ]
+    csv_path = tmp_path / "stmts.csv"
+    with open(csv_path, "wb") as fh:
+        write_statements(fh, CSV, iter(stmts))
+
+    # Reloading happens through a *synthetic* dataset, as nomenklatura's store does
+    # when it names the dataset after the input filename.
+    synthetic = Dataset.make({"name": "schland"})
+
+    # With -s: statement form, provenance preserved on reload.
+    result = cli_runner.invoke(
+        cli, ["aggregate-statements", "-i", str(csv_path), "-s"]
+    )
+    assert result.exit_code == 0, result.output
+    data = orjson.loads(result.output_bytes.strip().split(b"\n")[0])
+    assert "statements" in data and "properties" not in data
+    reloaded = StatementEntity.from_data(synthetic, data)
+    assert reloaded.datasets == {"ds_a", "ds_b"}, reloaded.datasets
+
+    # Without -s: flat form, provenance lost on the same reload path.
+    flat_result = cli_runner.invoke(
+        cli, ["aggregate-statements", "-i", str(csv_path)]
+    )
+    assert flat_result.exit_code == 0, flat_result.output
+    flat = orjson.loads(flat_result.output_bytes.strip().split(b"\n")[0])
+    assert "properties" in flat and "statements" not in flat
+    flat_reloaded = StatementEntity.from_data(synthetic, flat)
+    assert flat_reloaded.datasets == {"schland"}, flat_reloaded.datasets
+
+
 # --- Mapping ---
 
 

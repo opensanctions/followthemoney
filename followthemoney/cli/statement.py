@@ -51,18 +51,25 @@ def format_statements(
 @click.option("-o", "--outpath", type=OutPath, default="-")
 @click.option("-d", "--dataset", type=str, default=UndefinedDataset.name)
 @click.option("-f", "--format", type=click.Choice(FORMATS), default=CSV)
+@click.option(
+    "-s",
+    "--statements",
+    is_flag=True,
+    default=False,
+    help="Emit entities with their statements, preserving per-dataset provenance.",
+)
 def statements_aggregate(
-    infile: Path, outpath: Path, dataset: str, format: str
+    infile: Path, outpath: Path, dataset: str, format: str, statements: bool
 ) -> None:
     dataset_ = Dataset.make({"name": dataset})
     with path_writer(outpath) as outfh:
-        statements: List[Statement] = []
+        group: List[Statement] = []
         for stmt in read_path_statements(infile, format=format):
-            if len(statements) and statements[0].canonical_id != stmt.canonical_id:
-                entity = StatementEntity.from_statements(dataset_, statements)
-                write_entity(outfh, entity)
-                statements = []
-            statements.append(stmt)
-        if len(statements) > 0:
-            entity = StatementEntity.from_statements(dataset_, statements)
-            write_entity(outfh, entity)
+            if len(group) and group[0].canonical_id != stmt.canonical_id:
+                entity = StatementEntity.from_statements(dataset_, group)
+                write_entity(outfh, entity, statements=statements)
+                group = []
+            group.append(stmt)
+        if len(group) > 0:
+            entity = StatementEntity.from_statements(dataset_, group)
+            write_entity(outfh, entity, statements=statements)

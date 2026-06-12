@@ -429,6 +429,15 @@ class EntityProxy(object):
         data["properties"] = self.properties
         return data
 
+    def to_statement_dict(self) -> Dict[str, Any]:
+        """Serialise the entity with its statements embedded, preserving the
+        dataset (and other) provenance of each individual value.
+
+        Only :class:`~followthemoney.statement.StatementEntity` tracks
+        statements; a plain proxy carries provenance at the entity level only
+        and cannot reconstruct it per value, so it has nothing faithful to emit."""
+        raise NotImplementedError("Statement serialisation requires a StatementEntity.")
+
     def to_full_dict(self, matchable: bool = False) -> Dict[str, Any]:
         """Return a serialised version of the entity with inverted type groups mixed
         in. See :meth:`~get_type_inverted`."""
