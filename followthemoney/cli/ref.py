@@ -17,7 +17,7 @@ from typing import Any, Dict, List, Optional
 
 from followthemoney import model
 from followthemoney.types import registry
-from followthemoney.types.common import EnumType
+from followthemoney.types.common import EnumType, PropertyType
 from followthemoney.schema import Schema
 from followthemoney.property import Property
 from followthemoney.cli.cli import cli
@@ -26,6 +26,7 @@ from followthemoney.cli.render import (
     emit_json,
     print_markdown,
     print_table,
+    slim,
 )
 
 JSON_OPTION = click.option(
@@ -41,6 +42,27 @@ def _json_mode(ctx: click.Context, json_flag: bool) -> bool:
     ``ctx.obj`` so subcommands can OR the two together."""
     inherited = bool(ctx.obj) and bool(ctx.obj.get("json"))
     return is_json_mode(json_flag or inherited)
+
+
+def _resolve_type(name: str) -> Optional[PropertyType]:
+    """Resolve a property type by its singular name or its plural group name.
+
+    Type detail commands take the singular type name (``country``), but the
+    plural group name (``countries``) is what most people reach for first and is
+    what appears as a property ``group`` in entity data — accept either."""
+    try:
+        return registry.get(name)
+    except AttributeError:
+        return registry.groups.get(name)
+
+
+def _type_names() -> List[str]:
+    """Names a type can be addressed by — singular type names plus plural groups.
+
+    Used to power did-you-mean suggestions so a typo of either form lands."""
+    names = [t.name for t in registry.types]
+    names.extend(registry.groups.keys())
+    return names
 
 
 def _suggest(name: str, valid: List[str]) -> Optional[str]:
@@ -85,9 +107,16 @@ def _prop_flags(prop: Property) -> str:
 
 
 def _prop_payload(prop: Property) -> Dict[str, Any]:
-    """JSON shape for a property within a schema listing: to_dict + origin schema."""
-    data: Dict[str, Any] = dict(prop.to_dict())
-    data["schema"] = prop.schema.name
+    """Ultra-short property shape for the schema field index.
+
+    The schema view lists *what* fields a schema has — name and type — plus a
+    ``stub`` flag for the opt-in reverse edges (hidden/deprecated props are
+    filtered out upstream). For a property's description, range, reverse, or
+    origin schema, reach for ``ref prop Schema:name``; bundling all that here
+    made the payload unscannable."""
+    data: Dict[str, Any] = {"name": prop.name, "type": prop.type.name}
+    if prop.stub:
+        data["stub"] = True
     return data
 
 
@@ -109,6 +138,7 @@ def ref(ctx: click.Context, json_flag: bool) -> None:
             "type NAME",
             "Detail one property type: possible values, and which properties use it.",
         ),
+        ("type-values NAME", "List the value codes of an enum type, e.g. country."),
         ("prop QNAME", "Show property details, e.g. Person:name."),
     ]
     if _json_mode(ctx, json_flag):
@@ -154,7 +184,7 @@ def ref_schemata(
         )
 
     if _json_mode(ctx, json_flag):
-        emit_json(entries)
+        emit_json(slim(entries))
         return
     rows = [
         [
@@ -188,18 +218,34 @@ def ref_schema(ctx: click.Context, name: str, stubs: bool, json_flag: bool) -> N
         )
         return
 
-    props = [p for p in schema.sorted_properties if stubs or not p.stub]
+    # Hidden and deprecated properties are always skipped — they only add noise
+    # to a field list meant for constructing entities. Stubs (reverse edges) are
+    # opt-in via --stubs.
+    props = [
+        p
+        for p in schema.sorted_properties
+        if (stubs or not p.stub) and not p.hidden and not p.deprecated
+    ]
     # Start from the model's own serialization so new schema fields flow through
     # automatically; override the few views `ref` presents differently.
     extends = sorted(s.name for s in schema.schemata if s != schema)
     summary: Dict[str, Any] = dict(schema.to_dict())
     summary["name"] = schema.name
     summary["extends"] = extends  # all ancestors, not just direct parents
-    summary["descendants"] = sorted(s.name for s in schema.descendants)
+    # Trim noise from the field-list payload an agent reads to construct an
+    # entity: `schemata` (self + ancestors) restates name + extends; `caption`
+    # and `required` list prop subsets; `temporalExtent` is display metadata.
+    # `descendants` is no longer injected. All remain reachable on the schema.
+    for key in ("schemata", "caption", "required", "temporalExtent"):
+        summary.pop(key, None)
+    # Collapse the edge spec (source/target/label/...) to a plain boolean — that
+    # a schema is an edge is the signal; the wiring lives on the schema itself.
+    if "edge" in summary:
+        summary["edge"] = True
     summary["properties"] = [_prop_payload(p) for p in props]
 
     if _json_mode(ctx, json_flag):
-        emit_json(summary)
+        emit_json(slim(summary))
         return
 
     click.echo(f"{schema.name}  ({schema.label})")
@@ -256,9 +302,14 @@ def _type_detail(ctx: click.Context, name: str, json_flag: bool) -> None:
     data["name"] = type_.name
     data["enum"] = is_enum
     data["properties"] = using
+    # Enum value sets run to hundreds of entries; report the count and point at
+    # `ref type-values NAME` rather than inlining and burying everything else.
+    values = data.pop("values", {})
+    if is_enum:
+        data["values_count"] = len(values)
 
     if _json_mode(ctx, json_flag):
-        emit_json(data)
+        emit_json(slim(data))
         return
 
     click.echo(f"{type_.name}  ({type_.label})")
@@ -278,14 +329,10 @@ def _type_detail(ctx: click.Context, name: str, json_flag: bool) -> None:
         caption=f"{len(using)} property/properties of type {type_.name!r}",
     )
 
-    if isinstance(type_, EnumType):
+    if is_enum:
         click.echo("")
-        values = type_.names
-        rows = [[code, label] for code, label in sorted(values.items())]
-        print_table(
-            rows,
-            headers=["value", "label"],
-            caption=f"{len(values)} supported value(s)",
+        click.echo(
+            f"  {len(values)} values — see: ftm ref type-values {type_.name}"
         )
 
 
@@ -316,7 +363,7 @@ def ref_types(ctx: click.Context, name: Optional[str], json_flag: bool) -> None:
         entries.append(entry)
 
     if _json_mode(ctx, json_flag):
-        emit_json(entries)
+        emit_json(slim(entries))
         return
     rows = []
     for e in entries:
@@ -351,6 +398,50 @@ def ref_type(ctx: click.Context, name: str, json_flag: bool) -> None:
     _type_detail(ctx, name, json_flag)
 
 
+def _type_values(ctx: click.Context, name: str, json_flag: bool) -> None:
+    """Render only the value set of an enumerated type.
+
+    Pulled out of the type/prop detail views because enums like ``country`` have
+    hundreds of values — dumping them inline buries everything else. This is the
+    one place to ask "what are the legal codes for this field?". NAME may be the
+    singular type name or the plural group (``country`` or ``countries``)."""
+    type_ = _resolve_type(name)
+    if type_ is None:
+        _fail(f"Unknown type {name!r}.", _suggest(name, _type_names()))
+        return
+    if not isinstance(type_, EnumType):
+        _fail(f"Type {type_.name!r} is not enumerated; it has no fixed value set.")
+        return
+
+    values = type_.names
+    if _json_mode(ctx, json_flag):
+        emit_json(dict(values))
+        return
+
+    click.echo(f"{type_.name}  ({type_.label})")
+    click.echo("")
+    rows = [[code, label] for code, label in sorted(values.items())]
+    print_table(rows, headers=["value", "label"], caption=f"{len(values)} value(s)")
+
+
+@ref.command("type-values", help="List the value codes of an enum type, e.g. country.")
+@click.argument("name")
+@JSON_OPTION
+@click.pass_context
+def ref_type_values(ctx: click.Context, name: str, json_flag: bool) -> None:
+    """List the legal value codes (and labels) of an enumerated property type."""
+    _type_values(ctx, name, json_flag)
+
+
+@ref.command("types-values", help="Alias of `type-values`.")
+@click.argument("name")
+@JSON_OPTION
+@click.pass_context
+def ref_types_values(ctx: click.Context, name: str, json_flag: bool) -> None:
+    """List the legal value codes of an enum type; alias of ``ref type-values``."""
+    _type_values(ctx, name, json_flag)
+
+
 @ref.command("prop", help="Show one property by qualified name, e.g. Person:name.")
 @click.argument("qname")
 @JSON_OPTION
@@ -382,11 +473,13 @@ def ref_prop(ctx: click.Context, qname: str, json_flag: bool) -> None:
     schemata = sorted(s.name for s in model if s.get(prop.name) == prop)
     data: Dict[str, Any] = dict(prop.to_dict())
     data["schemata"] = schemata
+    # For enum-typed props, report the value count and defer the full set to
+    # `ref type-values NAME` instead of inlining hundreds of codes here.
     if isinstance(prop.type, EnumType):
-        data["values"] = dict(prop.type.names)
+        data["values_count"] = len(prop.type.names)
 
     if _json_mode(ctx, json_flag):
-        emit_json(data)
+        emit_json(slim(data))
         return
 
     click.echo(f"{prop.qname}  ({prop.label})")
@@ -410,10 +503,5 @@ def ref_prop(ctx: click.Context, qname: str, json_flag: bool) -> None:
         click.echo(f"  examples:   {', '.join(prop.examples)}")
     click.echo(f"  schemata:   {', '.join(schemata)}")
     if isinstance(prop.type, EnumType):
-        click.echo("")
-        rows = [[code, label] for code, label in sorted(prop.type.names.items())]
-        print_table(
-            rows,
-            headers=["value", "label"],
-            caption=f"{len(prop.type.names)} value(s) for type {prop.type.name!r}",
-        )
+        count = len(prop.type.names)
+        click.echo(f"  values:     {count} — see: ftm ref type-values {prop.type.name}")
