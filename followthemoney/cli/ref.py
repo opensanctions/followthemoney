@@ -109,14 +109,17 @@ def _prop_flags(prop: Property) -> str:
 def _prop_payload(prop: Property) -> Dict[str, Any]:
     """Ultra-short property shape for the schema field index.
 
-    The schema view lists *what* fields a schema has — name and type — plus a
-    ``stub`` flag for the opt-in reverse edges (hidden/deprecated props are
-    filtered out upstream). For a property's description, range, reverse, or
-    origin schema, reach for ``ref prop Schema:name``; bundling all that here
-    made the payload unscannable."""
+    The schema view lists *what* fields a schema has — name and type. Stub
+    properties (reverse edges that can't be written to) carry the qualified name
+    of the forward property they reverse as ``reverse``, which both flags them
+    as stubs and says where the edge actually lives. For a property's
+    description, range, or origin schema, reach for ``ref prop Schema:name``."""
     data: Dict[str, Any] = {"name": prop.name, "type": prop.type.name}
     if prop.stub:
-        data["stub"] = True
+        if prop.reverse is not None:
+            data["reverse"] = prop.reverse.qname
+        else:
+            data["stub"] = True
     return data
 
 
@@ -205,10 +208,9 @@ def ref_schemata(
 
 @ref.command("schema", help="Show one schema and all its (inherited) properties.")
 @click.argument("name")
-@click.option("--stubs", is_flag=True, help="Include stub (reverse-edge) properties.")
 @JSON_OPTION
 @click.pass_context
-def ref_schema(ctx: click.Context, name: str, stubs: bool, json_flag: bool) -> None:
+def ref_schema(ctx: click.Context, name: str, json_flag: bool) -> None:
     """Show a schema's metadata plus the full property set (own + inherited)."""
     schema = model.get(name)
     if schema is None:
@@ -218,13 +220,11 @@ def ref_schema(ctx: click.Context, name: str, stubs: bool, json_flag: bool) -> N
         )
         return
 
-    # Hidden and deprecated properties are always skipped — they only add noise
-    # to a field list meant for constructing entities. Stubs (reverse edges) are
-    # opt-in via --stubs.
+    # Hidden and deprecated properties are skipped — they only add noise to a
+    # field list. Stubs (reverse edges) are kept: they show the relationships an
+    # entity participates in, carrying their forward qname as `reverse`.
     props = [
-        p
-        for p in schema.sorted_properties
-        if (stubs or not p.stub) and not p.hidden and not p.deprecated
+        p for p in schema.sorted_properties if not p.hidden and not p.deprecated
     ]
     # Start from the model's own serialization so new schema fields flow through
     # automatically; override the few views `ref` presents differently.

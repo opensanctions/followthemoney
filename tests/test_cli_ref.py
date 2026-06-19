@@ -55,11 +55,14 @@ def test_ref_schema_includes_inherited(cli_runner: CliRunner) -> None:
     assert "qname" not in name_prop and "schema" not in name_prop
 
 
-def test_ref_schema_hides_stubs_by_default(cli_runner: CliRunner) -> None:
-    default = _json(cli_runner, ["ref", "schema", "Person"])
-    with_stubs = _json(cli_runner, ["ref", "schema", "Person", "--stubs"])
-    assert not any(p.get("stub") for p in default["properties"])
-    assert len(with_stubs["properties"]) >= len(default["properties"])
+def test_ref_schema_includes_stubs_with_reverse(cli_runner: CliRunner) -> None:
+    data = _json(cli_runner, ["ref", "schema", "Person"])
+    props = {p["name"]: p for p in data["properties"]}
+    # Stub (reverse-edge) properties are listed and carry the forward qname they
+    # reverse, rather than a bare stub flag.
+    owner = props["ownershipOwner"]
+    assert owner["reverse"] == "Ownership:owner"
+    assert "stub" not in owner
 
 
 def test_ref_schema_unknown_suggests(cli_runner: CliRunner) -> None:
@@ -170,8 +173,8 @@ def test_ref_schema_view_is_terse(cli_runner: CliRunner) -> None:
     for dropped in ("schemata", "caption", "descendants", "required", "temporalExtent"):
         assert dropped not in data
     assert "extends" in data and "featured" in data
-    # Properties are name + type only, plus a stub flag when set.
-    allowed = {"name", "type", "stub"}
+    # Properties are name + type only; stubs add a `reverse` qname.
+    allowed = {"name", "type", "reverse", "stub"}
     for prop in data["properties"]:
         assert set(prop).issubset(allowed)
         assert "name" in prop and "type" in prop
