@@ -65,7 +65,7 @@ Occupancy:
     constituency:
       # https://www.popoloproject.com/specs/membership.html#classes-and-properties
       label: "Constituency"
-      description: "The geographic area/distict represented by the holder"
+      description: "The geographic area/district represented by the holder"
     politicalGroup:
       label: "Political group"
       description: "Caucus, faction or parliamentary group of the holder"
