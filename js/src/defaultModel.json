@@ -4578,7 +4578,7 @@
       "plural": "Occupancies",
       "properties": {
         "constituency": {
-          "description": "The geographic area/distict represented by the holder",
+          "description": "The geographic area/district represented by the holder",
           "label": "Constituency",
           "maxLength": 1024,
           "name": "constituency",
