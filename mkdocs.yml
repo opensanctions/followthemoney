@@ -3,8 +3,8 @@ repo_url: https://github.com/opensanctions/followthemoney
 
 theme:
   name: material
-  logo: /public/logo.svg
-  favicon: /public/favicon.png
+  logo: https://assets.opensanctions.org/images/nura/logo-icon-white.svg
+  favicon: https://assets.opensanctions.org/images/nura/favicon-32.png
   palette:
     primary: custom
     accent: custom

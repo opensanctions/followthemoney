@@ -1,3 +1,9 @@
+:root  > * {
+  --md-primary-fg-color:        #00359E;
+  --md-primary-fg-color--light: #2970FF;
+  --md-primary-fg-color--dark:  #002566;
+}
+
 .md-typeset__table {
     width: 100%;
 }
