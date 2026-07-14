@@ -34,7 +34,12 @@
   },
   "jest": {
     "transform": {
-      ".(ts|tsx)": ["ts-jest", { "tsconfig": "tsconfig.test.json" }]
+      ".(ts|tsx)": [
+        "ts-jest",
+        {
+          "tsconfig": "tsconfig.test.json"
+        }
+      ]
     },
     "testEnvironment": "node",
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
@@ -90,6 +95,9 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.60.1"
   },
-  "dependencies": {
+  "dependencies": {},
+  "allowScripts": {
+    "fsevents@2.3.3": true,
+    "unrs-resolver@1.12.2": true
   }
 }
