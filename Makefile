@@ -28,7 +28,7 @@ check: default-model typecheck test
 
 ontology:
 	mkdir -p site/ns
-	python followthemoney/ontology.py site/ns/
+	python -m followthemoney.ontology site/ns/
 
 default-model:
 	ftm dump-model -o js/src/defaultModel.json
