@@ -29,6 +29,46 @@ def emit_json(data: Any) -> None:
     sys.stdout.buffer.write(orjson.dumps(data, option=opt))
 
 
+#: Keys stripped from ``ref`` JSON regardless of value — storage and display
+#: details (``maxLength``, ``plural``) and the ``pivot`` flag that an agent
+#: reading the model to construct entities never needs.
+BLANKET_DROP_KEYS = frozenset({"maxLength", "plural", "pivot"})
+
+#: Keys stripped from ``ref`` JSON only when their value is ``False`` — a flag
+#: at its default carries no information, but the ``True`` case is signal.
+#: Targeted (not "every false boolean") so the rule never surprises us by
+#: swallowing a future flag whose ``False`` case matters.
+FALSE_DROP_KEYS = frozenset({"matchable", "abstract", "enum"})
+
+
+def slim(data: Any) -> Any:
+    """Recursively strip low-signal keys from a model payload before JSON output.
+
+    The ``ref`` JSON exists mainly as context for a coding agent; flags at their
+    default and storage trivia cost tokens without informing entity construction.
+    Recurses so the per-property lists nested inside a schema payload are trimmed
+    too. See ``BLANKET_DROP_KEYS`` and ``FALSE_DROP_KEYS`` for what goes; also
+    drops a ``label`` that merely echoes ``name`` (e.g. schema ``Person``)."""
+    if isinstance(data, dict):
+        # A label identical to the name adds no information over the name alone.
+        drop_label = (
+            "name" in data and "label" in data and data["label"] == data["name"]
+        )
+        out = {}
+        for key, value in data.items():
+            if key in BLANKET_DROP_KEYS:
+                continue
+            if key in FALSE_DROP_KEYS and value is False:
+                continue
+            if key == "label" and drop_label:
+                continue
+            out[key] = slim(value)
+        return out
+    if isinstance(data, list):
+        return [slim(item) for item in data]
+    return data
+
+
 def print_markdown(text: str) -> None:
     """Render a markdown description block to stdout.
 
