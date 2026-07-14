@@ -7,7 +7,6 @@ interface IEdgeSpecification {
   directed: boolean
   label?: string
   caption: string[]
-  required?: string[]
 }
 
 interface ITemporalExtentSpecification {

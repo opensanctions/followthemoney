@@ -11,6 +11,12 @@ export interface IEntityDatum {
   schema: Schema | string
   properties?: EntityProperties
   id: string
+  caption?: string
+  datasets?: Array<string>
+  referents?: Array<string>
+  first_seen?: string
+  last_seen?: string
+  last_change?: string
 }
 
 /**
@@ -21,10 +27,22 @@ export class Entity {
   public id: string
   public properties: Map<Property, Values> = new Map()
   public readonly schema: Schema
+  public caption: string | null
+  public datasets: Array<string>
+  public referents: Array<string>
+  public first_seen: string | null
+  public last_seen: string | null
+  public last_change: string | null
 
   constructor(model: Model, data: IEntityDatum) {
     this.schema = model.getSchema(data.schema)
     this.id = data.id
+    this.caption = data.caption || null
+    this.datasets = data.datasets || []
+    this.referents = data.referents || []
+    this.first_seen = data.first_seen || null
+    this.last_seen = data.last_seen || null
+    this.last_change = data.last_change || null
 
     if (data.properties) {
       Object.entries(data.properties).forEach(([prop, values]) => {
@@ -111,9 +129,14 @@ export class Entity {
   }
 
   /**
-   * Get the designated label for the given entity.
+   * Get the designated label for the given entity. A caption computed
+   * upstream (e.g. by nomenklatura's name picker) takes precedence over
+   * deriving one from the schema's caption properties.
    */
   getCaption(): string {
+    if (this.caption !== null) {
+      return this.caption
+    }
     for (const property of this.schema.caption) {
       for (const value of this.getProperty(property)) {
         return value as string
@@ -126,6 +149,7 @@ export class Entity {
    * Set the designated label as the first caption prop for the given entity.
    */
   setCaption(value: string): void {
+    this.caption = value
     const captionProperties = this.schema.caption
     if (captionProperties && captionProperties.length > 0) {
       this.setProperty(captionProperties[0], value)
@@ -223,11 +247,30 @@ export class Entity {
         Entity.isEntity(value) ? (value as Entity).toJSON() : value
       )
     })
-    return {
+    const data: IEntityDatum = {
       id: this.id,
       schema: this.schema.name,
       properties: properties
     }
+    if (this.caption !== null) {
+      data.caption = this.caption
+    }
+    if (this.datasets.length > 0) {
+      data.datasets = this.datasets
+    }
+    if (this.referents.length > 0) {
+      data.referents = this.referents
+    }
+    if (this.first_seen !== null) {
+      data.first_seen = this.first_seen
+    }
+    if (this.last_seen !== null) {
+      data.last_seen = this.last_seen
+    }
+    if (this.last_change !== null) {
+      data.last_change = this.last_change
+    }
+    return data
   }
 
   /**

@@ -102,6 +102,66 @@ describe('ftm/Entity class', () => {
       expect(start!.property).toEqual(entity.schema.getProperty('startDate'))
       expect(start!.value).toEqual('2022-01-01')
     })
+    it('defaults entity metadata when absent', function() {
+      const fresh = model.getEntity(entityDatum)
+      expect(fresh.caption).toBeNull()
+      expect(fresh.datasets).toEqual([])
+      expect(fresh.referents).toEqual([])
+      expect(fresh.first_seen).toBeNull()
+      expect(fresh.last_seen).toBeNull()
+      expect(fresh.last_change).toBeNull()
+    })
+    it('does not emit absent metadata in toJSON', function() {
+      const fresh = model.getEntity(entityDatum)
+      expect(Object.keys(fresh.toJSON()).sort()).toEqual(
+        ['id', 'properties', 'schema']
+      )
+    })
+    it('parses and round-trips entity metadata', function() {
+      const datum = {
+        id: 'Q7747',
+        schema: 'Person',
+        caption: 'Vladimir Putin',
+        datasets: ['eu_fsf', 'us_ofac_sdn'],
+        referents: ['ofac-9914'],
+        first_seen: '2021-01-01T00:00:00',
+        last_seen: '2023-06-01T00:00:00',
+        last_change: '2022-03-14T00:00:00',
+        properties: {
+          name: ['Vladimir Vladimirovich PUTIN']
+        }
+      }
+      const fresh = model.getEntity(datum)
+      expect(fresh.caption).toBe('Vladimir Putin')
+      expect(fresh.datasets).toEqual(['eu_fsf', 'us_ofac_sdn'])
+      expect(fresh.referents).toEqual(['ofac-9914'])
+      expect(fresh.first_seen).toBe('2021-01-01T00:00:00')
+      expect(fresh.last_seen).toBe('2023-06-01T00:00:00')
+      expect(fresh.last_change).toBe('2022-03-14T00:00:00')
+      expect(fresh.toJSON()).toEqual(datum)
+      expect(fresh.clone().toJSON()).toEqual(datum)
+    })
+    it('prefers the precomputed caption', function() {
+      const fresh = model.getEntity({
+        id: 'Q7747',
+        schema: 'Person',
+        caption: 'Vladimir Putin',
+        properties: {
+          name: ['Vladimir Vladimirovich PUTIN']
+        }
+      })
+      expect(fresh.getCaption()).toBe('Vladimir Putin')
+    })
+    it('overrides the precomputed caption in setCaption', function() {
+      const fresh = model.getEntity({
+        id: 'Q7747',
+        schema: 'Person',
+        caption: 'Vladimir Putin'
+      })
+      fresh.setCaption('Wladimir Putin')
+      expect(fresh.getCaption()).toBe('Wladimir Putin')
+      expect(fresh.caption).toBe('Wladimir Putin')
+    })
     it('can get temporal end', function () {
       let entity
 
