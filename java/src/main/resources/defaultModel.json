@@ -8326,7 +8326,7 @@
         "crime.traffick.drug": "Drug trafficking",
         "crime.traffick.human": "Human trafficking",
         "crime.war": "War crimes",
-        "debarment": "Debarred entity",
+        "debarment": "Debarred",
         "export.control": "Export controlled",
         "export.control.linked": "Export control-linked",
         "export.risk": "Trade risk",
@@ -8377,10 +8377,10 @@
         "role.pol": "Politician",
         "role.rca": "Close Associate",
         "role.spy": "Spy",
-        "sanction": "Sanctioned entity",
-        "sanction.control": "Controlled by a sanctioned entity",
-        "sanction.counter": "Counter-sanctioned entity",
-        "sanction.linked": "Sanction-linked entity",
+        "sanction": "Sanctioned",
+        "sanction.control": "Sanction ownership or control",
+        "sanction.counter": "Counter-sanctioned",
+        "sanction.linked": "Sanction-linked",
         "wanted": "Wanted"
       }
     },

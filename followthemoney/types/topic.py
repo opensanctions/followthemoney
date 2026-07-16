@@ -85,17 +85,17 @@ class TopicType(EnumType):
         "pol.union": _("Union"),
         "rel": _("Religion"),
         "mil": _("Military"),
-        "sanction": _("Sanctioned entity"),
-        "sanction.linked": _("Sanction-linked entity"),
-        "sanction.control": _("Controlled by a sanctioned entity"),
-        "sanction.counter": _("Counter-sanctioned entity"),
+        "sanction": _("Sanctioned"),
+        "sanction.linked": _("Sanction-linked"),
+        "sanction.control": _("Sanction ownership or control"),
+        "sanction.counter": _("Counter-sanctioned"),
         "export.control": _("Export controlled"),
         # For BIS 50% rule:
         "export.control.linked": _("Export control-linked"),
         "export.risk": _("Trade risk"),
         "invest.risk": _("Investment risk"),
         "invest.ban": _("Investment ban"),
-        "debarment": _("Debarred entity"),
+        "debarment": _("Debarred"),
         "poi": _("Person of interest"),
     }
 
