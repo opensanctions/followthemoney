@@ -63,7 +63,7 @@ def read_json_statements(
 
 
 def read_csv_statements(fh: BinaryIO) -> Generator[Statement, None, None]:
-    wrapped = TextIOWrapper(fh, encoding=ENCODING)
+    wrapped = TextIOWrapper(fh, encoding=ENCODING, newline="")
     for row in csv.DictReader(wrapped, dialect=csv.unix_dialect):
         data = cast(StatementDict, row)
         data["external"] = text_bool(row.get("external")) or False
@@ -73,11 +73,17 @@ def read_csv_statements(fh: BinaryIO) -> Generator[Statement, None, None]:
             data["original_value"] = None
         if row.get("origin") == "":
             data["origin"] = None
+        if row.get("first_seen") == "":
+            data["first_seen"] = None
+        if row.get("last_seen") == "":
+            data["last_seen"] = None
+        if row.get("id") == "":
+            data["id"] = None
         yield Statement.from_dict(data)
 
 
 def read_pack_statements(fh: BinaryIO) -> Generator[Statement, None, None]:
-    wrapped = TextIOWrapper(fh, encoding=ENCODING)
+    wrapped = TextIOWrapper(fh, encoding=ENCODING, newline="")
     yield from read_pack_statements_decoded(wrapped)
 
 
@@ -87,10 +93,10 @@ def read_pack_statements_decoded(fh: TextIO) -> Generator[Statement, None, None]
         if headers is None:
             if "entity_id" in row and "prop" in row:
                 headers = row
-            else:
-                # This is a legacy pack file, with no headers.
-                headers = LEGACY_PACK_COLUMNS
-            continue
+                continue
+            # This is a legacy pack file, with no headers. The current row
+            # is data and must be processed, not skipped.
+            headers = LEGACY_PACK_COLUMNS
         data = dict(zip(headers, row))
         try:
             schema, _, prop = unpack_prop(data["prop"])
@@ -134,10 +140,10 @@ def read_path_statements(path: Path, format: str) -> Generator[Statement, None, 
 
 def get_statement_writer(fh: BinaryIO, format: str) -> "StatementWriter":
     if format == CSV:
-        wrapped = TextIOWrapper(fh, encoding=ENCODING)
+        wrapped = TextIOWrapper(fh, encoding=ENCODING, newline="")
         return CSVStatementWriter(wrapped)
     elif format == PACK:
-        wrapped = TextIOWrapper(fh, encoding=ENCODING)
+        wrapped = TextIOWrapper(fh, encoding=ENCODING, newline="")
         return PackStatementWriter(wrapped)
     elif format == JSON:
         return JSONStatementWriter(fh)
