@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, ClassVar, Optional
 
 from babel.core import Locale
 
@@ -20,7 +20,7 @@ class GenderType(EnumType):
     FEMALE = "female"
     OTHER = "other"
 
-    LOOKUP = {
+    LOOKUP: ClassVar[dict[str, str]] = {
         "m": MALE,
         "man": MALE,
         "masculin": MALE,

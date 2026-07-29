@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, ClassVar, Optional
 
 from babel.core import Locale
 from rigour.langs import iso_639_alpha3
@@ -26,7 +26,7 @@ class LanguageType(EnumType):
     max_length = 16
 
     # Language whitelist
-    LANGUAGES = [
+    LANGUAGES: ClassVar[list[str]] = [
         "afr",
         "amh",
         "ara",

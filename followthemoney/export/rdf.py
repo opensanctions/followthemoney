@@ -1,6 +1,6 @@
 import logging
 from collections.abc import Generator
-from typing import TextIO
+from typing import ClassVar, TextIO
 
 from prefixdate import Precision
 from rdflib import RDF, SKOS, XSD, Graph, Namespace
@@ -8,7 +8,7 @@ from rdflib.term import Identifier, Literal, URIRef
 
 from followthemoney.export.common import Exporter
 from followthemoney.proxy import EntityProxy
-from followthemoney.types import registry
+from followthemoney.types import PropertyType, registry
 
 log = logging.getLogger(__name__)
 Triple = tuple[Identifier, Identifier, Identifier]
@@ -18,7 +18,7 @@ NS = Namespace("https://schema.followthemoney.tech/#")
 class RDFExporter(Exporter):
     """Export the entity as RDF N-Triples."""
 
-    TYPE_PREFIXES = {
+    TYPE_PREFIXES: ClassVar[dict[PropertyType, str]] = {
         registry.checksum: "hash:",
         registry.country: "http://id.loc.gov/vocabulary/countries/",
         registry.email: "mailto:",
