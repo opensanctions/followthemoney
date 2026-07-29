@@ -78,10 +78,10 @@ class EntityMapping:
             self.refs.add(self.id_column)
         self.dependencies: set[str] = set()
         self.properties: list[PropertyMapping] = []
-        for name, prop_mapping in data.get("properties", {}).items():
-            prop = self.schema.get(name)
+        for prop_name, prop_mapping in data.get("properties", {}).items():
+            prop = self.schema.get(prop_name)
             if prop is None:
-                raise InvalidMapping(f"Invalid property: {name}")
+                raise InvalidMapping(f"Invalid property: {prop_name}")
             mapping = PropertyMapping(query, prop_mapping, prop)
             self.properties.append(mapping)
             self.refs.update(mapping.refs)

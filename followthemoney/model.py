@@ -44,9 +44,9 @@ class Model:
         #: All properties defined in the model.
         self.properties: set[Property] = set()
         self.qnames: dict[str, Property] = {}
-        for path, _, filenames in os.walk(self.path):
+        for dirpath, _, filenames in os.walk(self.path):
             for filename in filenames:
-                self._load(os.path.join(path, filename))
+                self._load(os.path.join(dirpath, filename))
         self.generate()
 
     @classmethod

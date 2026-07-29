@@ -89,8 +89,8 @@ def stream_mapping(
     try:
         with path_writer(outfile) as outfh, input_file(infile) as fh:
             for record in CSVSource.read_csv(fh):
-                for dataset, query, source in queries:
-                    ns = Namespace(dataset)
+                for ds, query, source in queries:
+                    ns = Namespace(ds)
                     if source.check_filters(record):
                         entities = query.map(record)
                         for entity in entities.values():
