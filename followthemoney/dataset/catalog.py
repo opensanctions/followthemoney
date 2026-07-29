@@ -22,7 +22,7 @@ class DataCatalog(Generic[DS]):
             raw = data.get("updated_at")
             self.updated_at = registry.date.clean(raw)
             if self.updated_at is None:
-                raise MetadataException("Invalid update date: %r" % raw)
+                raise MetadataException(f"Invalid update date: {raw!r}")
 
     def add(self, dataset: "DS") -> None:
         """Add a dataset to the catalog. If the dataset already exists, it will be updated."""
@@ -51,7 +51,7 @@ class DataCatalog(Generic[DS]):
         """Get a dataset by name. Raises MetadataException if the dataset does not exist."""
         dataset = self.get(name)
         if dataset is None:
-            raise MetadataException("No such dataset: %s" % name)
+            raise MetadataException(f"No such dataset: {name}")
         return dataset
 
     def has(self, name: str) -> bool:

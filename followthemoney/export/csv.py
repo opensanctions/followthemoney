@@ -28,7 +28,7 @@ class CSVMixin(object):
 
     def _open_csv_file(self, name: str) -> tuple[TextIOWrapper, CSVWriter]:
         self.directory.mkdir(parents=True, exist_ok=True)
-        file_path = self.directory.joinpath("{0}.csv".format(name))
+        file_path = self.directory.joinpath(f"{name}.csv")
         handle = open(file_path, mode="w")
         writer = csv.writer(handle, dialect=csv.unix_dialect)
         return handle, writer

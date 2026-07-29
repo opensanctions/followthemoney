@@ -73,7 +73,7 @@ class Model(object):
         with open(filepath, "r", encoding=ENCODING) as fh:
             data = yaml.safe_load(fh)
             if not isinstance(data, dict):
-                raise InvalidModel("Model file is not a mapping: %s" % filepath)
+                raise InvalidModel(f"Model file is not a mapping: {filepath}")
             for name, config in data.items():
                 name = const(name)
                 self.schemata[name] = Schema(self, name, config)
@@ -93,7 +93,7 @@ class Model(object):
         """Same as get(), but throws an exception when the given name does not exist."""
         schema = self.get(name)
         if schema is None:
-            raise KeyError("No such schema: %s" % name)
+            raise KeyError(f"No such schema: {name}")
         return schema
 
     def get_type_schemata(self, type_: PropertyType) -> set[Schema]:
@@ -150,8 +150,7 @@ class Model(object):
         # for schema in self.schemata.values():
         #     if schema.is_a(left) and schema.is_a(right):
         #         return schema
-        msg = "No common schema: %s and %s"
-        raise InvalidData(msg % (left, right))
+        raise InvalidData(f"No common schema: {left} and {right}")
 
     def matchable_schemata(self) -> set[Schema]:
         """Return a list of all schemata that are matchable."""
@@ -165,7 +164,7 @@ class Model(object):
 
         schema_ = self.get(schema)
         if schema_ is None:
-            raise InvalidData("Schema does not exist: %s" % schema)
+            raise InvalidData(f"Schema does not exist: {schema}")
         return EntityProxy(schema_, {}, key_prefix=key_prefix)
 
     def get_proxy(self, data: dict[str, Any], cleaned: bool = True) -> "EntityProxy":

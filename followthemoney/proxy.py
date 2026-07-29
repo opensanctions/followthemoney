@@ -466,8 +466,7 @@ class EntityProxy(object):
         try:
             self.schema = model.common_schema(self.schema, other.schema)
         except InvalidData as e:
-            msg = "Cannot merge entities with id %s: %s"
-            raise InvalidData(msg % (self.id, e))
+            raise InvalidData(f"Cannot merge entities with id {self.id}: {e}")
 
         self.context = merge_context(self.context, other.context)
         for prop, values in other._properties.items():
@@ -512,7 +511,7 @@ class EntityProxy(object):
         return self.caption
 
     def __repr__(self) -> str:
-        return "<E(%r,%s,%r)>" % (self.id, self.schema.name, str(self))
+        return f"<E({self.id!r},{self.schema.name},{str(self)!r})>"
 
     def __len__(self) -> int:
         return self._size

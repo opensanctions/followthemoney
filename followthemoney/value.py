@@ -66,4 +66,4 @@ def string_list(value: Any, sanitize: bool = False) -> list[str]:
         for inner in value:
             stexts.extend(string_list(inner, sanitize=sanitize))
         return stexts
-    raise TypeError("Cannot convert %r to string list" % value)
+    raise TypeError(f"Cannot convert {value!r} to string list")

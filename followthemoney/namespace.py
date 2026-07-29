@@ -120,4 +120,4 @@ class Namespace(object):
         return bool(self.bname == other.bname)
 
     def __repr__(self) -> str:
-        return "<Namespace(%r)>" % self.bname
+        return f"<Namespace({self.bname!r})>"

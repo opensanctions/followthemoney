@@ -41,8 +41,8 @@ class QueryTable(object):
 
         self.refs: dict[str, Label[Any]] = {}
         for column in self.alias.columns:
-            name = "%s.%s" % (alias_ref, column.name)
-            labeled_column = column.label("col_%s" % uuid4().hex[:10])
+            name = f"{alias_ref}.{column.name}"
+            labeled_column = column.label(f"col_{uuid4().hex[:10]}")
             self.refs[name] = labeled_column
             self.refs[column.name] = labeled_column
 
@@ -67,7 +67,7 @@ class SQLSource(Source):
         for table in self.tables:
             if ref in table.refs:
                 return table.refs[ref]
-        raise InvalidMapping("Missing reference: %s" % ref)
+        raise InvalidMapping(f"Missing reference: {ref}")
 
     def apply_filters(self, q: Select[Any]) -> Select[Any]:
         for col, val in self.filters:

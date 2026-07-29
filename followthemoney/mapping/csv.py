@@ -69,7 +69,7 @@ class CSVSource(Source):
             headers = {"User-Agent": USER_AGENT}
             res = requests.get(url, stream=True, headers=headers)
             if not res.ok:
-                raise InvalidMapping("Failed to open CSV: %s" % url)
+                raise InvalidMapping(f"Failed to open CSV: {url}")
             # if res.encoding is None:
             res.encoding = "utf-8"
             # log.info("Detected encoding: %s", res.encoding)

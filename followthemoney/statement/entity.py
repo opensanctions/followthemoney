@@ -405,8 +405,7 @@ class StatementEntity(EntityProxy):
         try:
             self.schema = self.schema.model.common_schema(self.schema, other.schema)
         except InvalidData as e:
-            msg = "Cannot merge entities with id %s: %s"
-            raise InvalidData(msg % (self.id, e))
+            raise InvalidData(f"Cannot merge entities with id {self.id}: {e}")
 
         if not isinstance(other, StatementEntity):
             for prop, value in other.itervalues():
@@ -546,7 +545,7 @@ class StatementEntity(EntityProxy):
                     raise InvalidData(f"{canonical_id}: {exc}") from exc
 
         if schema is None:
-            err = "No valid schema for entity: %s %r" % (canonical_id, schemata)
+            err = f"No valid schema for entity: {canonical_id} {schemata!r}"
             raise InvalidData(err)
 
         data = {"schema": schema, "id": canonical_id}

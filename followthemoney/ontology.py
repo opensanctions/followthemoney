@@ -68,7 +68,7 @@ class Ontology(object):
             self.graph.add((puri, RDFS.range, XSD.dateTime))
 
     def write_namespace_docs(self, path: PathLike) -> None:
-        xml_fn = "%s/ftm.xml" % path
+        xml_fn = f"{path}/ftm.xml"
         with open(xml_fn, "w") as xml_file:
             xml_file.write(self.graph.serialize(format="xml"))
 
@@ -77,4 +77,4 @@ if __name__ == "__main__":
     path = sys.argv[1]
     ontology = Ontology()
     ontology.write_namespace_docs(path)
-    print("Namespace docs written to %s" % path)
+    print(f"Namespace docs written to {path}")

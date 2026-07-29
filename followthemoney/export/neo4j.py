@@ -130,7 +130,7 @@ class CypherGraphExporter(GraphExporter):
         values = []
         for key, value in data.items():
             if value:
-                value = "%s: %s" % (key, json.dumps(value))
+                value = f"{key}: {json.dumps(value)}"
                 values.append(value)
         return ", ".join(values)
 

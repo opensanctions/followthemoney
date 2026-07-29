@@ -102,7 +102,7 @@ def read_pack_statements_decoded(fh: TextIO) -> Generator[Statement, None, None]
         try:
             schema, _, prop = unpack_prop(data["prop"])
         except TypeError:
-            log.error("Invalid property in pack statement: %s" % data["prop"])
+            log.error("Invalid property in pack statement: {}".format(data["prop"]))
             continue
         yield Statement(
             entity_id=data["entity_id"],
@@ -148,7 +148,7 @@ def get_statement_writer(fh: BinaryIO, format: str) -> "StatementWriter":
         return PackStatementWriter(wrapped)
     elif format == JSON:
         return JSONStatementWriter(fh)
-    raise RuntimeError("Unknown statement format: %s" % format)
+    raise RuntimeError(f"Unknown statement format: {format}")
 
 
 def write_statements(

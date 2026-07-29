@@ -60,15 +60,15 @@ class PropertyMapping(object):
             # this is hacky, trying to generate refs from template
             for ref in self.FORMAT_PATTERN.findall(self.template):
                 self.refs.append(ref)
-                self.replacements["{{%s}}" % ref] = ref
+                self.replacements[f"{{{{{ref}}}}}"] = ref
 
     def bind(self) -> None:
         if self.prop.stub:
-            raise InvalidMapping("Property for [%r] is a stub" % self.prop)
+            raise InvalidMapping(f"Property for [{self.prop!r}] is a stub")
 
         if self.prop.deprecated:
             warn(
-                "Mapping uses a deprecated property: %r" % self.prop,
+                f"Mapping uses a deprecated property: {self.prop!r}",
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -85,14 +85,11 @@ class PropertyMapping(object):
                 continue
             if not self.prop.range or not entity.schema.is_a(self.prop.range):
                 raise InvalidMapping(
-                    "The entity [%r] must be a %s (not %s)"
-                    % (self.prop, self.prop.range, entity.schema.name)
+                    f"The entity [{self.prop!r}] must be a {self.prop.range} (not {entity.schema.name})"
                 )  # noqa
             return
 
-        raise InvalidMapping(
-            "No entity [%s] for property [%r]" % (self.entity, self.prop)
-        )
+        raise InvalidMapping(f"No entity [{self.entity}] for property [{self.prop!r}]")
 
     def record_values(self, record: Record) -> list[str]:
         if self.template is not None:

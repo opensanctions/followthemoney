@@ -54,20 +54,20 @@ class EntityMapping(object):
         self.keys = keys_values(data, "key", "keys")
         self.id_column = stringify(data.get("id_column"))
         if len(self.keys) == 0 and self.id_column is None:
-            raise InvalidMapping("No keys or ID: %r" % name)
+            raise InvalidMapping(f"No keys or ID: {name!r}")
         if len(self.keys) > 0 and self.id_column is not None:
-            msg = "Please use only keys or id_column, not both: %r" % name
+            msg = f"Please use only keys or id_column, not both: {name!r}"
             raise InvalidMapping(msg)
 
         schema_name = stringify(data.get("schema"))
         if schema_name is None:
-            raise InvalidMapping("No schema: %s" % name)
+            raise InvalidMapping(f"No schema: {name}")
         schema = model.get(schema_name)
         if schema is None:
-            raise InvalidMapping("Invalid schema: %s" % schema_name)
+            raise InvalidMapping(f"Invalid schema: {schema_name}")
         if schema.deprecated:
             warn(
-                "Mapping uses a deprecated schema: %r" % schema,
+                f"Mapping uses a deprecated schema: {schema!r}",
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -81,7 +81,7 @@ class EntityMapping(object):
         for name, prop_mapping in data.get("properties", {}).items():
             prop = self.schema.get(name)
             if prop is None:
-                raise InvalidMapping("Invalid property: %s" % name)
+                raise InvalidMapping(f"Invalid property: {name}")
             mapping = PropertyMapping(query, prop_mapping, prop)
             self.properties.append(mapping)
             self.refs.update(mapping.refs)
@@ -163,4 +163,4 @@ class EntityMapping(object):
         return proxy
 
     def __repr__(self) -> str:
-        return "<EntityMapping(%r)>" % self.name
+        return f"<EntityMapping({self.name!r})>"

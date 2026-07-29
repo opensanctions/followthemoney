@@ -16,7 +16,7 @@ bulk = dataset.bulk()
 for i in range(1000000):
     entity = model.make_entity("PlainText")
     entity.id = "banana"
-    entity.add("indexText", "%s - %s" % (text, i))
+    entity.add("indexText", f"{text} - {i}")
     bulk.put(entity, fragment=str(i))
     print(i)
 bulk.flush()

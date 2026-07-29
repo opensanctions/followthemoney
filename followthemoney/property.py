@@ -92,14 +92,14 @@ class Property:
         #: Machine-readable name for this property.
         self.name = name
         if not check_property_name(self.name):
-            raise InvalidModel("Invalid name: %s" % self.name)
+            raise InvalidModel(f"Invalid name: {self.name}")
 
         #: Qualified property name, which also includes the schema name.
-        self.qname = const("%s:%s" % (schema.name, self.name))
+        self.qname = const(f"{schema.name}:{self.name}")
 
         self._label = data.get("label", name)
         self._description = data.get("description")
-        self._hash = hash("<Property(%r)>" % self.qname)
+        self._hash = hash(f"<Property({self.qname!r})>")
 
         #: This property is deprecated and should not be used.
         self.deprecated = as_bool(data.get("deprecated", False))
@@ -111,7 +111,7 @@ class Property:
         #: The data type for this property.
         self.type = registry.get(type_)
         if self.type is None:
-            raise InvalidModel("Invalid type: %s" % type_)
+            raise InvalidModel(f"Invalid type: {type_}")
 
         #: Whether this property should be used for matching and cross-referencing.
         _matchable = data.get("matchable")
@@ -168,13 +168,13 @@ class Property:
 
             if self.reverse is None and self.range and self._reverse:
                 if not isinstance(self._reverse, dict):
-                    raise InvalidModel("Invalid reverse: %s" % self)
+                    raise InvalidModel(f"Invalid reverse: {self}")
                 self.reverse = self.range._add_reverse(model, self._reverse, self)
 
         if self.type == registry.identifier and self.format is not None:
             format_ = get_identifier_format(self.format)
             if format_ is None or format_.NAME != self.format:
-                raise InvalidModel("Invalid identifier format: %s" % self.format)
+                raise InvalidModel(f"Invalid identifier format: {self.format}")
             # Internalize the string:
             self.format = format_.NAME
 
@@ -256,11 +256,11 @@ class Property:
 
         prop = Model.instance().get_qname(qname)
         if prop is None:
-            raise InvalidData("Unknown property: %r" % qname)
+            raise InvalidData(f"Unknown property: {qname!r}")
         return prop
 
     def __repr__(self) -> str:
-        return "<Property(%r)>" % self.qname
+        return f"<Property({self.qname!r})>"
 
     def __str__(self) -> str:
         return self.qname

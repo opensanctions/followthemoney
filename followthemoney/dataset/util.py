@@ -13,7 +13,7 @@ def dataset_name_check(value: str) -> str:
     or clean invalid names, but raises an error if they are not compliant to
     force the user to fix an invalid name"""
     if slugify_text(value, sep="_") != value:
-        raise ValueError("Invalid %s: %r" % ("dataset name", value))
+        raise ValueError("Invalid {}: {!r}".format("dataset name", value))
     return value
 
 
@@ -21,7 +21,7 @@ def type_check_date(value: Any) -> str:
     """Check that the given value is a valid date string."""
     cleaned = registry.date.clean(value)
     if cleaned is None:
-        raise ValueError("Invalid date: %r" % value)
+        raise ValueError(f"Invalid date: {value!r}")
     return cleaned
 
 
@@ -32,7 +32,7 @@ def type_check_country(value: Any) -> str:
     """Check that the given value is a valid country code."""
     cleaned = registry.country.clean(value)
     if cleaned is None:
-        raise ValueError("Invalid country code: %r" % value)
+        raise ValueError(f"Invalid country code: {value!r}")
     return cleaned
 
 
@@ -51,7 +51,7 @@ def serialize_dt(dt: datetime) -> str:
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
     text = datetime_iso(dt)
-    assert text is not None, "Invalid datetime: %r" % dt
+    assert text is not None, f"Invalid datetime: {dt!r}"
     return text
 
 

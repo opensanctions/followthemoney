@@ -76,7 +76,7 @@ class DatasetModel(BaseModel):
         for res in self.resources:
             if res.name == name:
                 return res
-        raise ValueError("No resource named %r!" % name)
+        raise ValueError(f"No resource named {name!r}!")
 
 
 class Dataset:
@@ -126,7 +126,7 @@ class Dataset:
         for res in self.model.resources:
             if res.name == name:
                 return res
-        raise ValueError("No resource named %r!" % name)
+        raise ValueError(f"No resource named {name!r}!")
 
     def to_dict(self) -> dict[str, Any]:
         """Convert the dataset to a dictionary representation."""

@@ -115,7 +115,7 @@ class Schema:
         self._label = data.get("label", name)
         self._plural = data.get("plural", self.label)
         self._description = data.get("description")
-        self._hash = hash("<Schema(%r)>" % self.name)
+        self._hash = hash(f"<Schema({self.name!r})>")
 
         #: Do not store or emit entities of this type, it is used only for
         #: inheritance.
@@ -206,7 +206,7 @@ class Schema:
         for extends in self._extends:
             parent = model.get(extends)
             if parent is None:
-                raise InvalidData("Invalid extends: %r" % extends)
+                raise InvalidData(f"Invalid extends: {extends!r}")
             parent.generate(model)
 
             for name, prop in parent.properties.items():
@@ -225,14 +225,14 @@ class Schema:
                     and temporal_start != parent.temporal_start
                 ):
                     raise InvalidModel(
-                        "Conflicting temporal start properties: %s" % self.name
+                        f"Conflicting temporal start properties: {self.name}"
                     )
                 temporal_start = parent.temporal_start
 
             if len(self._temporal_end) == 0 and parent.temporal_end:
                 if temporal_end is not None and temporal_end != parent.temporal_end:
                     raise InvalidModel(
-                        "Conflicting temporal start properties: %s" % self.name
+                        f"Conflicting temporal start properties: {self.name}"
                     )
                 temporal_end = parent.temporal_end
 
@@ -241,26 +241,26 @@ class Schema:
 
         for featured in self.featured:
             if self.get(featured) is None:
-                raise InvalidModel("Missing featured property: %s" % featured)
+                raise InvalidModel(f"Missing featured property: {featured}")
 
         for caption in self.caption:
             prop_ = self.get(caption)
             if prop_ is None:
-                raise InvalidModel("Missing caption property: %s" % caption)
+                raise InvalidModel(f"Missing caption property: {caption}")
             if prop_.type == registry.entity:
-                raise InvalidModel("Caption cannot be entity: %s" % caption)
+                raise InvalidModel(f"Caption cannot be entity: {caption}")
 
         for required in self.required:
             if self.get(required) is None:
-                raise InvalidModel("Missing required property: %s" % required)
+                raise InvalidModel(f"Missing required property: {required}")
 
         if self.edge:
             if self.source_prop is None:
-                msg = "Missing edge source: %s" % self.edge_source
+                msg = f"Missing edge source: {self.edge_source}"
                 raise InvalidModel(msg)
 
             if self.target_prop is None:
-                msg = "Missing edge target: %s" % self.edge_target
+                msg = f"Missing edge target: {self.edge_target}"
                 raise InvalidModel(msg)
 
     def _add_reverse(
@@ -268,7 +268,7 @@ class Schema:
     ) -> Property:
         name = data.get("name")
         if name is None:
-            raise InvalidModel("Unnamed reverse: %s" % other)
+            raise InvalidModel(f"Unnamed reverse: {other}")
         name = const(name)
 
         prop = self.get(name)
@@ -487,7 +487,7 @@ class Schema:
 
         schema = Model.instance().get(name)
         if schema is None:
-            raise InvalidData("Unknown schema: %r" % name)
+            raise InvalidData(f"Unknown schema: {name!r}")
         return schema
 
     def __eq__(self, other: Any) -> bool:
@@ -504,4 +504,4 @@ class Schema:
         return self._hash
 
     def __repr__(self) -> str:
-        return "<Schema(%r)>" % self.name
+        return f"<Schema({self.name!r})>"

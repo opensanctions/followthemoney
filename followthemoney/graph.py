@@ -72,14 +72,14 @@ class Node(object):
         """For a given :class:`~followthemoney.proxy.EntityProxy`, return a node
         based on the entity."""
         if proxy.id is None:
-            raise InvalidModel("Invalid entity proxy: %r" % proxy)
+            raise InvalidModel(f"Invalid entity proxy: {proxy!r}")
         return cls(registry.entity, proxy.id, proxy=proxy)
 
     def __str__(self) -> str:
         return self.caption
 
     def __repr__(self) -> str:
-        return "<Node(%r, %r, %r)>" % (self.id, self.type, self.caption)
+        return f"<Node({self.id!r}, {self.type!r}, {self.caption!r})>"
 
     def __hash__(self) -> int:
         return hash(self.id)
@@ -139,7 +139,7 @@ class Edge(object):
             if self.schema.source_prop.reverse is not None:
                 return self.schema.source_prop.reverse
         if self.prop is None:
-            raise InvalidModel("Contradiction: %r" % self)
+            raise InvalidModel(f"Contradiction: {self!r}")
         return self.prop
 
     @property
@@ -166,7 +166,7 @@ class Edge(object):
         if self.schema is not None:
             return self.schema.name
         if self.prop is None:
-            raise InvalidModel("Invalid edge: %r" % self)
+            raise InvalidModel(f"Invalid edge: {self!r}")
         return self.prop.name
 
     def to_dict(self) -> dict[str, str | None]:
@@ -178,7 +178,7 @@ class Edge(object):
         }
 
     def __repr__(self) -> str:
-        return "<Edge(%r)>" % self.id
+        return f"<Edge({self.id!r})>"
 
     def __hash__(self) -> int:
         return hash(self.id)
@@ -231,10 +231,10 @@ class Graph(object):
 
     def _add_edge(self, proxy: EntityProxy, source: str, target: str) -> None:
         if proxy.schema.source_prop is None:
-            raise InvalidModel("Invalid edge entity: %r" % proxy)
+            raise InvalidModel(f"Invalid edge entity: {proxy!r}")
         source_node = self._get_node_stub(proxy.schema.source_prop, source)
         if proxy.schema.target_prop is None:
-            raise InvalidModel("Invalid edge entity: %r" % proxy)
+            raise InvalidModel(f"Invalid edge entity: {proxy!r}")
         target_node = self._get_node_stub(proxy.schema.target_prop, target)
         if source_node.id is not None and target_node.id is not None:
             edge = Edge(self, source_node, target_node, proxy=proxy)

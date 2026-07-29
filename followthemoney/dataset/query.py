@@ -40,19 +40,19 @@ def validate_query(query: Any) -> None:
             raise InvalidDatasetQuery("Operator object must have exactly one key")
         key = next(iter(query))
         if key not in OPERATORS:
-            raise InvalidDatasetQuery("Unknown operator: %r" % key)
+            raise InvalidDatasetQuery(f"Unknown operator: {key!r}")
         value = query[key]
         if key == "not":
             validate_query(value)
         else:
             if not isinstance(value, Sequence) or isinstance(value, str) or len(value) == 0:
                 raise InvalidDatasetQuery(
-                    "Operator %r requires a non-empty array" % key
+                    f"Operator {key!r} requires a non-empty array"
                 )
             for item in value:
                 validate_query(item)
         return
-    raise InvalidDatasetQuery("Invalid query node type: %s" % type(query).__name__)
+    raise InvalidDatasetQuery(f"Invalid query node type: {type(query).__name__}")
 
 
 def _resolve_leaf(catalog: "DataCatalog[DS]", leaf: str) -> set[DS]:
@@ -66,7 +66,7 @@ def _resolve_leaf(catalog: "DataCatalog[DS]", leaf: str) -> set[DS]:
         return result
     dataset = catalog.get(leaf)
     if dataset is None:
-        raise InvalidDatasetQuery("Unknown dataset: %r" % leaf)
+        raise InvalidDatasetQuery(f"Unknown dataset: {leaf!r}")
     return dataset.leaves
 
 
@@ -99,7 +99,7 @@ def _evaluate(catalog: "DataCatalog[DS]", query: DatasetQuery) -> set[DS]:
             return functools.reduce(set.intersection, results)
         if key == "not":
             return _universe(catalog) - _evaluate(catalog, value)
-    raise InvalidDatasetQuery("Invalid query node type: %s" % type(query).__name__)
+    raise InvalidDatasetQuery(f"Invalid query node type: {type(query).__name__}")
 
 
 def evaluate_query(catalog: "DataCatalog[DS]", query: DatasetQuery) -> set[DS]:
@@ -117,7 +117,7 @@ def _match(query: DatasetQuery, datasets: set[str]) -> bool:
     """Recursively match a query AST against a set of dataset names."""
     if isinstance(query, str):
         if query.startswith("#"):
-            raise InvalidDatasetQuery("Tag selectors require a catalog: %r" % query)
+            raise InvalidDatasetQuery(f"Tag selectors require a catalog: {query!r}")
         return query in datasets
     if isinstance(query, Sequence):
         return any(_match(item, datasets) for item in query)
@@ -130,7 +130,7 @@ def _match(query: DatasetQuery, datasets: set[str]) -> bool:
             return all(_match(item, datasets) for item in value)
         if key == "not":
             return not _match(value, datasets)
-    raise InvalidDatasetQuery("Invalid query node type: %s" % type(query).__name__)
+    raise InvalidDatasetQuery(f"Invalid query node type: {type(query).__name__}")
 
 
 def match_datasets(query: DatasetQuery, datasets: set[str]) -> bool:

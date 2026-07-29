@@ -65,7 +65,7 @@ class QueryMapping:
             return SQLSource(self, data)
         if "csv_url" in data or "csv_urls" in data:
             return CSVSource(self, data)
-        raise InvalidMapping("Cannot determine mapping type: %r" % data)
+        raise InvalidMapping(f"Cannot determine mapping type: {data!r}")
 
     def map(self, record: Record) -> dict[str, ValueEntity]:
         data: dict[str, EntityProxy] = {}

@@ -184,7 +184,7 @@ class Statement(object):
         return hash(self.id)
 
     def __repr__(self) -> str:
-        return "<Statement(%r, %r, %r)>" % (self._entity_id, self._prop, self._value)
+        return f"<Statement({self._entity_id!r}, {self._prop!r}, {self._value!r})>"
 
     def __eq__(self, other: Any) -> bool:
         return not self.id != other.id
