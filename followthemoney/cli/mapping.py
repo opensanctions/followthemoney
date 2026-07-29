@@ -2,7 +2,8 @@ import sys
 import click
 from pathlib import Path
 from banal import keys_values
-from typing import Generator, List, Optional, TextIO, Tuple
+from typing import TextIO
+from collections.abc import Generator
 from contextlib import contextmanager
 
 from followthemoney import model
@@ -34,7 +35,7 @@ def input_file(path: Path) -> Generator[TextIO, None, None]:
 )
 @click.argument("mapping_yaml", type=click.Path(exists=True, path_type=Path))
 def run_mapping(
-    outfile: Path, mapping_yaml: Path, dataset: Optional[str], sign: bool = True
+    outfile: Path, mapping_yaml: Path, dataset: str | None, sign: bool = True
 ) -> None:
     config = load_mapping_file(mapping_yaml)
     try:
@@ -65,9 +66,9 @@ def run_mapping(
 )
 @click.argument("mapping_yaml", type=click.Path(exists=True, path_type=Path))
 def stream_mapping(
-    infile: Path, outfile: Path, mapping_yaml: Path, dataset: Optional[str], sign: bool = True
+    infile: Path, outfile: Path, mapping_yaml: Path, dataset: str | None, sign: bool = True
 ) -> None:
-    queries: List[Tuple[str, QueryMapping, CSVSource]] = []
+    queries: list[tuple[str, QueryMapping, CSVSource]] = []
     config = load_mapping_file(mapping_yaml)
     for config_dataset, meta in config.items():
         ds = dataset or config_dataset

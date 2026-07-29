@@ -22,7 +22,7 @@ class IpType(PropertyType):
     max_length = 64
 
     def validate(
-        self, value: str, fuzzy: bool = False, format: Optional[str] = None
+        self, value: str, fuzzy: bool = False, format: str | None = None
     ) -> bool:
         """Check to see if this is a valid ip address."""
         try:
@@ -35,9 +35,9 @@ class IpType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Create a more clean, but still user-facing version of an
         instance of the type."""
         try:

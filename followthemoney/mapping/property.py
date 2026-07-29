@@ -2,7 +2,7 @@ import re
 from copy import deepcopy
 from warnings import warn
 from normality import stringify
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 from banal import keys_values, as_bool
 
 from followthemoney.helpers import inline_names
@@ -38,23 +38,23 @@ class PropertyMapping(object):
     FORMAT_PATTERN = re.compile("{{([^(}})]*)}}")
 
     def __init__(
-        self, query: "QueryMapping", data: Dict[str, Any], prop: Property
+        self, query: "QueryMapping", data: dict[str, Any], prop: Property
     ) -> None:
         self.query = query
         data = deepcopy(data)
         self.prop = prop
 
-        self.refs = cast(List[str], keys_values(data, "column", "columns"))
-        self.join = cast(Optional[str], data.pop("join", None))
-        self.split = cast(Optional[str], data.pop("split", None))
+        self.refs = cast(list[str], keys_values(data, "column", "columns"))
+        self.join = cast(str | None, data.pop("join", None))
+        self.split = cast(str | None, data.pop("split", None))
         self.entity = stringify(data.pop("entity", None))
         self.format = stringify(data.pop("format", None))
         self.fuzzy = as_bool(data.pop("fuzzy", False))
         self.required = as_bool(data.pop("required", False))
-        self.literals = cast(List[str], keys_values(data, "literal", "literals"))
+        self.literals = cast(list[str], keys_values(data, "literal", "literals"))
 
         self.template = sanitize_text(data.pop("template", None))
-        self.replacements: Dict[str, str] = {}
+        self.replacements: dict[str, str] = {}
         if self.template is not None:
             # this is hacky, trying to generate refs from template
             for ref in self.FORMAT_PATTERN.findall(self.template):
@@ -93,7 +93,7 @@ class PropertyMapping(object):
             "No entity [%s] for property [%r]" % (self.entity, self.prop)
         )
 
-    def record_values(self, record: Record) -> List[str]:
+    def record_values(self, record: Record) -> list[str]:
         if self.template is not None:
             # replace mentions of any refs with the values present in the
             # current record
@@ -111,8 +111,8 @@ class PropertyMapping(object):
         return values
 
     def map(
-        self, proxy: EntityProxy, record: Record, entities: Dict[str, EntityProxy]
-    ) -> List[str]:
+        self, proxy: EntityProxy, record: Record, entities: dict[str, EntityProxy]
+    ) -> list[str]:
         if self.entity is not None:
             entity = entities.get(self.entity)
             if entity is not None:
@@ -122,7 +122,7 @@ class PropertyMapping(object):
 
         # clean the values returned by the query, or by using literals, or
         # formats.
-        values: List[str] = self.record_values(record)
+        values: list[str] = self.record_values(record)
 
         if self.join is not None:
             values = [self.join.join(values)]
@@ -133,7 +133,7 @@ class PropertyMapping(object):
                 splote.extend(value.split(self.split))
             values = splote
 
-        discarded_values: List[str] = []
+        discarded_values: list[str] = []
 
         for value in values:
             added_value = proxy.unsafe_add(

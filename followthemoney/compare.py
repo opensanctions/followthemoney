@@ -1,6 +1,6 @@
 import math
 from itertools import islice, product
-from typing import Dict, Generator, Iterable, List, Optional
+from collections.abc import Generator, Iterable
 from normality import ascii_text
 from rigour.text.scripts import can_latinize
 from rigour.names import tokenize_name, remove_person_prefixes
@@ -14,8 +14,8 @@ from followthemoney.types.common import PropertyType
 
 
 # Compare weights come from the glm-bernouli model in followthemoney-predict
-Weights = Dict[Optional[PropertyType], float]
-Scores = Dict[PropertyType, Optional[float]]
+Weights = dict[PropertyType | None, float]
+Scores = dict[PropertyType, float | None]
 COMPARE_WEIGHTS: Weights = {
     registry.name: 12.275729155073371,
     registry.country: 1.0494517476987815,
@@ -120,8 +120,8 @@ def _normalize_names(
 
 
 def compare_group(
-    group_type: PropertyType, left_values: List[str], right_values: List[str]
-) -> Optional[float]:
+    group_type: PropertyType, left_values: list[str], right_values: list[str]
+) -> float | None:
     if len(left_values) == 0 and len(right_values) == 0:
         raise ValueError("At least one proxy must have property type: %s", group_type)
     elif len(left_values) == 0 or len(right_values) == 0:
@@ -131,7 +131,7 @@ def compare_group(
 
 def compare_names(
     common: Schema, left: EntityProxy, right: EntityProxy, max_names: int = 200
-) -> Optional[float]:
+) -> float | None:
     result = 0.0
     left_list = list(islice(_normalize_names(common, left.names), max_names))
     right_list = list(islice(_normalize_names(common, right.names), max_names))
@@ -150,7 +150,7 @@ def compare_names(
     return result
 
 
-def compare_countries(left: EntityProxy, right: EntityProxy) -> Optional[float]:
+def compare_countries(left: EntityProxy, right: EntityProxy) -> float | None:
     left_countries = left.country_hints
     right_countries = right.country_hints
     if len(left_countries) == 0 and len(right_countries) == 0:

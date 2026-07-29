@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Set, TypeVar
+from typing import Any, TypeVar
 
 from rigour.names import pick_name
 
@@ -10,7 +10,7 @@ from followthemoney.util import HASH_ENCODING
 VE = TypeVar("VE", bound="ValueEntity")
 
 
-def _defined(*args: Optional[str]) -> List[str]:
+def _defined(*args: str | None) -> list[str]:
     return [arg for arg in args if arg is not None]
 
 
@@ -39,16 +39,16 @@ class ValueEntity(EntityProxy):
     def __init__(
         self,
         schema: Schema,
-        data: Dict[str, Any],
-        key_prefix: Optional[str] = None,
+        data: dict[str, Any],
+        key_prefix: str | None = None,
         cleaned: bool = True,
     ):
-        self._caption: Optional[str] = data.pop("caption", None)
-        self.datasets: Set[str] = set(data.pop("datasets", []))
-        self.referents: Set[str] = set(data.pop("referents", []))
-        self.first_seen: Optional[str] = data.pop("first_seen", None)
-        self.last_seen: Optional[str] = data.pop("last_seen", None)
-        self.last_change: Optional[str] = data.pop("last_change", None)
+        self._caption: str | None = data.pop("caption", None)
+        self.datasets: set[str] = set(data.pop("datasets", []))
+        self.referents: set[str] = set(data.pop("referents", []))
+        self.first_seen: str | None = data.pop("first_seen", None)
+        self.last_seen: str | None = data.pop("last_seen", None)
+        self.last_change: str | None = data.pop("last_change", None)
         super().__init__(schema, data, key_prefix=key_prefix, cleaned=cleaned)
 
         # add data from statement dict if present.
@@ -95,7 +95,7 @@ class ValueEntity(EntityProxy):
             digest.update(self.last_change.encode(HASH_ENCODING))
         return digest.hexdigest()
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         data = super().to_dict()
         data["referents"] = list(self.referents)
         data["datasets"] = list(self.datasets)

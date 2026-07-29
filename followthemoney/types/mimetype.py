@@ -28,13 +28,13 @@ class MimeType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         text = normalize_mimetype(text)
         if text != DEFAULT:
             return text
         return None
 
-    def caption(self, value: str, format: Optional[str] = None) -> str:
+    def caption(self, value: str, format: str | None = None) -> str:
         return parse_mimetype(value).label or value

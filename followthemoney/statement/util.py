@@ -1,5 +1,4 @@
 from functools import cache
-from typing import Tuple
 
 from followthemoney.model import Model
 from followthemoney.types import registry
@@ -46,7 +45,7 @@ def get_prop_type(schema: str, prop: str) -> str:
 
 
 @cache
-def unpack_prop(id: str) -> Tuple[str, str, str]:
+def unpack_prop(id: str) -> tuple[str, str, str]:
     schema, prop = id.split(":", 1)
     prop_type = get_prop_type(schema, prop)
     return const(schema), prop_type, const(prop)

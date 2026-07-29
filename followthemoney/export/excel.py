@@ -1,6 +1,5 @@
 import logging
 from io import BytesIO
-from typing import Dict, List, Optional
 from openpyxl import Workbook
 from openpyxl.cell import WriteOnlyCell
 from openpyxl.styles import Font, PatternFill
@@ -24,7 +23,7 @@ class ExcelWriter(object):
     def __init__(self) -> None:
         self.workbook = Workbook(write_only=True)
 
-    def make_sheet(self, title: str, headers: List[str]) -> Worksheet:
+    def make_sheet(self, title: str, headers: list[str]) -> Worksheet:
         sheet: Worksheet = self.workbook.create_sheet(title=title)
         sheet.freeze_panes = "A2"
         sheet.sheet_properties.filterMode = True
@@ -46,14 +45,14 @@ class ExcelWriter(object):
 
 
 class ExcelExporter(ExcelWriter, Exporter):
-    def __init__(self, file_path: PathLike, extra: Optional[List[str]] = None):
+    def __init__(self, file_path: PathLike, extra: list[str] | None = None):
         ExcelWriter.__init__(self)
         Exporter.__init__(self)
         self.file_path = file_path
         self.extra = extra or []
-        self.sheets: Dict[Schema, Worksheet] = {}
+        self.sheets: dict[Schema, Worksheet] = {}
 
-    def write(self, proxy: E, extra: Optional[List[str]] = None) -> None:
+    def write(self, proxy: E, extra: list[str] | None = None) -> None:
         if proxy.schema not in self.sheets:
             headers = ["ID"]
             headers.extend(self.extra)

@@ -32,9 +32,9 @@ class IdentifierType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         format_ = get_identifier_format(format)
         if format_ is not None:
             return format_.normalize(text)
@@ -60,7 +60,7 @@ class IdentifierType(PropertyType):
     def node_id(self, value: str) -> str:
         return f"id:{value}"
 
-    def caption(self, value: str, format: Optional[str] = None) -> str:
+    def caption(self, value: str, format: str | None = None) -> str:
         format_ = get_identifier_format(format)
         if format_ is not None:
             return format_.format(value)

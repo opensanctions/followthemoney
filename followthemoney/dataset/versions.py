@@ -4,7 +4,8 @@ import random
 import string
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Iterator, List, Optional
+from typing import Any
+from collections.abc import Iterator
 
 from rigour.time import utc_now
 
@@ -20,7 +21,7 @@ class Version(object):
         self.tag: str = tag
 
     @classmethod
-    def new(cls, tag: Optional[str] = None) -> "Version":
+    def new(cls, tag: str | None = None) -> "Version":
         now = utc_now().replace(tzinfo=None)
 
         if tag is None:
@@ -85,8 +86,8 @@ class VersionHistory(object):
 
     LENGTH = 100
 
-    items: List[Version]
-    last_successful: Optional[Version] = None
+    items: list[Version]
+    last_successful: Version | None = None
     max_length: int = LENGTH
 
     def append(self, version: Version) -> "VersionHistory":
@@ -96,7 +97,7 @@ class VersionHistory(object):
         return VersionHistory(items[-self.max_length :], self.last_successful)
 
     @property
-    def latest(self) -> Optional[Version]:
+    def latest(self) -> Version | None:
         if not len(self.items):
             return None
         return self.items[-1]

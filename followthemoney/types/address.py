@@ -31,9 +31,9 @@ class AddressType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Basic clean-up."""
         address = self.LINE_BREAKS.sub(", ", text)
         address = self.COMMATA.sub(", ", address)
@@ -54,7 +54,7 @@ class AddressType(PropertyType):
     def _specificity(self, value: str) -> float:
         return dampen(10, 60, value)
 
-    def node_id(self, value: str) -> Optional[str]:
+    def node_id(self, value: str) -> str | None:
         normalized = normalize_address(value)
         if normalized is None:
             return None

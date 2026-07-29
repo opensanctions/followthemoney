@@ -24,7 +24,7 @@ the server without compromising isolation.
 """
 
 import hmac
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Union
 
 from followthemoney.proxy import E
 from followthemoney.types import registry
@@ -39,12 +39,12 @@ class Namespace(object):
 
     SEP = "."
 
-    def __init__(self, name: Optional[str] = None) -> None:
+    def __init__(self, name: str | None = None) -> None:
         self.bname = key_bytes(name) if name else b""
         self.hmac = hmac.new(self.bname, digestmod="sha1")
 
     @classmethod
-    def parse(cls, entity_id: str) -> Tuple[Optional[str], Optional[str]]:
+    def parse(cls, entity_id: str) -> tuple[str | None, str | None]:
         """Split up an entity ID into the plain ID and the namespace
         signature. If either part is missing, return None instead."""
         clean_id = registry.entity.clean(entity_id)
@@ -57,11 +57,11 @@ class Namespace(object):
             return (clean_id, None)
 
     @classmethod
-    def strip(cls, entity_id: str) -> Optional[str]:
+    def strip(cls, entity_id: str) -> str | None:
         plain_id, _ = cls.parse(entity_id)
         return plain_id
 
-    def signature(self, entity_id: str) -> Optional[str]:
+    def signature(self, entity_id: str) -> str | None:
         """Generate a namespace-specific signature."""
         if len(self.bname) == 0 or entity_id is None:
             return None
@@ -69,7 +69,7 @@ class Namespace(object):
         digest.update(key_bytes(entity_id))
         return digest.hexdigest()
 
-    def sign(self, entity_id: Optional[str]) -> Optional[str]:
+    def sign(self, entity_id: str | None) -> str | None:
         """Apply a namespace signature to an entity ID, removing any
         previous namespace marker."""
         if entity_id is None:

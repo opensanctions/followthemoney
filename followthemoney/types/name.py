@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional, Sequence
+from typing import TYPE_CHECKING, Optional
+from collections.abc import Sequence
 from normality import slugify_text
 from normality.cleaning import squash_spaces, strip_quotes
 from rigour.env import MAX_NAME_LENGTH
@@ -33,9 +34,9 @@ class NameType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Basic clean-up."""
         name = strip_quotes(text)
         if name is None:
@@ -45,7 +46,7 @@ class NameType(PropertyType):
             return None
         return name
 
-    def pick(self, values: Sequence[str]) -> Optional[str]:
+    def pick(self, values: Sequence[str]) -> str | None:
         """From a set of names, pick the most plausible user-facing one."""
         return pick_name(list(values))
 
@@ -65,7 +66,7 @@ class NameType(PropertyType):
             max_length=self.max_length,
         )
 
-    def node_id(self, value: str) -> Optional[str]:
+    def node_id(self, value: str) -> str | None:
         slug = slugify_text(value)
         if slug is None:
             return None

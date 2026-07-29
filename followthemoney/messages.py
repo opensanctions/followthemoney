@@ -1,11 +1,12 @@
 import yaml
-from typing import Any, Dict, Generator, List, TextIO, Tuple
+from typing import Any, TextIO
+from collections.abc import Generator
 
-Message = Tuple[Any, Any, List[str], List[str]]
+Message = tuple[Any, Any, list[str], list[str]]
 
 
 def extract_object(
-    data: Dict[str, Any], path: List[str]
+    data: dict[str, Any], path: list[str]
 ) -> Generator[Message, None, None]:
     for key, value in data.items():
         subpath = path + [key]

@@ -7,7 +7,6 @@ See https://followthemoney.tech/docs/metadata/#dataset-query-dsl for full
 documentation and examples.
 """
 
-from typing import List
 
 from followthemoney.dataset.query import DatasetQuery
 from followthemoney.exc import InvalidDatasetQuery
@@ -62,7 +61,7 @@ class _Parser:
         return self._parse_leaf()
 
     def _parse_and(self) -> DatasetQuery:
-        items: List[DatasetQuery] = [self._parse_atom()]
+        items: list[DatasetQuery] = [self._parse_atom()]
         while self._peek() in ("&", "-"):
             op = self.text[self.pos]
             self.pos += 1
@@ -76,7 +75,7 @@ class _Parser:
         return {"and": items}
 
     def _parse_or(self) -> DatasetQuery:
-        items: List[DatasetQuery] = [self._parse_and()]
+        items: list[DatasetQuery] = [self._parse_and()]
         while self._peek() == "|":
             self.pos += 1
             items.append(self._parse_and())

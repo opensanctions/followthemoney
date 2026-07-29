@@ -1,4 +1,5 @@
-from typing import Any, Iterable, List, Mapping, Union
+from typing import Any, Union
+from collections.abc import Iterable, Mapping
 from datetime import datetime, date, timezone
 import typing
 from prefixdate import DatePrefix
@@ -9,10 +10,10 @@ if typing.TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
 
 Value = Union[str, int, float, bool, date, datetime, DatePrefix, None, "EntityProxy"]
-Values = Union[Value, Iterable[Value]]
+Values = Value | Iterable[Value]
 
 
-def string_list(value: Any, sanitize: bool = False) -> List[str]:
+def string_list(value: Any, sanitize: bool = False) -> list[str]:
     """Convert a value - which may be a list or set - to a list of strings."""
     # This function is called in the inner loop of placing values into entities,
     # so it's unrolled to avoid the overhead of a comparatively heavy ops like
@@ -39,7 +40,7 @@ def string_list(value: Any, sanitize: bool = False) -> List[str]:
             value = value.astimezone(tz=timezone.utc)
         return [value.isoformat()]
     if type_ is set or type_ is list or type_ is tuple:
-        texts: List[str] = []
+        texts: list[str] = []
         for inner in value:
             texts.extend(string_list(inner, sanitize=sanitize))
         return texts
@@ -60,7 +61,7 @@ def string_list(value: Any, sanitize: bool = False) -> List[str]:
             return []
         return [text]
     if isinstance(value, Iterable):
-        stexts: List[str] = []
+        stexts: list[str] = []
         for inner in value:
             stexts.extend(string_list(inner, sanitize=sanitize))
         return stexts

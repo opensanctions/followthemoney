@@ -3,7 +3,7 @@ import click
 import orjson
 import logging
 from pathlib import Path
-from typing import Optional, BinaryIO
+from typing import BinaryIO
 
 from followthemoney import model
 from followthemoney.entity import ValueEntity
@@ -45,7 +45,7 @@ def validate(infile: Path, outfile: Path) -> None:
 @click.option("-i", "--infile", type=InPath, default="-")  # noqa
 @click.option("-o", "--outfile", type=OutPath, default="-")  # noqa
 @click.option("-s", "--signature", default=None, help="HMAC signature key")  # noqa
-def sign(infile: Path, outfile: Path, signature: Optional[str]) -> None:
+def sign(infile: Path, outfile: Path, signature: str | None) -> None:
     ns = Namespace(signature)
     try:
         with path_writer(outfile) as outfh:

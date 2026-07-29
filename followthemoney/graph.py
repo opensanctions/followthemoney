@@ -7,7 +7,8 @@ to a specific output format, like Cypher or NetworkX.
 """
 
 import logging
-from typing import Any, Dict, Generator, Iterable, List, Optional
+from typing import Any
+from collections.abc import Generator, Iterable
 
 from followthemoney.types import registry
 from followthemoney.types.common import PropertyType
@@ -30,8 +31,8 @@ class Node(object):
         self,
         type_: PropertyType,
         value: str,
-        proxy: Optional[EntityProxy] = None,
-        schema: Optional[Schema] = None,
+        proxy: EntityProxy | None = None,
+        schema: Schema | None = None,
     ) -> None:
         self.type = type_
         self.value = value
@@ -57,7 +58,7 @@ class Node(object):
         caption = self.type.caption(self.value)
         return caption or self.value
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Return a simple dictionary to reflect this graph node."""
         return {
             "id": self.id,
@@ -106,9 +107,9 @@ class Edge(object):
         graph: "Graph",
         source: Node,
         target: Node,
-        proxy: Optional[EntityProxy] = None,
-        prop: Optional[Property] = None,
-        value: Optional[str] = None,
+        proxy: EntityProxy | None = None,
+        prop: Property | None = None,
+        value: str | None = None,
     ):
         self.graph = graph
         self.id = f"{source.id}<>{target.id}"
@@ -117,7 +118,7 @@ class Edge(object):
         self.weight = 1.0
         self.prop = prop
         self.proxy = proxy
-        self.schema: Optional[Schema] = None
+        self.schema: Schema | None = None
         if prop is not None and value is not None:
             self.weight = prop.specificity(value)
         if proxy is not None:
@@ -125,7 +126,7 @@ class Edge(object):
             self.schema = proxy.schema
 
     @property
-    def source(self) -> Optional[Node]:
+    def source(self) -> Node | None:
         """The graph node from which the edge originates."""
         if self.source_id is None:
             return None
@@ -142,14 +143,14 @@ class Edge(object):
         return self.prop
 
     @property
-    def target(self) -> Optional[Node]:
+    def target(self) -> Node | None:
         """The graph node to which the edge points."""
         if self.target_id is None:
             return None
         return self.graph.nodes.get(self.target_id)
 
     @property
-    def target_prop(self) -> Optional[Property]:
+    def target_prop(self) -> Property | None:
         """Get the entity property originating this edge."""
         if self.schema is not None and self.schema.target_prop is not None:
             return self.schema.target_prop.reverse
@@ -168,7 +169,7 @@ class Edge(object):
             raise InvalidModel("Invalid edge: %r" % self)
         return self.prop.name
 
-    def to_dict(self) -> Dict[str, Optional[str]]:
+    def to_dict(self) -> dict[str, str | None]:
         return {
             "id": self.id,
             "source_id": self.source_id,
@@ -201,17 +202,17 @@ class Graph(object):
 
     def flush(self) -> None:
         """Remove all nodes, edges and proxies from the graph."""
-        self.edges: Dict[str, Edge] = {}
-        self.nodes: Dict[str, Node] = {}
-        self.proxies: Dict[str, Optional[EntityProxy]] = {}
+        self.edges: dict[str, Edge] = {}
+        self.nodes: dict[str, Node] = {}
+        self.proxies: dict[str, EntityProxy | None] = {}
 
-    def queue(self, id_: str, proxy: Optional[EntityProxy] = None) -> None:
+    def queue(self, id_: str, proxy: EntityProxy | None = None) -> None:
         """Register a reference to an entity in the graph."""
         if id_ not in self.proxies or proxy is not None:
             self.proxies[id_] = proxy
 
     @property
-    def queued(self) -> List[str]:
+    def queued(self) -> list[str]:
         """Return a list of all the entities which are referenced from the graph
         but that haven't been loaded yet. This can be used to get a list of
         entities that should be included to expand the whole graph by one degree.
@@ -276,7 +277,7 @@ class Graph(object):
         return self.edges.values()
 
     def get_outbound(
-        self, node: Node, prop: Optional[Property] = None
+        self, node: Node, prop: Property | None = None
     ) -> Generator[Edge, None, None]:
         """Get all edges pointed out from the given node."""
         for edge in self.iteredges():
@@ -286,7 +287,7 @@ class Graph(object):
                 yield edge
 
     def get_inbound(
-        self, node: Node, prop: Optional[Property] = None
+        self, node: Node, prop: Property | None = None
     ) -> Generator[Edge, None, None]:
         """Get all edges pointed at the given node."""
         for edge in self.iteredges():
@@ -296,13 +297,13 @@ class Graph(object):
                 yield edge
 
     def get_adjacent(
-        self, node: Node, prop: Optional[Property] = None
+        self, node: Node, prop: Property | None = None
     ) -> Generator[Edge, None, None]:
         "Get all adjacent edges of the given node."
         yield from self.get_outbound(node, prop=prop)
         yield from self.get_inbound(node, prop=prop)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Return a dictionary with the graph nodes and edges."""
         return {
             "nodes": [n.to_dict() for n in self.iternodes()],

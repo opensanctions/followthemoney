@@ -1,4 +1,5 @@
-from typing import Dict, Iterable, List, Set, cast
+from typing import cast
+from collections.abc import Iterable
 
 from followthemoney.types.url import UrlType
 from followthemoney.types.name import NameType
@@ -50,10 +51,10 @@ class Registry(object):
     number = NumberType()
 
     def __init__(self) -> None:
-        self.matchable: Set[PropertyType] = set()
-        self.types: Set[PropertyType] = set()
-        self.groups: Dict[str, PropertyType] = {}
-        self.pivots: Set[PropertyType] = set()
+        self.matchable: set[PropertyType] = set()
+        self.types: set[PropertyType] = set()
+        self.groups: dict[str, PropertyType] = {}
+        self.pivots: set[PropertyType] = set()
         for name in dir(self):
             type_ = getattr(self, name)
             if not isinstance(type_, PropertyType):
@@ -75,7 +76,7 @@ class Registry(object):
             return name
         return cast(PropertyType, getattr(self, name))
 
-    def get_types(self, names: Iterable[str]) -> List[PropertyType]:
+    def get_types(self, names: Iterable[str]) -> list[PropertyType]:
         """Get a list of all property type objects linked to a set of names."""
         types = [self.get(n) for n in names]
         return [t for t in types if t is not None]

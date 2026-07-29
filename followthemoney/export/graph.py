@@ -1,4 +1,5 @@
-from typing import Dict, Iterable, List, Optional, TextIO, Union
+from typing import TextIO
+from collections.abc import Iterable
 import networkx as nx  # type: ignore
 from networkx.readwrite.gexf import generate_gexf  # type: ignore
 
@@ -10,7 +11,7 @@ from followthemoney.export.common import Exporter
 DEFAULT_EDGE_TYPES = (registry.entity.name,)
 
 
-def edge_types() -> List[str]:
+def edge_types() -> list[str]:
     return [t.name for t in registry.matchable if t is not None]
 
 
@@ -23,14 +24,14 @@ class GraphExporter(Exporter):
         types = registry.get_types(edge_types)
         self.graph = Graph(edge_types=types)
 
-    def get_attributes(self, element: Union[Node, Edge]) -> Dict[str, str]:
+    def get_attributes(self, element: Node | Edge) -> dict[str, str]:
         attributes = {}
         if element.proxy:
             for prop, values in self.exportable_fields(element.proxy):
                 attributes[prop.name] = prop.type.join(values)
         return attributes
 
-    def write(self, proxy: E, extra: Optional[List[str]] = None) -> None:
+    def write(self, proxy: E, extra: list[str] | None = None) -> None:
         self.graph.add(proxy)
         self.write_graph()
 

@@ -4,7 +4,8 @@ import yaml
 import click
 import orjson
 from pathlib import Path
-from typing import Any, BinaryIO, Generator, Type
+from typing import Any, BinaryIO
+from collections.abc import Generator
 from banal import is_listish, ensure_list
 
 from followthemoney.export.common import Exporter
@@ -30,7 +31,7 @@ def write_entity(fh: BinaryIO, entity: EntityProxy, statements: bool = False) ->
 
 
 def binary_entities(
-    fh: BinaryIO, entity_type: Type[E], cleaned: bool = True, max_line: int = MAX_LINE
+    fh: BinaryIO, entity_type: type[E], cleaned: bool = True, max_line: int = MAX_LINE
 ) -> Generator[E, None, None]:
     while line := fh.readline(max_line):
         data = orjson.loads(line)
@@ -39,7 +40,7 @@ def binary_entities(
 
 def path_entities(
     path: PathLike,
-    entity_type: Type[E],
+    entity_type: type[E],
     cleaned: bool = True,
     max_line: int = MAX_LINE,
 ) -> Generator[E, None, None]:

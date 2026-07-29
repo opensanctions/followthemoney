@@ -2,14 +2,14 @@ import json
 from pydantic import ValidationError
 import pytest
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 from tempfile import TemporaryDirectory
 
 from followthemoney.dataset import DataCatalog, Dataset
 from followthemoney.dataset.dataset import DatasetModel
 
 
-def test_donations_base(catalog_data: Dict[str, Any]):
+def test_donations_base(catalog_data: dict[str, Any]):
     catalog = DataCatalog(Dataset, catalog_data)
     assert len(catalog.datasets) == 5, catalog.datasets
     ds = catalog.get("donations")
@@ -31,7 +31,7 @@ def test_donations_base(catalog_data: Dict[str, Any]):
         ds.get_resource("donations.dbf")
 
 
-def test_donations_export(catalog_data: Dict[str, Any]):
+def test_donations_export(catalog_data: dict[str, Any]):
     export = DataCatalog(Dataset, catalog_data).require("donations").to_dict()
     assert "publisher" not in export
 
@@ -44,7 +44,7 @@ def test_donations_export(catalog_data: Dict[str, Any]):
     assert export["resources"][1].get("mime_type_label") is None
 
 
-def test_company_dataset(catalog_data: Dict[str, Any]):
+def test_company_dataset(catalog_data: dict[str, Any]):
     catalog = DataCatalog(Dataset, catalog_data)
     assert len(catalog.datasets) == 5, catalog.datasets
     ds = catalog.get("company_data")
@@ -80,7 +80,7 @@ def test_create():
     assert ds.summary is None
 
 
-def test_hierarchy(catalog_data: Dict[str, Any]):
+def test_hierarchy(catalog_data: dict[str, Any]):
     catalog = DataCatalog(Dataset, catalog_data)
     all_datasets = catalog.require("all_datasets")
     collection_a = catalog.require("collection_a")
@@ -117,7 +117,7 @@ def test_from_path(catalog_path: Path):
         assert ds_load.title == "Political party donations"
 
 
-def test_dataset_aleph_metadata(catalog_data: Dict[str, Any]):
+def test_dataset_aleph_metadata(catalog_data: dict[str, Any]):
     catalog = DataCatalog(Dataset, catalog_data)
     ds = catalog.require("leak")
     ds = ds.model
@@ -150,7 +150,7 @@ def test_dataset_name_validation():
         Dataset({"name": "another.invalid.name"})
 
 
-def test_catalog_model(catalog_data: Dict[str, Any]):
+def test_catalog_model(catalog_data: dict[str, Any]):
     catalog = DataCatalog(Dataset, catalog_data)
     assert len(catalog.datasets) == 5
     ds = catalog.datasets[0]

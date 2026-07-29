@@ -54,9 +54,9 @@ class GenderType(EnumType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         code = text.lower().strip()
         code = self.LOOKUP.get(code, code)
         if code not in self.codes:

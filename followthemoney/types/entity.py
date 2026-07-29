@@ -30,7 +30,7 @@ class EntityType(PropertyType):
     max_length = ENTITY_ID_LEN
 
     def validate(
-        self, value: str, fuzzy: bool = False, format: Optional[str] = None
+        self, value: str, fuzzy: bool = False, format: str | None = None
     ) -> bool:
         return self.REGEX.match(value) is not None
 
@@ -38,9 +38,9 @@ class EntityType(PropertyType):
         self,
         raw: Any,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         entity_id = get_entity_id(raw)
         if entity_id is None:
             return None
@@ -50,9 +50,9 @@ class EntityType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Specific types can apply their own cleaning routines here (this is called
         by ``clean`` after the value has been converted to a string and null values
         have been filtered)."""

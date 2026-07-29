@@ -1,5 +1,5 @@
 from followthemoney.mapping.source import Record, Source
-from typing import TYPE_CHECKING, Any, List, Optional, Set, Dict
+from typing import TYPE_CHECKING, Any
 
 from followthemoney.proxy import EntityProxy
 from followthemoney.entity import ValueEntity
@@ -18,13 +18,13 @@ class QueryMapping:
     def __init__(
         self,
         model: "Model",
-        data: Dict[str, Any],
-        key_prefix: Optional[str] = None,
-        dataset: Optional[str] = None,
+        data: dict[str, Any],
+        key_prefix: str | None = None,
+        dataset: str | None = None,
     ) -> None:
         self.model = model
-        self.refs: Set[str] = set()
-        self.entities: List[EntityMapping] = []
+        self.refs: set[str] = set()
+        self.entities: list[EntityMapping] = []
         for name, edata in data.get("entities", {}).items():
             entity = EntityMapping(
                 model, self, name, edata, key_prefix=key_prefix, dataset=dataset
@@ -46,7 +46,7 @@ class QueryMapping:
         # in dependent entities.
         entities = self.entities
         self.entities = []
-        resolved: Set[str] = set()
+        resolved: set[str] = set()
         while len(entities) > 0:
             before = len(entities)
             for entity in entities:
@@ -60,16 +60,16 @@ class QueryMapping:
 
         self.source = self._get_source(data)
 
-    def _get_source(self, data: Dict[str, Any]) -> Source:
+    def _get_source(self, data: dict[str, Any]) -> Source:
         if "database" in data:
             return SQLSource(self, data)
         if "csv_url" in data or "csv_urls" in data:
             return CSVSource(self, data)
         raise InvalidMapping("Cannot determine mapping type: %r" % data)
 
-    def map(self, record: Record) -> Dict[str, ValueEntity]:
-        data: Dict[str, EntityProxy] = {}
-        result: Dict[str, ValueEntity] = {}
+    def map(self, record: Record) -> dict[str, ValueEntity]:
+        data: dict[str, EntityProxy] = {}
+        result: dict[str, ValueEntity] = {}
         for entity in self.entities:
             mapped = entity.map(record, data)
             if mapped is not None:

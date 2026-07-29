@@ -1,10 +1,9 @@
 import os
 import requests
-from typing import List
 from rigour.env import env_opt, env_str
 
 
-def get_env_list(name: str, default: List[str] = []) -> List[str]:
+def get_env_list(name: str, default: list[str] = []) -> list[str]:
     value = env_opt(name)
     if value is not None:
         values = value.split(":")

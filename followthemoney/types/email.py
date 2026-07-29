@@ -39,7 +39,7 @@ class EmailType(PropertyType):
     #     except:
     #         return False
 
-    def clean_domain_part(self, domain: str) -> Optional[str]:
+    def clean_domain_part(self, domain: str) -> str | None:
         """Clean and normalize the domain part of the email."""
         domain = domain.rstrip(".").lower()
         try:
@@ -58,7 +58,7 @@ class EmailType(PropertyType):
             return None
 
     def validate(
-        self, value: str, fuzzy: bool = False, format: Optional[str] = None
+        self, value: str, fuzzy: bool = False, format: str | None = None
     ) -> bool:
         """Check to see if this is a valid email address."""
         return self.clean_text(value, fuzzy=fuzzy, format=format) is not None
@@ -67,9 +67,9 @@ class EmailType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Parse and normalize an email address.
 
         Returns None if this is not an email address.

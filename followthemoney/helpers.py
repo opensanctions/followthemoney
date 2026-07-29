@@ -6,7 +6,7 @@
 # If anyone were to swap out the default model, this would
 # probably be the first place to break.
 from os.path import splitext
-from typing import Iterable, List, Optional, Set
+from collections.abc import Iterable
 from normality import safe_filename, squash_spaces
 from mimetypes import guess_extension
 from itertools import product
@@ -46,8 +46,8 @@ def simplify_provenance(proxy: E) -> E:
 
 
 def entity_filename(
-    proxy: EntityProxy, base_name: Optional[str] = None, extension: Optional[str] = None
-) -> Optional[str]:
+    proxy: EntityProxy, base_name: str | None = None, extension: str | None = None
+) -> str | None:
     """Derive a safe filename for the given entity."""
     if proxy.schema.is_a("Document"):
         for extension_ in proxy.get("extension", quiet=True):
@@ -86,7 +86,7 @@ def name_entity(entity: E) -> E:
 def check_person_cutoff(
     entity: EntityProxy,
     death_cutoff: datetime = datetime(2000, 1, 1),
-    birth_cutoff: Optional[datetime] = None,
+    birth_cutoff: datetime | None = None,
 ) -> bool:
     """Check if a person has been dead long enough to not be relevant for
     investigations any more."""
@@ -117,9 +117,9 @@ def remove_prefix_dates(entity: E) -> E:
     return entity
 
 
-def remove_prefix_date_values(values: Iterable[str]) -> List[str]:
+def remove_prefix_date_values(values: Iterable[str]) -> list[str]:
     """See ``remove_prefix_dates``."""
-    kept: List[str] = []
+    kept: list[str] = []
     values = sorted(values, key=len, reverse=True)
     for index, value in enumerate(values):
         keep = True
@@ -171,9 +171,9 @@ def combine_names(entity: E) -> E:
     return entity
 
 
-def dates_years(dates: Iterable[Optional[str]]) -> Set[str]:
+def dates_years(dates: Iterable[str | None]) -> set[str]:
     """Get the unique years from a set of date strings."""
-    cleaned: Set[str] = set()
+    cleaned: set[str] = set()
     for date in dates:
         if date is not None:
             cleaned.add(date[:4])
@@ -182,10 +182,10 @@ def dates_years(dates: Iterable[Optional[str]]) -> Set[str]:
 
 def post_summary(
     organization: str,
-    role: Optional[str],
-    start_dates: Iterable[Optional[str]],
-    end_dates: Iterable[Optional[str]],
-    dates: Iterable[Optional[str]],
+    role: str | None,
+    start_dates: Iterable[str | None],
+    end_dates: Iterable[str | None],
+    dates: Iterable[str | None],
 ) -> str:
     """Make a string summary for a Post object."""
     position = organization

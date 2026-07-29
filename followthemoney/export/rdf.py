@@ -3,14 +3,15 @@ from prefixdate import Precision
 from rdflib import Graph, Namespace
 from rdflib.term import Identifier, URIRef, Literal
 from rdflib import RDF, SKOS, XSD
-from typing import Generator, List, Optional, TextIO, Tuple
+from typing import TextIO
+from collections.abc import Generator
 
 from followthemoney.export.common import Exporter
 from followthemoney.types import registry
 from followthemoney.proxy import EntityProxy
 
 log = logging.getLogger(__name__)
-Triple = Tuple[Identifier, Identifier, Identifier]
+Triple = tuple[Identifier, Identifier, Identifier]
 NS = Namespace("https://schema.followthemoney.tech/#")
 
 
@@ -66,7 +67,7 @@ class RDFExporter(Exporter):
             else:
                 yield (uri, URIRef(prop.name), obj)
 
-    def write(self, proxy: EntityProxy, extra: Optional[List[str]] = None) -> None:
+    def write(self, proxy: EntityProxy, extra: list[str] | None = None) -> None:
         graph = Graph()
 
         for triple in self.entity_triples(proxy):

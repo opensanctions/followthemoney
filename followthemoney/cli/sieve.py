@@ -1,6 +1,6 @@
 import click
 from pathlib import Path
-from typing import Iterable, Optional
+from collections.abc import Iterable
 
 from followthemoney import model
 from followthemoney.entity import ValueEntity
@@ -17,8 +17,8 @@ def sieve_entity(
     schemata: Iterable[str],
     properties: Iterable[str],
     types: Iterable[str],
-    dataset_query: Optional[DatasetQuery] = None,
-) -> Optional[ValueEntity]:
+    dataset_query: DatasetQuery | None = None,
+) -> ValueEntity | None:
     if dataset_query is not None:
         if not match_datasets(dataset_query, entity.datasets):
             return None
@@ -69,9 +69,9 @@ def sieve(
     schema: Iterable[str],
     property: Iterable[str],
     type: Iterable[str],
-    datasets: Optional[str],
+    datasets: str | None,
 ) -> None:
-    dataset_query: Optional[DatasetQuery] = None
+    dataset_query: DatasetQuery | None = None
     if datasets is not None:
         dataset_query = parse_query(datasets)
     try:

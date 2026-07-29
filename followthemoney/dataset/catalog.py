@@ -1,5 +1,5 @@
 import yaml
-from typing import Optional, Dict, Any, Generic, Set, Type, List
+from typing import Optional, Any, Generic
 
 from followthemoney.types import registry
 from followthemoney.dataset.dataset import DS
@@ -11,12 +11,12 @@ class DataCatalog(Generic[DS]):
     """A data catalog is a collection of datasets. It provides methods for retrieving or
     creating datasets, and for checking if a dataset exists in the catalog."""
 
-    def __init__(self, dataset_type: Type[DS], data: Dict[str, Any]) -> None:
+    def __init__(self, dataset_type: type[DS], data: dict[str, Any]) -> None:
         self.dataset_type = dataset_type
-        self.datasets: List[DS] = []
+        self.datasets: list[DS] = []
         for ddata in data.get("datasets", []):
             self.make_dataset(ddata)
-        self.updated_at: Optional[str] = None
+        self.updated_at: str | None = None
         if "updated_at" in data:
             raw = data.get("updated_at")
             self.updated_at = registry.date.clean(raw)
@@ -32,7 +32,7 @@ class DataCatalog(Generic[DS]):
                 existing.children.add(dataset)
         self.datasets.append(dataset)
 
-    def make_dataset(self, data: Dict[str, Any]) -> "DS":
+    def make_dataset(self, data: dict[str, Any]) -> "DS":
         """Create a new dataset from the given data. If a dataset with the same name already
         exists, it will be updated."""
         dataset = self.dataset_type(data)
@@ -58,20 +58,20 @@ class DataCatalog(Generic[DS]):
         return name in self.names
 
     @property
-    def names(self) -> Set[str]:
+    def names(self) -> set[str]:
         """Get the names of all datasets in the catalog."""
         return {d.name for d in self.datasets}
 
     def __repr__(self) -> str:  # pragma: no cover
         return f"<DataCatalog[{self.dataset_type.__name__}]({self.names!r})>"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "datasets": [d.to_dict() for d in self.datasets],
             "updated_at": self.updated_at,
         }
 
     @classmethod
-    def from_path(cls, dataset_type: Type[DS], path: PathLike) -> "DataCatalog[DS]":
+    def from_path(cls, dataset_type: type[DS], path: PathLike) -> "DataCatalog[DS]":
         with open(path, "r") as fh:
             return cls(dataset_type, yaml.safe_load(fh))

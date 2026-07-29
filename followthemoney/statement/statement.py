@@ -1,8 +1,9 @@
 import hashlib
 import warnings
 from sqlalchemy.engine import Row
-from typing import Union, cast
-from typing import Any, Dict, Generator, Optional, TypeGuard
+from typing import cast
+from typing import Any, TypeGuard
+from collections.abc import Generator
 from typing_extensions import TypedDict, Self
 from rigour.time import datetime_iso, iso_datetime
 from rigour.boolean import bool_text
@@ -20,19 +21,19 @@ def is_not_unset(value: str | None | object) -> TypeGuard[str | None]:
 
 
 class StatementDict(TypedDict):
-    id: Optional[str]
+    id: str | None
     entity_id: str
     canonical_id: str
     prop: str
     schema: str
     value: str
     dataset: str
-    lang: Optional[str]
-    original_value: Optional[str]
+    lang: str | None
+    original_value: str | None
     external: bool
-    first_seen: Optional[str]
-    last_seen: Optional[str]
-    origin: Optional[str]
+    first_seen: str | None
+    last_seen: str | None
+    origin: str | None
 
 
 class Statement(object):
@@ -72,14 +73,14 @@ class Statement(object):
         schema: str,
         value: str,
         dataset: str,
-        lang: Optional[str] = None,
-        original_value: Optional[str] = None,
-        first_seen: Optional[str] = None,
+        lang: str | None = None,
+        original_value: str | None = None,
+        first_seen: str | None = None,
         external: bool = False,
-        id: Optional[str] = None,
-        canonical_id: Optional[str] = None,
-        last_seen: Optional[str] = None,
-        origin: Optional[str] = None,
+        id: str | None = None,
+        canonical_id: str | None = None,
+        last_seen: str | None = None,
+        origin: str | None = None,
     ):
         self._entity_id = entity_id
         self.canonical_id = canonical_id or entity_id
@@ -133,7 +134,7 @@ class Statement(object):
         return self._value
 
     @property
-    def lang(self) -> Optional[str]:
+    def lang(self) -> str | None:
         """The language of the property value, if applicable."""
         return self._lang
 
@@ -162,14 +163,14 @@ class Statement(object):
             "id": self.id,
         }
 
-    def to_csv_row(self) -> Dict[str, Optional[str]]:
-        data = cast(Dict[str, Optional[str]], self.to_dict())
+    def to_csv_row(self) -> dict[str, str | None]:
+        data = cast(dict[str, str | None], self.to_dict())
         data["external"] = bool_text(self._external)
         data["prop_type"] = self.prop_type
         return data
 
-    def to_db_row(self) -> Dict[str, Any]:
-        data = cast(Dict[str, Any], self.to_dict())
+    def to_db_row(self) -> dict[str, Any]:
+        data = cast(dict[str, Any], self.to_dict())
         data["first_seen"] = iso_datetime(self.first_seen)
         data["last_seen"] = iso_datetime(self.last_seen)
         data["prop_type"] = self.prop_type
@@ -197,18 +198,18 @@ class Statement(object):
     def clone(
         self: Self,
         *,
-        entity_id: Optional[str] = None,
-        prop: Optional[str] = None,
-        schema: Optional[str] = None,
-        value: Optional[str] = None,
-        dataset: Optional[str] = None,
-        lang: Union[str, None, object] = UNSET,
-        original_value: Union[str, None, object] = UNSET,
-        first_seen: Union[str, None, object] = UNSET,
-        external: Optional[bool] = None,
-        canonical_id: Optional[str] = None,
-        last_seen: Union[str, None, object] = UNSET,
-        origin: Union[str, None, object] = UNSET,
+        entity_id: str | None = None,
+        prop: str | None = None,
+        schema: str | None = None,
+        value: str | None = None,
+        dataset: str | None = None,
+        lang: str | None | object = UNSET,
+        original_value: str | None | object = UNSET,
+        first_seen: str | None | object = UNSET,
+        external: bool | None = None,
+        canonical_id: str | None = None,
+        last_seen: str | None | object = UNSET,
+        origin: str | None | object = UNSET,
     ) -> "Statement":
         """Make a deep copy of the given statement."""
         lang = lang if is_not_unset(lang) else self._lang
@@ -253,7 +254,7 @@ class Statement(object):
             origin=origin,
         )
 
-    def generate_key(self) -> Optional[str]:
+    def generate_key(self) -> str | None:
         return self.make_key(
             self._dataset,
             self._entity_id,
@@ -270,9 +271,9 @@ class Statement(object):
         entity_id: str,
         prop: str,
         value: str,
-        external: Optional[bool],
-        lang: Optional[str] = None,
-    ) -> Optional[str]:
+        external: bool | None,
+        lang: str | None = None,
+    ) -> str | None:
         """Hash the key properties of a statement record to make a unique ID."""
         if prop is None or value is None:
             return None
@@ -328,10 +329,10 @@ class Statement(object):
         cls,
         entity: "EntityProxy",
         dataset: str,
-        first_seen: Optional[str] = None,
-        last_seen: Optional[str] = None,
+        first_seen: str | None = None,
+        last_seen: str | None = None,
         external: bool = False,
-        origin: Optional[str] = None,
+        origin: str | None = None,
     ) -> Generator["Statement", None, None]:
         from followthemoney.statement.entity import StatementEntity
 

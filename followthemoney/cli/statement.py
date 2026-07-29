@@ -1,6 +1,6 @@
 import click
 from pathlib import Path
-from typing import Generator, List, Optional
+from collections.abc import Generator
 
 
 from followthemoney.cli.cli import cli
@@ -19,7 +19,7 @@ from followthemoney.statement import read_path_statements
 @click.option("-d", "--dataset", type=str)
 @click.option("-f", "--format", type=click.Choice(FORMATS), default=CSV)
 def entity_statements(
-    path: Path, outpath: Path, dataset: Optional[str], format: str
+    path: Path, outpath: Path, dataset: str | None, format: str
 ) -> None:
     def make_statements() -> Generator[Statement, None, None]:
         dataset_ = dataset or Dataset.UNDEFINED
@@ -63,7 +63,7 @@ def statements_aggregate(
 ) -> None:
     dataset_ = Dataset.make({"name": dataset})
     with path_writer(outpath) as outfh:
-        group: List[Statement] = []
+        group: list[Statement] = []
         for stmt in read_path_statements(infile, format=format):
             if len(group) and group[0].canonical_id != stmt.canonical_id:
                 entity = StatementEntity.from_statements(dataset_, group)

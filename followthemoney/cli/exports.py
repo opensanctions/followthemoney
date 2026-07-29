@@ -1,5 +1,6 @@
 import click
-from typing import List, TextIO, Generator
+from typing import TextIO
+from collections.abc import Generator
 from pathlib import Path
 from contextlib import contextmanager
 
@@ -80,7 +81,7 @@ def export_rdf(infile: Path, outfile: Path, qualified: bool = True) -> None:
     default=DEFAULT_EDGE_TYPES,
     help="Property types to be reified into graph edges.",
 )
-def export_gexf(infile: Path, outfile: Path, edge_types: List[str]) -> None:
+def export_gexf(infile: Path, outfile: Path, edge_types: list[str]) -> None:
     with text_out(outfile) as fh:
         exporter = NXGraphExporter(fh, edge_types=edge_types)
         export_stream(exporter, infile)
@@ -97,7 +98,7 @@ def export_gexf(infile: Path, outfile: Path, edge_types: List[str]) -> None:
     default=DEFAULT_EDGE_TYPES,
     help="Property types to be reified into graph edges.",
 )
-def export_cypher(infile: Path, outfile: Path, edge_types: List[str]) -> None:
+def export_cypher(infile: Path, outfile: Path, edge_types: list[str]) -> None:
     with text_out(outfile) as fh:
         exporter = CypherGraphExporter(fh, edge_types=edge_types)
         export_stream(exporter, infile)
@@ -120,6 +121,6 @@ def export_cypher(infile: Path, outfile: Path, edge_types: List[str]) -> None:
     default=DEFAULT_EDGE_TYPES,
     help="Property types to be reified into graph edges.",
 )
-def export_neo4j_bulk(infile: Path, outdir: Path, edge_types: List[str]) -> None:
+def export_neo4j_bulk(infile: Path, outdir: Path, edge_types: list[str]) -> None:
     exporter = Neo4JCSVExporter(outdir, edge_types=edge_types)
     export_stream(exporter, infile)

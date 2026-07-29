@@ -10,7 +10,7 @@ documentation and examples.
 
 from collections.abc import Mapping, Sequence
 import functools
-from typing import Any, Dict, List, Set, TYPE_CHECKING, Union
+from typing import Any, TYPE_CHECKING
 
 from followthemoney.dataset.dataset import DS
 from followthemoney.exc import InvalidDatasetQuery
@@ -18,7 +18,7 @@ from followthemoney.exc import InvalidDatasetQuery
 if TYPE_CHECKING:
     from followthemoney.dataset.catalog import DataCatalog
 
-DatasetQuery = Union[str, List[Any], Dict[str, Any]]
+DatasetQuery = str | list[Any] | dict[str, Any]
 
 OPERATORS = frozenset(("or", "and", "not"))
 
@@ -55,11 +55,11 @@ def validate_query(query: Any) -> None:
     raise InvalidDatasetQuery("Invalid query node type: %s" % type(query).__name__)
 
 
-def _resolve_leaf(catalog: "DataCatalog[DS]", leaf: str) -> Set[DS]:
+def _resolve_leaf(catalog: "DataCatalog[DS]", leaf: str) -> set[DS]:
     """Resolve a leaf string to a set of leaf datasets."""
     if leaf.startswith("#"):
         tag = leaf[1:]
-        result: Set[DS] = set()
+        result: set[DS] = set()
         for ds in catalog.datasets:
             if tag in ds.model.tags:
                 result.update(ds.leaves)
@@ -70,21 +70,21 @@ def _resolve_leaf(catalog: "DataCatalog[DS]", leaf: str) -> Set[DS]:
     return dataset.leaves
 
 
-def _universe(catalog: "DataCatalog[DS]") -> Set[DS]:
+def _universe(catalog: "DataCatalog[DS]") -> set[DS]:
     """Return all leaf datasets in the catalog."""
-    result: Set[DS] = set()
+    result: set[DS] = set()
     for ds in catalog.datasets:
         if not ds.is_collection:
             result.add(ds)
     return result
 
 
-def _evaluate(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
+def _evaluate(catalog: "DataCatalog[DS]", query: DatasetQuery) -> set[DS]:
     """Recursively evaluate a query AST against a catalog."""
     if isinstance(query, str):
         return _resolve_leaf(catalog, query)
     if isinstance(query, Sequence):
-        result: Set[DS] = set()
+        result: set[DS] = set()
         for item in query:
             result.update(_evaluate(catalog, item))
         return result
@@ -102,7 +102,7 @@ def _evaluate(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
     raise InvalidDatasetQuery("Invalid query node type: %s" % type(query).__name__)
 
 
-def evaluate_query(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
+def evaluate_query(catalog: "DataCatalog[DS]", query: DatasetQuery) -> set[DS]:
     """Evaluate a query AST against a catalog, returning matching leaf datasets.
 
     The query is a dictionary-like structure using "or", "and", and "not" operators.
@@ -113,7 +113,7 @@ def evaluate_query(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
     return _evaluate(catalog, query)
 
 
-def _match(query: DatasetQuery, datasets: Set[str]) -> bool:
+def _match(query: DatasetQuery, datasets: set[str]) -> bool:
     """Recursively match a query AST against a set of dataset names."""
     if isinstance(query, str):
         if query.startswith("#"):
@@ -133,7 +133,7 @@ def _match(query: DatasetQuery, datasets: Set[str]) -> bool:
     raise InvalidDatasetQuery("Invalid query node type: %s" % type(query).__name__)
 
 
-def match_datasets(query: DatasetQuery, datasets: Set[str]) -> bool:
+def match_datasets(query: DatasetQuery, datasets: set[str]) -> bool:
     """Test whether a set of dataset names matches a query.
 
     Like ``evaluate_query`` but works against plain name strings instead of

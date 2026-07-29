@@ -28,9 +28,9 @@ class UrlType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Perform intensive care on URLs to make sure they have a scheme
         and a host name. If no scheme is given HTTP is assumed."""
         return clean_url(text)

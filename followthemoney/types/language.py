@@ -121,9 +121,9 @@ class LanguageType(EnumType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         code = iso_639_alpha3(text)
         if code not in self.LANGUAGES:
             return None

@@ -9,7 +9,7 @@ from decimal import Decimal
 from gettext import translation
 from datetime import datetime, date
 from collections.abc import Mapping
-from typing import cast, Dict, Any, List, Optional, TypeVar, Union
+from typing import cast, Any, TypeVar
 from normality import predict_encoding, stringify
 from normality.cleaning import remove_unsafe_chars
 from rigour.env import ENCODING
@@ -26,13 +26,13 @@ T = TypeVar("T")
 K = TypeVar("K")
 V = TypeVar("V")
 
-PathLike = Union[str, os.PathLike[str]]
+PathLike = str | os.PathLike[str]
 i18n_path = os.path.join(os.path.dirname(__file__), "translations")
 state = local()
 log = logging.getLogger(__name__)
 
 
-def gettext(*args: Optional[str], **kwargs: Dict[str, str]) -> str:
+def gettext(*args: str | None, **kwargs: dict[str, str]) -> str:
     if not hasattr(state, "translation"):
         set_model_locale(Locale.parse(DEFAULT_LOCALE))
     return cast(str, state.translation.gettext(*args, **kwargs))
@@ -60,7 +60,7 @@ def get_locale() -> Locale:
     return Locale.parse(state.locale)
 
 
-def _clean_text(text: str) -> Optional[str]:
+def _clean_text(text: str) -> str | None:
     try:
         text = unicodedata.normalize("NFC", text)
     except (SystemError, Exception) as ex:
@@ -74,7 +74,7 @@ def _clean_text(text: str) -> Optional[str]:
     return text
 
 
-def sanitize_text(value: Any, encoding: Optional[str] = None) -> Optional[str]:
+def sanitize_text(value: Any, encoding: str | None = None) -> str | None:
     if value is None:
         return None
     if isinstance(value, str):
@@ -104,9 +104,9 @@ def key_bytes(key: Any) -> bytes:
     return text.encode(ENCODING)
 
 
-def join_text(*parts: Any, sep: str = " ") -> Optional[str]:
+def join_text(*parts: Any, sep: str = " ") -> str | None:
     """Join all the non-null arguments using sep."""
-    texts: List[str] = []
+    texts: list[str] = []
     for part in parts:
         text = stringify(part)
         if text is not None:
@@ -121,7 +121,7 @@ def const_case(text: str) -> str:
     return text.upper().replace(" ", "_")
 
 
-def get_entity_id(obj: Any) -> Optional[str]:
+def get_entity_id(obj: Any) -> str | None:
     """Given an entity-ish object, try to get the ID."""
     if isinstance(obj, Mapping):
         obj = obj.get("id")
@@ -133,7 +133,7 @@ def get_entity_id(obj: Any) -> Optional[str]:
     return stringify(obj)
 
 
-def make_entity_id(*parts: Any, key_prefix: Optional[str] = None) -> Optional[str]:
+def make_entity_id(*parts: Any, key_prefix: str | None = None) -> str | None:
     digest = sha1()
     if key_prefix:
         digest.update(key_bytes(key_prefix))
@@ -145,7 +145,7 @@ def make_entity_id(*parts: Any, key_prefix: Optional[str] = None) -> Optional[st
     return digest.hexdigest()
 
 
-def merge_context(left: Dict[K, V], right: Dict[K, V]) -> Dict[K, List[V]]:
+def merge_context(left: dict[K, V], right: dict[K, V]) -> dict[K, list[V]]:
     """When merging two entities, make lists of all the duplicate context
     keys."""
     combined = {}
@@ -153,8 +153,8 @@ def merge_context(left: Dict[K, V], right: Dict[K, V]) -> Dict[K, List[V]]:
     for key in set(keys):
         if key in ("caption",):
             continue
-        lval: List[V] = [i for i in ensure_list(left.get(key)) if i is not None]
-        rval: List[V] = [i for i in ensure_list(right.get(key)) if i is not None]
+        lval: list[V] = [i for i in ensure_list(left.get(key)) if i is not None]
+        rval: list[V] = [i for i in ensure_list(right.get(key)) if i is not None]
         combined[key] = list(dict.fromkeys([*lval, *rval]))
     return combined
 

@@ -1,7 +1,8 @@
 from hashlib import sha1
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Type
-from typing import Generator, Iterable, Tuple, TypeVar
+from typing import TYPE_CHECKING, Any
+from typing import TypeVar
+from collections.abc import Generator, Iterable
 from rigour.langs import LangStr
 from rigour.names.pick import pick_lang_name
 
@@ -41,7 +42,7 @@ class StatementEntity(EntityProxy):
     def __init__(
         self,
         dataset: Dataset,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         cleaned: bool = True,
     ) -> None:
         data = dict(data or {})
@@ -50,20 +51,20 @@ class StatementEntity(EntityProxy):
             raise InvalidData(gettext("No schema for entity."))
         self.schema = schema
 
-        self._caption: Optional[str] = None
+        self._caption: str | None = None
         """A pre-computed label for this entity."""
 
-        self.extra_referents: Set[str] = set(data.pop("referents", []))
+        self.extra_referents: set[str] = set(data.pop("referents", []))
         """The IDs of all entities which are included in this canonical entity."""
 
-        self.last_change: Optional[str] = data.get("last_change", None)
+        self.last_change: str | None = data.get("last_change", None)
         """The last time this entity was changed."""
 
         self.dataset = dataset
         """The default dataset for new statements."""
 
-        self.id: Optional[str] = data.pop("id", None)
-        self._statements: Dict[str, Set[Statement]] = {}
+        self.id: str | None = data.pop("id", None)
+        self._statements: dict[str, set[Statement]] = {}
 
         properties = data.pop("properties", None)
         if isinstance(properties, Mapping):
@@ -77,7 +78,7 @@ class StatementEntity(EntityProxy):
             self.add_statement(stmt)
 
     @property
-    def _properties(self) -> Dict[str, List[str]]:  # type: ignore
+    def _properties(self) -> dict[str, list[str]]:  # type: ignore
         return {p: [s.value for s in v] for p, v in self._statements.items()}
 
     def _iter_stmt(self) -> Generator[Statement, None, None]:
@@ -92,9 +93,9 @@ class StatementEntity(EntityProxy):
     @property
     def statements(self) -> Generator[Statement, None, None]:
         """Return all statements for this entity, with extra ID statement."""
-        ids: List[str] = []
-        last_seen: Set[str] = set()
-        first_seen: Set[str] = set()
+        ids: list[str] = []
+        last_seen: set[str] = set()
+        first_seen: set[str] = set()
         for stmt in self._iter_stmt():
             yield stmt
             if stmt.id is not None:
@@ -123,36 +124,36 @@ class StatementEntity(EntityProxy):
             )
 
     @property
-    def first_seen(self) -> Optional[str]:
+    def first_seen(self) -> str | None:
         seen = (s.first_seen for s in self._iter_stmt() if s.first_seen is not None)
         return min(seen, default=None)
 
     @property
-    def last_seen(self) -> Optional[str]:
+    def last_seen(self) -> str | None:
         seen = (s.last_seen for s in self._iter_stmt() if s.last_seen is not None)
         return max(seen, default=None)
 
     @property
-    def datasets(self) -> Set[str]:
-        datasets: Set[str] = set()
+    def datasets(self) -> set[str]:
+        datasets: set[str] = set()
         for stmt in self._iter_stmt():
             datasets.add(stmt.dataset)
         return datasets
 
     @property
-    def referents(self) -> Set[str]:
-        referents: Set[str] = set(self.extra_referents)
+    def referents(self) -> set[str]:
+        referents: set[str] = set(self.extra_referents)
         for stmt in self._iter_stmt():
             if stmt.entity_id is not None and stmt.entity_id != self.id:
                 referents.add(stmt.entity_id)
         return referents
 
     @property
-    def key_prefix(self) -> Optional[str]:
+    def key_prefix(self) -> str | None:
         return self.dataset.name
 
     @key_prefix.setter
-    def key_prefix(self, dataset: Optional[str]) -> None:
+    def key_prefix(self, dataset: str | None) -> None:
         raise NotImplementedError()
 
     def add_statement(self, stmt: Statement) -> None:
@@ -178,7 +179,7 @@ class StatementEntity(EntityProxy):
                 self._statements[stmt.prop] = set()
             self._statements[stmt.prop].add(stmt)
 
-    def get(self, prop: P, quiet: bool = False) -> List[str]:
+    def get(self, prop: P, quiet: bool = False) -> list[str]:
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None or prop_name not in self._statements:
             return []
@@ -191,7 +192,7 @@ class StatementEntity(EntityProxy):
         except KeyError:
             return []
 
-    def get_statements(self, prop: P, quiet: bool = False) -> List[Statement]:
+    def get_statements(self, prop: P, quiet: bool = False) -> list[Statement]:
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None or prop_name not in self._statements:
             return []
@@ -209,10 +210,10 @@ class StatementEntity(EntityProxy):
         cleaned: bool = False,
         quiet: bool = False,
         fuzzy: bool = False,
-        format: Optional[str] = None,
-        lang: Optional[str] = None,
-        original_value: Optional[str] = None,
-        origin: Optional[str] = None,
+        format: str | None = None,
+        lang: str | None = None,
+        original_value: str | None = None,
+        origin: str | None = None,
     ) -> None:
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None:
@@ -237,10 +238,10 @@ class StatementEntity(EntityProxy):
         cleaned: bool = False,
         quiet: bool = False,
         fuzzy: bool = False,
-        format: Optional[str] = None,
-        lang: Optional[str] = None,
-        original_value: Optional[str] = None,
-        origin: Optional[str] = None,
+        format: str | None = None,
+        lang: str | None = None,
+        original_value: str | None = None,
+        origin: str | None = None,
     ) -> None:
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None:
@@ -263,18 +264,18 @@ class StatementEntity(EntityProxy):
     def unsafe_add(
         self,
         prop: Property,
-        value: Optional[str],
+        value: str | None,
         cleaned: bool = False,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         quiet: bool = False,
-        schema: Optional[str] = None,
-        dataset: Optional[str] = None,
-        seen: Optional[str] = None,
-        lang: Optional[str] = None,
-        original_value: Optional[str] = None,
-        origin: Optional[str] = None,
-    ) -> Optional[str]:
+        schema: str | None = None,
+        dataset: str | None = None,
+        seen: str | None = None,
+        lang: str | None = None,
+        original_value: str | None = None,
+        origin: str | None = None,
+    ) -> str | None:
         """Add a statement to the entity, possibly the value."""
         if value is None or len(value) == 0:
             return None
@@ -289,7 +290,7 @@ class StatementEntity(EntityProxy):
         if lang is not None:
             lang = registry.language.clean_text(lang)
 
-        clean: Optional[str] = value
+        clean: str | None = value
         if not cleaned:
             clean = prop.type.clean_text(value, proxy=self, fuzzy=fuzzy, format=format)
 
@@ -315,7 +316,7 @@ class StatementEntity(EntityProxy):
         self.add_statement(stmt)
         return clean
 
-    def pop(self, prop: P, quiet: bool = True) -> List[str]:
+    def pop(self, prop: P, quiet: bool = True) -> list[str]:
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None or prop_name not in self._statements:
             return []
@@ -331,7 +332,7 @@ class StatementEntity(EntityProxy):
             if prop_name in self.schema.caption:
                 self._caption = None
 
-    def itervalues(self) -> Generator[Tuple[Property, str], None, None]:
+    def itervalues(self) -> Generator[tuple[Property, str], None, None]:
         for name, statements in self._statements.items():
             prop = self.schema.properties[name]
             for value in set((s.value for s in statements)):
@@ -339,16 +340,16 @@ class StatementEntity(EntityProxy):
 
     def get_type_values(
         self, type_: PropertyType, matchable: bool = False
-    ) -> List[str]:
-        combined: Set[str] = set()
+    ) -> list[str]:
+        combined: set[str] = set()
         for stmt in self.get_type_statements(type_, matchable=matchable):
             combined.add(stmt.value)
         return list(combined)
 
     def get_type_statements(
         self, type_: PropertyType, matchable: bool = False
-    ) -> List[Statement]:
-        combined: List[Statement] = []
+    ) -> list[Statement]:
+        combined: list[Statement] = []
         for prop_name, statements in self._statements.items():
             prop = self.schema.properties[prop_name]
             # Used in performance-critical code paths:
@@ -361,7 +362,7 @@ class StatementEntity(EntityProxy):
         return combined
 
     @property
-    def properties(self) -> Dict[str, List[str]]:
+    def properties(self) -> dict[str, list[str]]:
         return {p: list({s.value for s in vs}) for p, vs in self._statements.items()}
 
     @property
@@ -392,7 +393,7 @@ class StatementEntity(EntityProxy):
                 self._caption = self.schema.label
         return self._caption
 
-    def iterprops(self) -> List[Property]:
+    def iterprops(self) -> list[Property]:
         return [self.schema.properties[p] for p in self._statements.keys()]
 
     def clone(self: SE) -> SE:
@@ -420,16 +421,16 @@ class StatementEntity(EntityProxy):
         self.extra_referents.update(other.extra_referents)
         return self
 
-    def to_context_dict(self) -> Dict[str, Any]:
+    def to_context_dict(self) -> dict[str, Any]:
         """Return a dictionary representation of the entity for context."""
-        data: Dict[str, Any] = {
+        data: dict[str, Any] = {
             "id": self.id,
             "caption": self.caption,
             "schema": self.schema.name,
         }
-        referents: Set[Optional[str]] = set(self.extra_referents)
+        referents: set[str | None] = set(self.extra_referents)
         datasets = set(self.datasets)
-        origins: Set[str] = set()
+        origins: set[str] = set()
         first_seen = None
         last_seen = None
         for stmts in self._statements.values():
@@ -459,12 +460,12 @@ class StatementEntity(EntityProxy):
             data["last_change"] = self.last_change
         return data
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         data = self.to_context_dict()
         data["properties"] = self.properties
         return data
 
-    def to_statement_dict(self) -> Dict[str, Any]:
+    def to_statement_dict(self) -> dict[str, Any]:
         """Return a dictionary representation of the entity's statements."""
         data = {
             "id": self.id,
@@ -481,7 +482,7 @@ class StatementEntity(EntityProxy):
         digest = sha1()
         if self.id is not None:
             digest.update(self.id.encode(HASH_ENCODING))
-        statement_ids: List[str] = []
+        statement_ids: list[str] = []
         for stmts in self._statements.values():
             for stmt in stmts:
                 if stmt.id is not None:
@@ -496,10 +497,10 @@ class StatementEntity(EntityProxy):
 
     @classmethod
     def from_dict(
-        cls: Type[SE],
-        data: Dict[str, Any],
+        cls: type[SE],
+        data: dict[str, Any],
         cleaned: bool = True,
-        default_dataset: Optional[Dataset] = None,
+        default_dataset: Dataset | None = None,
     ) -> SE:
         # Exists only for backwards compatibility.
         dataset = default_dataset or UndefinedDataset
@@ -507,24 +508,24 @@ class StatementEntity(EntityProxy):
 
     @classmethod
     def from_data(
-        cls: Type[SE],
+        cls: type[SE],
         dataset: Dataset,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         cleaned: bool = True,
     ) -> SE:
         return cls(dataset, data, cleaned=cleaned)
 
     @classmethod
     def from_statements(
-        cls: Type[SE],
+        cls: type[SE],
         dataset: Dataset,
         statements: Iterable[Statement],
     ) -> SE:
         model = Model.instance()
-        canonical_id: Optional[str] = None
-        schemata: Set[str] = set()
-        first_seens: Set[str] = set()
-        props: Dict[str, Set[Statement]] = {}
+        canonical_id: str | None = None
+        schemata: set[str] = set()
+        first_seens: set[str] = set()
+        props: dict[str, set[Statement]] = {}
         for stmt in statements:
             schemata.add(stmt.schema)
             canonical_id = stmt.canonical_id or canonical_id or stmt.entity_id
@@ -536,7 +537,7 @@ class StatementEntity(EntityProxy):
                     props[stmt.prop] = set()
                 props[stmt.prop].add(stmt)
 
-        schema: Optional[Schema] = None
+        schema: Schema | None = None
         for name in schemata:
             if schema is None:
                 schema = model.get(name)

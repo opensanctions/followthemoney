@@ -1,7 +1,7 @@
 import re
 from banal import as_bool
 from rigour.ids import get_identifier_format
-from typing import TYPE_CHECKING, Any, List, Optional, TypedDict
+from typing import TYPE_CHECKING, Any, TypedDict
 
 from followthemoney.exc import InvalidData, InvalidModel
 from followthemoney.types import registry
@@ -26,22 +26,22 @@ def check_property_name(name: str) -> bool:
 
 class ReverseSpec(TypedDict, total=False):
     name: str
-    label: Optional[str]
-    hidden: Optional[bool]
+    label: str | None
+    hidden: bool | None
 
 
 class PropertyDict(TypedDict, total=False):
-    label: Optional[str]
-    description: Optional[str]
-    type: Optional[str]
-    hidden: Optional[bool]
-    matchable: Optional[bool]
-    deprecated: Optional[bool]
-    maxLength: Optional[int]
-    examples: Optional[List[str]]
+    label: str | None
+    description: str | None
+    type: str | None
+    hidden: bool | None
+    matchable: bool | None
+    deprecated: bool | None
+    maxLength: int | None
+    examples: list[str] | None
     # stub: Optional[bool]
-    range: Optional[str]
-    format: Optional[str]
+    range: str | None
+    format: str | None
 
 
 class PropertySpec(PropertyDict):
@@ -51,8 +51,8 @@ class PropertySpec(PropertyDict):
 class PropertyToDict(PropertyDict, total=False):
     name: str
     qname: str
-    reverse: Optional[str]
-    stub: Optional[bool]
+    reverse: str | None
+    stub: bool | None
 
 
 class Property:
@@ -126,18 +126,18 @@ class Property:
         #: in this property can be constrained. For example, an asset can be owned,
         #: but a person cannot be owned.
         self._range = data.get("range")
-        self.range: Optional["Schema"] = None
+        self.range: "Schema" | None = None
 
         #: If the property is of type ``identifier``, a more narrow definition of the
         #: identifier format can be provided. For example, LEI, INN or IBAN codes
         #: can be automatically validated.
-        self.format: Optional[str] = data.get("format")
+        self.format: str | None = data.get("format")
 
         #: When a property points to another schema, a reverse property is added for
         #: various administrative reasons. These properties are, however, not real
         #: and cannot be written to. That's why they are marked as stubs and adding
         #: values to them will raise an exception.
-        self.stub: Optional[bool] = False
+        self.stub: bool | None = False
 
         #: When a property points to another schema, a stub reverse property is
         #: added as a place to store metadata to help display the link in inverted
@@ -146,7 +146,7 @@ class Property:
         #: materialised (a hub entity referenced by thousands of others). Without a
         #: reverse, the link is not surfaced by inverted lookups (``get_inverted``).
         self._reverse = data.get("reverse")
-        self.reverse: Optional["Property"] = None
+        self.reverse: "Property" | None = None
 
         #: Example values for this property, which can be used in the user interface to
         #: illustrate the expected format of the value.
@@ -154,7 +154,7 @@ class Property:
         if examples is not None:
             examples = [str(e) for e in examples if e is not None]
             examples = examples if len(examples) > 0 else None
-        self.examples: Optional[List[str]] = examples
+        self.examples: list[str] | None = examples
 
     def generate(self, model: "Model") -> None:
         """Setup method used when loading the model in order to build out the reverse
@@ -197,7 +197,7 @@ class Property:
         """Return a user-friendly caption for the given value."""
         return self.type.caption(value, format=self.format)
 
-    def validate(self, data: List[str]) -> Optional[str]:
+    def validate(self, data: list[str]) -> str | None:
         """Validate that the data should be stored.
 
         Since the types system doesn't really have validation, this currently

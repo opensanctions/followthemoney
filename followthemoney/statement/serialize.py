@@ -5,8 +5,9 @@ import logging
 from io import TextIOWrapper
 from pathlib import Path
 from types import TracebackType
-from typing import Dict, Tuple, cast
-from typing import BinaryIO, Generator, Iterable, List, Optional, TextIO, Type
+from typing import cast
+from typing import BinaryIO, TextIO
+from collections.abc import Generator, Iterable
 from rigour.boolean import text_bool
 from rigour.env import ENCODING
 
@@ -88,7 +89,7 @@ def read_pack_statements(fh: BinaryIO) -> Generator[Statement, None, None]:
 
 
 def read_pack_statements_decoded(fh: TextIO) -> Generator[Statement, None, None]:
-    headers: Optional[List[str]] = None
+    headers: list[str] | None = None
     for row in csv.reader(fh, dialect=csv.unix_dialect):
         if headers is None:
             if "entity_id" in row and "prop" in row:
@@ -171,9 +172,9 @@ class StatementWriter(object):
 
     def __exit__(
         self,
-        type: Optional[Type[BaseException]],
-        value: Optional[BaseException],
-        traceback: Optional[TracebackType],
+        type: type[BaseException] | None,
+        value: BaseException | None,
+        traceback: TracebackType | None,
     ) -> None:
         self.close()
 
@@ -196,7 +197,7 @@ class CSVStatementWriter(StatementWriter):
         self.fh = fh
         self.writer = csv.writer(self.fh, dialect=csv.unix_dialect)
         self.writer.writerow(CSV_COLUMNS)
-        self._batch: List[List[Optional[str]]] = []
+        self._batch: list[list[str | None]] = []
 
     def write(self, stmt: Statement) -> None:
         row = stmt.to_csv_row()
@@ -233,7 +234,7 @@ class PackStatementWriter(StatementWriter):
             "id",
         ]
         self.writer.writerow(columns)
-        self._batch: Dict[str, Tuple[Optional[str], ...]] = {}
+        self._batch: dict[str, tuple[str | None, ...]] = {}
 
     def write(self, stmt: Statement) -> None:
         # HACK: This is very similar to the CSV writer, but at the very inner

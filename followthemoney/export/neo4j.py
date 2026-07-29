@@ -1,7 +1,8 @@
 import os
 import json
 import logging
-from typing import Any, Dict, Iterable, List, Optional, Set, TextIO
+from typing import Any, TextIO
+from collections.abc import Iterable
 
 from followthemoney.export.csv import CSVMixin, CSVWriter
 from followthemoney.export.graph import GraphExporter, DEFAULT_EDGE_TYPES
@@ -18,7 +19,7 @@ class Neo4JCSVExporter(CSVMixin, GraphExporter):
     def __init__(
         self,
         directory: PathLike,
-        extra: Optional[List[str]] = None,
+        extra: list[str] | None = None,
         edge_types: Iterable[str] = DEFAULT_EDGE_TYPES,
     ) -> None:
         super(Neo4JCSVExporter, self).__init__(edge_types=edge_types)
@@ -29,7 +30,7 @@ class Neo4JCSVExporter(CSVMixin, GraphExporter):
 
         self.nodes_handler, self.nodes_writer = self._open_csv_file("_nodes")
         self.nodes_writer.writerow(["id:ID", ":LABEL", "caption"])
-        self.nodes_seen: Set[str] = set()
+        self.nodes_seen: set[str] = set()
 
     def _write_header(self, writer: CSVWriter, schema: Schema) -> None:
         headers = []
@@ -43,7 +44,7 @@ class Neo4JCSVExporter(CSVMixin, GraphExporter):
             headers.append(prop.name)
         writer.writerow(headers)
 
-    def write_graph(self, extra: Optional[List[str]] = None) -> None:
+    def write_graph(self, extra: list[str] | None = None) -> None:
         extra_ = extra or []
         for node in self.graph.iternodes():
             self.write_node(node, extra_)
@@ -53,7 +54,7 @@ class Neo4JCSVExporter(CSVMixin, GraphExporter):
 
         self.graph.flush()
 
-    def write_node(self, node: Node, extra: List[str]) -> None:
+    def write_node(self, node: Node, extra: list[str]) -> None:
         if node.id is None:
             return None
         if not node.is_entity and node.id not in self.nodes_seen:
@@ -69,7 +70,7 @@ class Neo4JCSVExporter(CSVMixin, GraphExporter):
             writer = self._get_writer(node.schema)
             writer.writerow(cells)
 
-    def write_edge(self, edge: Edge, extra: List[str]) -> None:
+    def write_edge(self, edge: Edge, extra: list[str]) -> None:
         if edge.prop is not None:
             type_ = const_case(edge.prop.name)
             row = [type_, edge.source_id, edge.target_id, edge.weight]
@@ -123,9 +124,9 @@ class CypherGraphExporter(GraphExporter):
     def __init__(self, fh: TextIO, edge_types: Iterable[str] = DEFAULT_EDGE_TYPES):
         super(CypherGraphExporter, self).__init__(edge_types=edge_types)
         self.fh = fh
-        self.proxy_nodes: Set[str] = set()
+        self.proxy_nodes: set[str] = set()
 
-    def _to_map(self, data: Dict[str, Any]) -> str:
+    def _to_map(self, data: dict[str, Any]) -> str:
         values = []
         for key, value in data.items():
             if value:

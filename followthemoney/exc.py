@@ -1,8 +1,8 @@
-from typing import Dict, Optional, TypedDict
+from typing import TypedDict
 
 
 class ErrorSpec(TypedDict, total=False):
-    properties: Dict[str, str]
+    properties: dict[str, str]
 
 
 class FollowTheMoneyException(Exception):
@@ -20,7 +20,7 @@ class MetadataException(FollowTheMoneyException):
 class InvalidData(FollowTheMoneyException):
     """Schema validation errors will be caught by the API."""
 
-    def __init__(self, message: str, errors: Optional[ErrorSpec] = None) -> None:
+    def __init__(self, message: str, errors: ErrorSpec | None = None) -> None:
         super(InvalidData, self).__init__(message)
         self.errors: ErrorSpec = errors or {}
 

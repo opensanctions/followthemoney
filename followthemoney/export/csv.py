@@ -1,7 +1,7 @@
 import csv
 from pathlib import Path
 from io import TextIOWrapper
-from typing import Any, Dict, List, Optional, Protocol, Tuple
+from typing import Any, Protocol
 
 from followthemoney.proxy import EntityProxy
 from followthemoney.export.common import Exporter
@@ -20,13 +20,13 @@ class CSVMixin(object):
     def _configure(
         self,
         directory: PathLike,
-        extra: Optional[List[str]] = None,
+        extra: list[str] | None = None,
     ) -> None:
         self.directory = Path(directory)
         self.extra = extra or []
-        self.handles: Dict[Schema, Tuple[TextIOWrapper, CSVWriter]] = {}
+        self.handles: dict[Schema, tuple[TextIOWrapper, CSVWriter]] = {}
 
-    def _open_csv_file(self, name: str) -> Tuple[TextIOWrapper, CSVWriter]:
+    def _open_csv_file(self, name: str) -> tuple[TextIOWrapper, CSVWriter]:
         self.directory.mkdir(parents=True, exist_ok=True)
         file_path = self.directory.joinpath("{0}.csv".format(name))
         handle = open(file_path, mode="w")
@@ -54,7 +54,7 @@ class CSVExporter(Exporter, CSVMixin):
         self,
         directory: PathLike,
         export_all: bool = True,
-        extra: Optional[List[str]] = None,
+        extra: list[str] | None = None,
     ) -> None:
         Exporter.__init__(self, export_all=export_all)
         self._configure(directory, extra=extra)
@@ -67,7 +67,7 @@ class CSVExporter(Exporter, CSVMixin):
             headers.append(prop.name)
         writer.writerow(headers)
 
-    def write(self, proxy: EntityProxy, extra: Optional[List[str]] = None) -> None:
+    def write(self, proxy: EntityProxy, extra: list[str] | None = None) -> None:
         writer = self._get_writer(proxy.schema)
         cells = [proxy.id]
         cells.extend(extra or [])

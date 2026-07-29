@@ -1,7 +1,7 @@
 import logging
 from hashlib import sha1
 from warnings import warn
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set
+from typing import TYPE_CHECKING, Any
 from banal import keys_values
 from normality import stringify
 
@@ -39,9 +39,9 @@ class EntityMapping(object):
         model: "Model",
         query: "QueryMapping",
         name: str,
-        data: Dict[str, Any],
-        key_prefix: Optional[str] = None,
-        dataset: Optional[str] = None,
+        data: dict[str, Any],
+        key_prefix: str | None = None,
+        dataset: str | None = None,
     ) -> None:
         self.model = model
         self.name = name
@@ -75,8 +75,8 @@ class EntityMapping(object):
         self.refs = set(self.keys)
         if self.id_column:
             self.refs.add(self.id_column)
-        self.dependencies: Set[str] = set()
-        self.properties: List[PropertyMapping] = []
+        self.dependencies: set[str] = set()
+        self.properties: list[PropertyMapping] = []
         for name, prop_mapping in data.get("properties", {}).items():
             prop = self.schema.get(name)
             if prop is None:
@@ -91,7 +91,7 @@ class EntityMapping(object):
         for prop in self.properties:
             prop.bind()
 
-    def compute_key(self, record: Record) -> Optional[str]:
+    def compute_key(self, record: Record) -> str | None:
         """Generate a key for this entity, based on the given fields."""
         if self.id_column is not None:
             return record.get(self.id_column)
@@ -107,9 +107,9 @@ class EntityMapping(object):
         return None
 
     def map(
-        self, record: Record, entities: Dict[str, EntityProxy]
-    ) -> Optional[ValueEntity]:
-        data: Dict[str, Any] = {}
+        self, record: Record, entities: dict[str, EntityProxy]
+    ) -> ValueEntity | None:
+        data: dict[str, Any] = {}
         if self.dataset is not None:
             data["datasets"] = [self.dataset]
         proxy = ValueEntity(self.schema, data, key_prefix=None, cleaned=True)
