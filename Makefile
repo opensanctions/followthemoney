@@ -7,6 +7,9 @@ dev:
 test:
 	pytest --cov=followthemoney --cov-report html --cov-report term
 
+lint:
+	ruff check followthemoney/ tests/ contrib/ examples/
+
 typecheck:
 	mypy --strict followthemoney/
 
@@ -24,7 +27,7 @@ docs: default-model ontology
 
 build: default-model ontology
 
-check: default-model typecheck test
+check: default-model lint typecheck test
 
 ontology:
 	mkdir -p site/ns
