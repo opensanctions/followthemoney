@@ -4,7 +4,9 @@ import requests
 from rigour.env import env_opt, env_str
 
 
-def get_env_list(name: str, default: list[str] = []) -> list[str]:
+def get_env_list(name: str, default: list[str] | None = None) -> list[str]:
+    if default is None:
+        default = []
     value = env_opt(name)
     if value is not None:
         values = value.split(":")

@@ -82,7 +82,7 @@ class Neo4JCSVTestCase(TestCase):
         for entity in ENTITIES:
             entity = model.get_proxy(entity)
             exporter.write(entity, extra=["test"])
-            fh, writer = exporter.handles[entity.schema]
+            fh, _writer = exporter.handles[entity.schema]
             outfile = fh.name
         exporter.finalize()
         with open(outfile, "r") as fh:

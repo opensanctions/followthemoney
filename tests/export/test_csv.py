@@ -31,7 +31,7 @@ class CSVExportTestCase(TestCase):
         entity = model.get_proxy(ENTITY)
         exporter = CSVExporter(self.outdir, extra=["source"])
         exporter.write(entity, extra=["test"])
-        fh, writer = exporter.handles[entity.schema]
+        fh, _writer = exporter.handles[entity.schema]
         outfile = fh.name
         exporter.finalize()
         with open(outfile, "r") as fh:

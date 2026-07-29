@@ -62,7 +62,7 @@ def test_example_entity():
     assert sp.caption == "John Doe"
     assert sp.checksum == "01b955d90ddb0999750531893bff991318d5c559"
     assert sp.key_prefix == UndefinedDataset.name
-    assert "John Doe", sp.get_type_values(registry.name)
+    assert "John Doe" in sp.get_type_values(registry.name)
     assert len(list(sp.iterprops())) == 3
     assert len(sp.properties) == 3
     sp.add("country", "us")
@@ -142,7 +142,7 @@ def test_example_entity():
 
     stmts = list(sp.statements)
     assert len(stmts) == len(sp), stmts
-    assert sorted(stmts)[0].prop == Statement.BASE
+    assert min(stmts).prop == Statement.BASE
 
 
 def test_advanced_props():

@@ -125,8 +125,7 @@ class Model:
         """Given a mapping, yield a series of entities from the data source."""
         gen = self.make_mapping(mapping, key_prefix=key_prefix, dataset=dataset)
         for record in gen.source.records:
-            for entity in gen.map(record).values():
-                yield entity
+            yield from gen.map(record).values()
 
     @cache
     def common_schema(

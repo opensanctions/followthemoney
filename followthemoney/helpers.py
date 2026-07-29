@@ -101,9 +101,7 @@ def check_person_cutoff(
     if birth_cutoff is None:
         birth_cutoff = death_cutoff - timedelta(days=100 * 365)
     birth_cutoff_ = birth_cutoff.isoformat()
-    if len(birth_dates) and min(birth_dates) < birth_cutoff_:
-        return True
-    return False
+    return len(birth_dates) > 0 and min(birth_dates) < birth_cutoff_
 
 
 def remove_prefix_dates(entity: E) -> E:

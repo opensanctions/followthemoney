@@ -26,8 +26,6 @@ from followthemoney.value import Values, string_list
 if TYPE_CHECKING:
     from hashlib import _Hash
 
-    from followthemoney.model import Model
-
 log = logging.getLogger(__name__)
 P = Property | str
 E = TypeVar("E", bound="EntityProxy")
@@ -304,7 +302,7 @@ class EntityProxy:
     def iterprops(self) -> list[Property]:
         """Iterate across all the properties for which a value is set in
         the proxy (but do not return their values)."""
-        return [self.schema.properties[p] for p in self._properties.keys()]
+        return [self.schema.properties[p] for p in self._properties]
 
     def itervalues(self) -> Generator[tuple[Property, str], None, None]:
         """Iterate across all values in the proxy one by one, each given as a
@@ -320,8 +318,7 @@ class EntityProxy:
         if self.schema.source_prop is not None and self.schema.target_prop is not None:
             sources = self.get(self.schema.source_prop)
             targets = self.get(self.schema.target_prop)
-            for source, target in product(sources, targets):
-                yield (source, target)
+            yield from product(sources, targets)
 
     def get_type_values(
         self, type_: PropertyType, matchable: bool = False

@@ -7,7 +7,7 @@ def generate_schemata():
     """Generate the schema documentation."""
     base_path = pathlib.Path(__file__).parent.parent / "docs" / "explorer" / "schemata"
     assert base_path.exists(), f"Base path {base_path} does not exist."
-    for name, schema in model.schemata.items():
+    for name in model.schemata:
         schema_path = base_path / f"{name}.md"
         # if not schema_path.exists():
         with open(schema_path, "w", encoding="utf-8") as fh:

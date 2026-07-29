@@ -16,8 +16,7 @@ def extract_object(
                 comment = ".".join(subpath)
                 yield (None, None, [value], [comment])
         if isinstance(value, dict):
-            for res in extract_object(value, subpath):
-                yield res
+            yield from extract_object(value, subpath)
 
 
 def extract_yaml(

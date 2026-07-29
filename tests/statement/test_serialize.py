@@ -81,7 +81,7 @@ def test_csv_statements_none_round_trip():
         path = Path(tmpdir) / "statement.csv"
         with open(path, "wb") as fh:
             write_statements(fh, CSV, [stmt])
-        read = list(read_path_statements(path, CSV))[0]
+        read = next(iter(read_path_statements(path, CSV)))
     assert read.first_seen is None
     assert read.last_seen is None
     assert read.id == stmt.id
@@ -100,6 +100,6 @@ def test_csv_statements_crlf_value():
             path = Path(tmpdir) / "statement.dat"
             with open(path, "wb") as fh:
                 write_statements(fh, format, [stmt])
-            read = list(read_path_statements(path, format))[0]
+            read = next(iter(read_path_statements(path, format)))
         assert read.value == "line1\r\nline2", format
         assert read.id == stmt.id == read.generate_key(), format

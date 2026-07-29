@@ -355,8 +355,7 @@ class StatementEntity(EntityProxy):
                 continue
             if matchable and not prop.matchable:
                 continue
-            for statement in statements:
-                combined.append(statement)
+            combined.extend(statements)
         return combined
 
     @property
@@ -392,7 +391,7 @@ class StatementEntity(EntityProxy):
         return self._caption
 
     def iterprops(self) -> list[Property]:
-        return [self.schema.properties[p] for p in self._statements.keys()]
+        return [self.schema.properties[p] for p in self._statements]
 
     def clone(self) -> Self:
         data = {"schema": self.schema.name, "id": self.id}

@@ -20,9 +20,7 @@ PROP_NAME_RE = re.compile("^[a-z][a-zA-Z0-9]*$")
 def check_property_name(name: str) -> bool:
     if name in RESERVED:
         return False
-    if not PROP_NAME_RE.match(name):
-        return False
-    return True
+    return PROP_NAME_RE.match(name) is not None
 
 
 class ReverseSpec(TypedDict, total=False):
