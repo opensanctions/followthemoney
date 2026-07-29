@@ -64,7 +64,7 @@ def get_locale() -> Locale:
 def _clean_text(text: str) -> str | None:
     try:
         text = unicodedata.normalize("NFC", text)
-    except (SystemError, Exception) as ex:
+    except Exception as ex:  # noqa: BLE001
         log.warning("Cannot NFC text: %s", ex)
         return None
     text = remove_unsafe_chars(text)

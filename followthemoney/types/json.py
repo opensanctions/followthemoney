@@ -32,7 +32,7 @@ class JsonType(PropertyType):
         """Decode a given JSON object."""
         try:
             return json.loads(obj)
-        except Exception:
+        except (ValueError, TypeError):
             return obj
 
     def clean(

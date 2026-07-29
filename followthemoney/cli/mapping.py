@@ -59,7 +59,7 @@ def run_mapping(
                         write_entity(outfh, entity)
     except BrokenPipeError:
         raise click.Abort()
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
         raise click.ClickException(str(exc))
 
 
