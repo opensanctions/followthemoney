@@ -22,7 +22,7 @@ from followthemoney.types.topic import TopicType
 from followthemoney.types.url import UrlType
 
 
-class Registry(object):
+class Registry:
     """This registry keeps the processing helpers for all property types in the system. The
     registry can be used to get a type, which can itself then clean, validate or format values
     of that type."""

@@ -118,6 +118,14 @@ ignore = [
     # These live in hot paths and are never collected, so the leak B019 warns
     # about does not apply.
     "B019",
+    # Wants `Self` instead of a bound TypeVar, which on 3.10 means importing
+    # typing_extensions. Revisit if we ever require 3.11.
+    "PYI019",
+    # Wants `__eq__(self, other: object)`. Correct, but our implementations
+    # reach for `other.id` unguarded, so adopting it means narrowing `__eq__`
+    # on EntityProxy, Statement, Node and Edge -- a behaviour change (today a
+    # mismatched type raises AttributeError) on hot-path classes.
+    "PYI032",
 ]
 
 [tool.babel.extractors.followthemoney]

@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 DATA_PAGE = 1000
 
 
-class QueryTable(object):
+class QueryTable:
     """A table to be joined in."""
 
     def __init__(
@@ -51,7 +51,7 @@ class SQLSource(Source):
     """Query mapper for loading data from a SQL query."""
 
     def __init__(self, query: "QueryMapping", data: dict[str, Any]) -> None:
-        super(SQLSource, self).__init__(query, data)
+        super().__init__(query, data)
         database = data.get("database")
         if database is None:
             raise InvalidMapping("No database in SQL mapping!")

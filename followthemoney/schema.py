@@ -77,35 +77,35 @@ class Schema:
     """
 
     __slots__ = (
-        "model",
-        "name",
-        "_label",
-        "_plural",
         "_description",
-        "_hash",
-        "abstract",
-        "hidden",
-        "generated",
-        "matchable",
-        "featured",
-        "required",
-        "deprecated",
-        "caption",
-        "edge",
         "_edge_label",
+        "_extends",
+        "_hash",
+        "_label",
+        "_matchable_schemata",
+        "_plural",
+        "_temporal_end",
+        "_temporal_start",
+        "abstract",
+        "caption",
+        "deprecated",
+        "descendants",
+        "edge",
+        "edge_caption",
         "edge_directed",
         "edge_source",
         "edge_target",
-        "edge_caption",
-        "_temporal_start",
-        "_temporal_end",
-        "_extends",
         "extends",
-        "schemata",
+        "featured",
+        "generated",
+        "hidden",
+        "matchable",
+        "model",
+        "name",
         "names",
-        "descendants",
         "properties",
-        "_matchable_schemata",
+        "required",
+        "schemata",
     )
 
     def __init__(self, model: "Model", name: str, data: SchemaSpec) -> None:
@@ -177,7 +177,7 @@ class Schema:
 
         #: Direct parent schemata of this schema.
         self._extends = [const(s) for s in data.get("extends", [])]
-        self.extends: set["Schema"] = set()
+        self.extends: set[Schema] = set()
 
         #: All parents of this schema (including indirect parents and the schema
         #: itself).
@@ -188,8 +188,8 @@ class Schema:
 
         #: Inverse of :attr:`~schemata`, all derived child types of this schema
         #: and their children.
-        self.descendants: set["Schema"] = set()
-        self._matchable_schemata: set["Schema"] | None = None
+        self.descendants: set[Schema] = set()
+        self._matchable_schemata: set[Schema] | None = None
 
         #: The full list of properties defined for the entity, including those
         #: inherited from parent schemata.
@@ -437,8 +437,8 @@ class Schema:
         data: SchemaToDict = {
             "label": self.label,
             "plural": self.plural,
-            "schemata": list(sorted(self.names)),
-            "extends": list(sorted([e.name for e in self.extends])),
+            "schemata": sorted(self.names),
+            "extends": sorted([e.name for e in self.extends]),
         }
         if self.edge_source and self.edge_target and self.edge_label:
             data["edge"] = {

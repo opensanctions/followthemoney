@@ -6,7 +6,7 @@ from followthemoney.schema import Schema
 from followthemoney.types import registry
 
 
-class Exporter(object):
+class Exporter:
     def __init__(self, export_all: bool = False) -> None:
         self.export_all = export_all
 

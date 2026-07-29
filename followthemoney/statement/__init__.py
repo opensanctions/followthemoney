@@ -12,16 +12,16 @@ from followthemoney.statement.statement import Statement, StatementDict
 from followthemoney.statement.util import BASE_ID
 
 __all__ = [
+    "BASE_ID",
+    "CSV",
+    "FORMATS",
+    "JSON",
+    "PACK",
+    "SE",
     "Statement",
     "StatementDict",
     "StatementEntity",
-    "SE",
-    "CSV",
-    "JSON",
-    "PACK",
-    "FORMATS",
-    "BASE_ID",
-    "write_statements",
-    "read_statements",
     "read_path_statements",
+    "read_statements",
+    "write_statements",
 ]

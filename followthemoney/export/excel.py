@@ -15,7 +15,7 @@ from followthemoney.util import PathLike, sanitize_text
 log = logging.getLogger(__name__)
 
 
-class ExcelWriter(object):
+class ExcelWriter:
     HEADER_FONT = Font(bold=True, color="FFFFFF")
     HEADER_FILL = PatternFill(
         start_color="982022", end_color="982022", fill_type="solid"

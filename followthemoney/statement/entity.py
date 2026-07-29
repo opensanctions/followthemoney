@@ -28,13 +28,13 @@ class StatementEntity(EntityProxy):
     """An entity object that can link to a set of datasets that it is sourced from."""
 
     __slots__ = (
-        "schema",
-        "id",
         "_caption",
-        "extra_referents",
-        "dataset",
-        "last_change",
         "_statements",
+        "dataset",
+        "extra_referents",
+        "id",
+        "last_change",
+        "schema",
     )
 
     def __init__(
@@ -243,7 +243,7 @@ class StatementEntity(EntityProxy):
     ) -> None:
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None:
-            return None
+            return
         prop = self.schema.properties[prop_name]
         for value in string_list(values, sanitize=not cleaned):
             self.unsafe_add(
@@ -257,7 +257,7 @@ class StatementEntity(EntityProxy):
                 original_value=original_value,
                 origin=origin,
             )
-        return None
+        return
 
     def unsafe_add(
         self,
@@ -333,7 +333,7 @@ class StatementEntity(EntityProxy):
     def itervalues(self) -> Generator[tuple[Property, str], None, None]:
         for name, statements in self._statements.items():
             prop = self.schema.properties[name]
-            for value in set((s.value for s in statements)):
+            for value in set(s.value for s in statements):
                 yield (prop, value)
 
     def get_type_values(

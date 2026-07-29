@@ -21,18 +21,18 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 
-class EntityMapping(object):
+class EntityMapping:
     __slots__ = (
+        "dataset",
+        "dependencies",
+        "id_column",
+        "keys",
         "model",
         "name",
-        "seed",
-        "keys",
-        "id_column",
-        "schema",
-        "dataset",
-        "refs",
-        "dependencies",
         "properties",
+        "refs",
+        "schema",
+        "seed",
     )
 
     def __init__(

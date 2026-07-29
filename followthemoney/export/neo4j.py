@@ -22,7 +22,7 @@ class Neo4JCSVExporter(CSVMixin, GraphExporter):
         extra: list[str] | None = None,
         edge_types: Iterable[str] = DEFAULT_EDGE_TYPES,
     ) -> None:
-        super(Neo4JCSVExporter, self).__init__(edge_types=edge_types)
+        super().__init__(edge_types=edge_types)
         self._configure(directory, extra=extra)
 
         self.links_handler, self.links_writer = self._open_csv_file("_links")
@@ -56,7 +56,7 @@ class Neo4JCSVExporter(CSVMixin, GraphExporter):
 
     def write_node(self, node: Node, extra: list[str]) -> None:
         if node.id is None:
-            return None
+            return
         if not node.is_entity and node.id not in self.nodes_seen:
             row = [node.id, node.type.name, node.caption]
             self.nodes_writer.writerow(row)
@@ -122,7 +122,7 @@ class CypherGraphExporter(GraphExporter):
     # MATCH (n) DETACH DELETE n;
 
     def __init__(self, fh: TextIO, edge_types: Iterable[str] = DEFAULT_EDGE_TYPES):
-        super(CypherGraphExporter, self).__init__(edge_types=edge_types)
+        super().__init__(edge_types=edge_types)
         self.fh = fh
         self.proxy_nodes: set[str] = set()
 

@@ -13,7 +13,7 @@ from followthemoney.util import PathLike
 NS = Namespace("https://schema.followthemoney.tech/#")
 
 
-class Ontology(object):
+class Ontology:
     def __init__(self) -> None:
         self.uri = URIRef(NS)
         self.graph = Graph(identifier=self.uri)

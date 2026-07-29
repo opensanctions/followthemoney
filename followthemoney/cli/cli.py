@@ -48,9 +48,9 @@ def validate(infile: Path, outfile: Path) -> None:
 
 
 @cli.command("sign", help="Apply a HMAC signature to entity IDs")
-@click.option("-i", "--infile", type=InPath, default="-")  # noqa
-@click.option("-o", "--outfile", type=OutPath, default="-")  # noqa
-@click.option("-s", "--signature", default=None, help="HMAC signature key")  # noqa
+@click.option("-i", "--infile", type=InPath, default="-")
+@click.option("-o", "--outfile", type=OutPath, default="-")
+@click.option("-s", "--signature", default=None, help="HMAC signature key")
 def sign(infile: Path, outfile: Path, signature: str | None) -> None:
     ns = Namespace(signature)
     try:
@@ -63,7 +63,7 @@ def sign(infile: Path, outfile: Path, signature: str | None) -> None:
 
 
 @cli.command(help="Format a stream of entities to make it readable")
-@click.option("-i", "--infile", type=InPath, default="-")  # noqa
+@click.option("-i", "--infile", type=InPath, default="-")
 def pretty(infile: Path) -> None:
     stdout = click.get_binary_stream("stdout")
     try:

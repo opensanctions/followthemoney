@@ -87,16 +87,15 @@ def stream_mapping(
             queries.append((ds, query, source))
 
     try:
-        with path_writer(outfile) as outfh:
-            with input_file(infile) as fh:
-                for record in CSVSource.read_csv(fh):
-                    for dataset, query, source in queries:
-                        ns = Namespace(dataset)
-                        if source.check_filters(record):
-                            entities = query.map(record)
-                            for entity in entities.values():
-                                if sign:
-                                    entity = ns.apply(entity)
-                                write_entity(outfh, entity)
+        with path_writer(outfile) as outfh, input_file(infile) as fh:
+            for record in CSVSource.read_csv(fh):
+                for dataset, query, source in queries:
+                    ns = Namespace(dataset)
+                    if source.check_filters(record):
+                        entities = query.map(record)
+                        for entity in entities.values():
+                            if sign:
+                                entity = ns.apply(entity)
+                            write_entity(outfh, entity)
     except BrokenPipeError:
         raise click.Abort()

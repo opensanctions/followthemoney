@@ -17,23 +17,23 @@ if TYPE_CHECKING:
     from followthemoney.mapping.query import QueryMapping
 
 
-class PropertyMapping(object):
+class PropertyMapping:
     """Map values from a given record (e.g. a CSV row or SQL result) to the
     schema form."""
 
     __slots__ = (
-        "query",
-        "prop",
-        "refs",
-        "join",
-        "split",
         "entity",
         "format",
         "fuzzy",
-        "required",
+        "join",
         "literals",
-        "template",
+        "prop",
+        "query",
+        "refs",
         "replacements",
+        "required",
+        "split",
+        "template",
     )
 
     FORMAT_PATTERN = re.compile("{{([^(}})]*)}}")
@@ -86,7 +86,7 @@ class PropertyMapping(object):
             if not self.prop.range or not entity.schema.is_a(self.prop.range):
                 raise InvalidMapping(
                     f"The entity [{self.prop!r}] must be a {self.prop.range} (not {entity.schema.name})"
-                )  # noqa
+                )
             return
 
         raise InvalidMapping(f"No entity [{self.entity}] for property [{self.prop!r}]")

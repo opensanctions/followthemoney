@@ -22,18 +22,18 @@ class ValueEntity(EntityProxy):
     """
 
     __slots__ = [
-        "schema",
-        "id",
-        "key_prefix",
-        "context",
+        "_caption",
         "_properties",
         "_size",
-        "_caption",
+        "context",
         "datasets",
-        "referents",
         "first_seen",
-        "last_seen",
+        "id",
+        "key_prefix",
         "last_change",
+        "last_seen",
+        "referents",
+        "schema",
     ]
 
     def __init__(

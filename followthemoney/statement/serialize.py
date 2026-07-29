@@ -160,7 +160,7 @@ def write_statements(
     writer.close()
 
 
-class StatementWriter(object):
+class StatementWriter:
     def write(self, stmt: Statement) -> None:
         raise NotImplementedError()
 

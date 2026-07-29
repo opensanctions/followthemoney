@@ -20,8 +20,10 @@ class EmailType(PropertyType):
     """Internet mail address (e.g. user@example.com). These are notoriously hard
     to validate, but we use an irresponsibly simple rule and hope for the best."""
 
-    DOMAIN_RE = re.compile(r"^(?!-)(?:[a-z0-9-]{1,63}(?<!-)\.)+[a-z0-9-]{2,}$", re.U)
-    LOCAL_RE = re.compile(r"^[^<>()\[\]\,;:\?\s@\"]{1,64}$", re.U)
+    DOMAIN_RE = re.compile(
+        r"^(?!-)(?:[a-z0-9-]{1,63}(?<!-)\.)+[a-z0-9-]{2,}$", re.UNICODE
+    )
+    LOCAL_RE = re.compile(r"^[^<>()\[\]\,;:\?\s@\"]{1,64}$", re.UNICODE)
 
     name = "email"
     group = "emails"
@@ -80,8 +82,7 @@ class EmailType(PropertyType):
 
         # Remove mailto: prefix if present
         email = text.strip()
-        if email.startswith("mailto:"):
-            email = email[7:]
+        email = email.removeprefix("mailto:")
 
         try:
             local, domain = email.rsplit("@", 1)

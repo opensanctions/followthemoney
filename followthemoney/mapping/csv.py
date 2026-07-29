@@ -1,4 +1,3 @@
-import io
 import logging
 import os
 from collections.abc import Generator, ItemsView, Iterable
@@ -76,7 +75,7 @@ class CSVSource(Source):
             lines = res.iter_lines(decode_unicode=True)
             yield from self.read_csv(lines)
         else:
-            with io.open(parsed_url.path, "r") as fh:
+            with open(parsed_url.path, "r") as fh:
                 yield from self.read_csv(fh)
 
     @property

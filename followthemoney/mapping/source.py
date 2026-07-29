@@ -8,7 +8,7 @@ Filter = set[str | None]
 Record = dict[str, str]
 
 
-class Source(object):
+class Source:
     def __init__(self, query: "QueryMapping", data: dict[str, Any]) -> None:
         self.query = query
         self.filters = cast(dict[str, Any], data.get("filters", {})).items()

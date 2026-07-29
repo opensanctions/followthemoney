@@ -31,7 +31,7 @@ from followthemoney.types import registry
 from followthemoney.util import get_entity_id, key_bytes
 
 
-class Namespace(object):
+class Namespace:
     """Namespaces are used to partition entity IDs into different units,
     which traditionally represent a dataset, collection or source.
 

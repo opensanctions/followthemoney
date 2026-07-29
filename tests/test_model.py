@@ -197,7 +197,7 @@ def test_specificity_name():
     name = company.get("name")
     assert name is not None
     assert 0 == name.specificity("AA")
-    assert 0.4 <= name.specificity("Church of Jesus Christ of the Latter Day Saints")  # noqa
+    assert 0.4 <= name.specificity("Church of Jesus Christ of the Latter Day Saints")
 
 
 def test_specificity_date():

@@ -22,7 +22,7 @@ def text_out(path: Path) -> Generator[TextIO, None, None]:
 
 
 @cli.command("export-csv", help="Export to CSV")
-@click.option("-i", "--infile", type=InPath, default="-")  # noqa
+@click.option("-i", "--infile", type=InPath, default="-")
 @click.option(
     "-o",
     "--outdir",
@@ -87,8 +87,8 @@ def export_gexf(infile: Path, outfile: Path, edge_types: list[str]) -> None:
 
 
 @cli.command("export-cypher", help="Export to Cypher script")
-@click.option("-i", "--infile", type=InPath, default="-")  # noqa
-@click.option("-o", "--outfile", type=OutPath, default="-")  # noqa
+@click.option("-i", "--infile", type=InPath, default="-")
+@click.option("-o", "--outfile", type=OutPath, default="-")
 @click.option(
     "-e",
     "--edge-types",
@@ -104,7 +104,7 @@ def export_cypher(infile: Path, outfile: Path, edge_types: list[str]) -> None:
 
 
 @cli.command("export-neo4j-bulk", help="Export to Neo4J bulk import")
-@click.option("-i", "--infile", type=InPath, default="-")  # noqa
+@click.option("-i", "--infile", type=InPath, default="-")
 @click.option(
     "-o",
     "--outdir",

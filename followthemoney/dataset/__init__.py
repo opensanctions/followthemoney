@@ -15,18 +15,18 @@ from followthemoney.dataset.versions import Version, VersionHistory
 UndefinedDataset = Dataset.make({"name": Dataset.UNDEFINED})
 
 __all__ = [
-    "Dataset",
-    "UndefinedDataset",
-    "DataCatalog",
-    "DataResource",
-    "DataPublisher",
-    "DataCoverage",
     "DS",
+    "DataCatalog",
+    "DataCoverage",
+    "DataPublisher",
+    "DataResource",
+    "Dataset",
     "DatasetQuery",
+    "UndefinedDataset",
+    "Version",
+    "VersionHistory",
     "evaluate_query",
     "match_datasets",
     "parse_query",
     "validate_query",
-    "Version",
-    "VersionHistory",
 ]

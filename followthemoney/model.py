@@ -26,14 +26,14 @@ class ModelToDict(TypedDict):
     version: str
 
 
-class Model(object):
+class Model:
     """A collection of all the schemata available in followthemoney. The model
     provides some helper functions to find schemata, properties or to instantiate
     entity proxies based on the schema metadata."""
 
     _instance: Optional["Model"] = None
 
-    __slots__ = ("path", "schemata", "properties", "qnames")
+    __slots__ = ("path", "properties", "qnames", "schemata")
 
     def __init__(self, path: str) -> None:
         self.path = path

@@ -33,7 +33,7 @@ class RDFExporter(Exporter):
     }
 
     def __init__(self, fh: TextIO, qualified: bool = True) -> None:
-        super(RDFExporter, self).__init__()
+        super().__init__()
         self.fh = fh
         self.qualified = qualified
 

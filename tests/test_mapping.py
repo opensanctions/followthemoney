@@ -232,7 +232,7 @@ class MappingTestCase(TestCase):
         assert len(entities) == 1, len(entities)
         self.assertCountEqual(
             entities[0].get("notes"), ["brown", "black", "blue"]
-        )  # noqa
+        )
 
     def test_mapping_emits_value_entity(self):
         mapping = model.make_mapping(self.kek_mapping)

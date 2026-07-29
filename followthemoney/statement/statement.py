@@ -35,7 +35,7 @@ class StatementDict(TypedDict):
     origin: str | None
 
 
-class Statement(object):
+class Statement:
     """A single statement about a property relevant to an entity.
 
     For example, this could be used to say: "In dataset A, entity X has the
@@ -49,20 +49,20 @@ class Statement(object):
     BASE = BASE_ID
 
     __slots__ = [
-        "id",
+        "_dataset",
         "_entity_id",
-        "canonical_id",
+        "_external",
+        "_lang",
         "_prop",
         "_schema",
         "_value",
-        "_dataset",
-        "_lang",
-        "prop_type",
-        "original_value",
-        "_external",
+        "canonical_id",
         "first_seen",
+        "id",
         "last_seen",
         "origin",
+        "original_value",
+        "prop_type",
     ]
 
     def __init__(

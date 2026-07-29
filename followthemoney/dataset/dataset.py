@@ -156,7 +156,7 @@ class Dataset:
 
     def __eq__(self, other: Any) -> bool:
         try:
-            return not not self.name == other.name
+            return bool(self.name == other.name)
         except AttributeError:
             return False
 

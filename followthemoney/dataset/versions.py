@@ -10,7 +10,7 @@ from typing import Any
 from rigour.time import utc_now
 
 
-class Version(object):
+class Version:
     """A class to represent a dataset version, which consists of a timestamp
     and a string tag."""
 
@@ -81,7 +81,7 @@ class Version(object):
 
 
 @dataclass
-class VersionHistory(object):
+class VersionHistory:
     """A class to represent a history of dataset versions."""
 
     LENGTH = 100

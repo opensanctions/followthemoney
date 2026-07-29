@@ -26,7 +26,7 @@ class PropertyTypeToDict(TypedDict, total=False):
     values: EnumValues | None
 
 
-class PropertyType(object):
+class PropertyType:
     """Base class for all FtM property types.
 
     Every property defined on a schema has a `type` attribute that points to a
@@ -325,6 +325,6 @@ class EnumType(PropertyType):
 
     def to_dict(self) -> PropertyTypeToDict:
         """When serialising the model to JSON, include all values."""
-        data = super(EnumType, self).to_dict()
+        data = super().to_dict()
         data["values"] = self.names
         return data

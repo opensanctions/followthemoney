@@ -20,12 +20,12 @@ from followthemoney.types.common import PropertyType
 log = logging.getLogger(__name__)
 
 
-class Node(object):
+class Node:
     """A node represents either an entity that can be rendered as a
     node in a graph, or as a re-ified value, like a name, email
     address or phone number."""
 
-    __slots__ = ["type", "value", "id", "proxy", "schema"]
+    __slots__ = ["id", "proxy", "schema", "type", "value"]
 
     def __init__(
         self,
@@ -88,18 +88,18 @@ class Node(object):
         return bool(self.id == other.id)
 
 
-class Edge(object):
+class Edge:
     """A link between two nodes."""
 
     __slots__ = [
+        "graph",
         "id",
-        "weight",
-        "source_id",
-        "target_id",
         "prop",
         "proxy",
         "schema",
-        "graph",
+        "source_id",
+        "target_id",
+        "weight",
     ]
 
     def __init__(
@@ -187,7 +187,7 @@ class Edge(object):
         return bool(self.id == other.id)
 
 
-class Graph(object):
+class Graph:
     """A set of nodes and edges, derived from entities and their properties.
     This represents an alternative interpretation of FtM data as a property
     graph.

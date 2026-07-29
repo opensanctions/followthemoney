@@ -16,7 +16,7 @@ class CSVWriter(Protocol):
     def writerows(self, rows: Any) -> None: ...
 
 
-class CSVMixin(object):
+class CSVMixin:
     def _configure(
         self,
         directory: PathLike,

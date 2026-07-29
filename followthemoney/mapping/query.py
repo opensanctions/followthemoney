@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class QueryMapping:
-    __slots__ = ("model", "data", "refs", "entities", "source")
+    __slots__ = ("data", "entities", "model", "refs", "source")
 
     def __init__(
         self,

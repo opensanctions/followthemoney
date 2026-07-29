@@ -62,25 +62,25 @@ class Property:
     to entity references."""
 
     __slots__ = (
+        "_description",
+        "_hash",
+        "_label",
+        "_range",
+        "_reverse",
+        "deprecated",
+        "examples",
+        "format",
+        "hidden",
+        "matchable",
+        "max_length",
         "model",
-        "schema",
         "name",
         "qname",
-        "_label",
-        "_hash",
-        "_description",
-        "hidden",
-        "type",
-        "matchable",
-        "deprecated",
-        "max_length",
-        "_range",
-        "format",
         "range",
-        "stub",
-        "_reverse",
         "reverse",
-        "examples",
+        "schema",
+        "stub",
+        "type",
     )
 
     def __init__(self, schema: "Schema", name: str, data: PropertySpec) -> None:
@@ -127,7 +127,7 @@ class Property:
         #: in this property can be constrained. For example, an asset can be owned,
         #: but a person cannot be owned.
         self._range = data.get("range")
-        self.range: "Schema" | None = None
+        self.range: Schema | None = None
 
         #: If the property is of type ``identifier``, a more narrow definition of the
         #: identifier format can be provided. For example, LEI, INN or IBAN codes
@@ -147,7 +147,7 @@ class Property:
         #: materialised (a hub entity referenced by thousands of others). Without a
         #: reverse, the link is not surfaced by inverted lookups (``get_inverted``).
         self._reverse = data.get("reverse")
-        self.reverse: "Property" | None = None
+        self.reverse: Property | None = None
 
         #: Example values for this property, which can be used in the user interface to
         #: illustrate the expected format of the value.

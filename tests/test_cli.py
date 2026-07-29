@@ -5,12 +5,12 @@ import orjson
 import yaml
 from click.testing import CliRunner
 
-import followthemoney.cli.aggregate  # noqa: F401
-import followthemoney.cli.exports  # noqa: F401
+import followthemoney.cli.aggregate
+import followthemoney.cli.exports
 
 # Ensure all CLI subcommands are registered
-import followthemoney.cli.mapping  # noqa: F401
-import followthemoney.cli.sieve  # noqa: F401
+import followthemoney.cli.mapping
+import followthemoney.cli.sieve
 import followthemoney.cli.statement  # noqa: F401
 from followthemoney.cli.cli import cli
 

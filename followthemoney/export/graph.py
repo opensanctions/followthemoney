@@ -21,7 +21,7 @@ class GraphExporter(Exporter):
     of entities."""
 
     def __init__(self, edge_types: Iterable[str] = DEFAULT_EDGE_TYPES) -> None:
-        super(GraphExporter, self).__init__()
+        super().__init__()
         types = registry.get_types(edge_types)
         self.graph = Graph(edge_types=types)
 
@@ -54,7 +54,7 @@ class NXGraphExporter(GraphExporter):
     def __init__(
         self, fh: TextIO, edge_types: Iterable[str] = DEFAULT_EDGE_TYPES
     ) -> None:
-        super(NXGraphExporter, self).__init__(edge_types=edge_types)
+        super().__init__(edge_types=edge_types)
         self.fh = fh
 
     def finalize_graph(self) -> None:

@@ -32,9 +32,7 @@ def sieve_entity(
         if entity.schema.is_a(schema):
             return None
     for prop in entity.iterprops():
-        if prop.name in properties or prop.qname in properties:
-            entity.pop(prop, quiet=True)
-        elif prop.type.name in types:
+        if prop.name in properties or prop.qname in properties or prop.type.name in types:
             entity.pop(prop, quiet=True)
     return entity
 

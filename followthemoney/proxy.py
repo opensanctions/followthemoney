@@ -33,14 +33,14 @@ P = Property | str
 E = TypeVar("E", bound="EntityProxy")
 
 
-class EntityProxy(object):
+class EntityProxy:
     """A wrapper object for an entity, with utility functions for the
     introspection and manipulation of its properties.
 
     This is the main working object in the library, used to generate, validate
     and emit data."""
 
-    __slots__ = ["schema", "id", "key_prefix", "context", "_properties", "_size"]
+    __slots__ = ["_properties", "_size", "context", "id", "key_prefix", "schema"]
 
     def __init__(
         self,
@@ -195,20 +195,20 @@ class EntityProxy(object):
         """
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None:
-            return None
+            return
         prop = self.schema.properties[prop_name]
 
         # Don't allow setting the reverse properties:
         if prop.stub:
             if quiet:
-                return None
+                return
             msg = gettext("Stub property (%s): %s")
             raise InvalidData(msg % (self.schema, prop))
 
         value: str | None = None
         for value in string_list(values, sanitize=not cleaned):
             self.unsafe_add(prop, value, cleaned=cleaned, fuzzy=fuzzy, format=format)
-        return None
+        return
 
     def unsafe_add(
         self,
