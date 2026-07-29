@@ -1,11 +1,11 @@
 import os
 from tempfile import mkstemp
+
 from rdflib import Graph, URIRef
 from rdflib.namespace import RDF
 
 from followthemoney import model
-from followthemoney.export.rdf import RDFExporter, NS
-
+from followthemoney.export.rdf import NS, RDFExporter
 
 ENTITY = {
     "id": "person",

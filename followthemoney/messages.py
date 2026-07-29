@@ -1,6 +1,7 @@
-import yaml
-from typing import Any, TextIO
 from collections.abc import Generator
+from typing import Any, TextIO
+
+import yaml
 
 Message = tuple[Any, Any, list[str], list[str]]
 

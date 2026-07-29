@@ -1,5 +1,5 @@
-from typing import TYPE_CHECKING, Any, cast
 from collections.abc import Generator
+from typing import TYPE_CHECKING, Any, cast
 
 if TYPE_CHECKING:
     from followthemoney.mapping.query import QueryMapping

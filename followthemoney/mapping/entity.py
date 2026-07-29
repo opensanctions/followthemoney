@@ -1,21 +1,22 @@
 import logging
 from hashlib import sha1
-from warnings import warn
 from typing import TYPE_CHECKING, Any
+from warnings import warn
+
 from banal import keys_values
 from normality import stringify
 
-from followthemoney.types import registry
-from followthemoney.util import key_bytes
-from followthemoney.proxy import EntityProxy
 from followthemoney.entity import ValueEntity
+from followthemoney.exc import InvalidMapping
 from followthemoney.mapping.property import PropertyMapping
 from followthemoney.mapping.source import Record
-from followthemoney.exc import InvalidMapping
+from followthemoney.proxy import EntityProxy
+from followthemoney.types import registry
+from followthemoney.util import key_bytes
 
 if TYPE_CHECKING:
-    from followthemoney.model import Model
     from followthemoney.mapping.query import QueryMapping
+    from followthemoney.model import Model
 
 log = logging.getLogger(__name__)
 

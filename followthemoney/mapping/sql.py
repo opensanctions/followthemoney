@@ -1,19 +1,20 @@
-import os
 import logging
-from uuid import uuid4
-from typing import TYPE_CHECKING, Any, cast
+import os
 from collections.abc import Generator
+from typing import TYPE_CHECKING, Any, cast
+from uuid import uuid4
+
 from banal import ensure_list, is_listish, keys_values
 from sqlalchemy import MetaData, func, select
 from sqlalchemy.engine import Engine, create_engine
-from sqlalchemy.sql.elements import Label
 from sqlalchemy.pool import NullPool
 from sqlalchemy.schema import Table
+from sqlalchemy.sql.elements import Label
 from sqlalchemy.sql.expression import Select
 
+from followthemoney.exc import InvalidMapping
 from followthemoney.mapping.source import Record, Source
 from followthemoney.util import sanitize_text
-from followthemoney.exc import InvalidMapping
 
 if TYPE_CHECKING:
     from followthemoney.mapping.query import QueryMapping

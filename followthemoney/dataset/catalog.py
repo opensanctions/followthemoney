@@ -1,9 +1,10 @@
-import yaml
-from typing import Optional, Any, Generic
+from typing import Any, Generic, Optional
 
-from followthemoney.types import registry
+import yaml
+
 from followthemoney.dataset.dataset import DS
 from followthemoney.exc import MetadataException
+from followthemoney.types import registry
 from followthemoney.util import PathLike
 
 

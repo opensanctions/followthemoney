@@ -1,9 +1,10 @@
 import re
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
 from rigour.ids import get_identifier_format
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import dampen, shortest, longest
+from followthemoney.util import dampen, longest, shortest
 from followthemoney.util import defer as _
 
 if TYPE_CHECKING:

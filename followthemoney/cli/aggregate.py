@@ -1,12 +1,18 @@
-import click
 from pathlib import Path
 
-from followthemoney.proxy import E
+import click
+
+from followthemoney.cli.cli import cli
+from followthemoney.cli.util import (
+    InPath,
+    OutPath,
+    path_entities,
+    path_writer,
+    write_entity,
+)
 from followthemoney.entity import ValueEntity
 from followthemoney.namespace import Namespace
-from followthemoney.cli.cli import cli
-from followthemoney.cli.util import InPath, OutPath, path_entities
-from followthemoney.cli.util import path_writer, write_entity
+from followthemoney.proxy import E
 
 
 def sorted_aggregate(path: Path, outpath: Path, entity_type: type[E]) -> None:

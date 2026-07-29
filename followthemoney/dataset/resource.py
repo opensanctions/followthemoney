@@ -1,6 +1,6 @@
-from pydantic import BaseModel, field_validator, computed_field
+from pydantic import BaseModel, computed_field, field_validator
 
-from followthemoney.dataset.util import Url, DateTimeISO
+from followthemoney.dataset.util import DateTimeISO, Url
 from followthemoney.types import registry
 
 

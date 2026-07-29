@@ -1,8 +1,9 @@
 from datetime import datetime, timezone
-from normality import slugify_text
 from typing import Annotated, Any
-from rigour.time import datetime_iso
+
+from normality import slugify_text
 from pydantic import AfterValidator, BeforeValidator, HttpUrl, PlainSerializer
+from rigour.time import datetime_iso
 
 from followthemoney.types import registry
 

@@ -1,8 +1,10 @@
 import pickle
+
 from pytest import raises
+
 from followthemoney import model
-from followthemoney.types import registry
 from followthemoney.exc import InvalidData
+from followthemoney.types import registry
 
 
 def test_model_path():

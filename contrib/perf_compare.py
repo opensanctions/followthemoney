@@ -1,6 +1,5 @@
-from followthemoney import model
+from followthemoney import compare, model
 from followthemoney.proxy import EntityProxy
-from followthemoney import compare
 
 ENTITY = {
     "id": "test",

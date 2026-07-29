@@ -1,4 +1,5 @@
 import pytest
+
 from followthemoney.statement.statement import Statement
 
 

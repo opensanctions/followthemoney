@@ -1,8 +1,8 @@
 from typing import Literal, TypeAlias
+
 from pydantic import BaseModel
 
 from followthemoney.dataset.util import CountryCode, PartialDate
-
 
 # Derived from Aleph
 FREQUENCY_TYPE: TypeAlias = Literal[

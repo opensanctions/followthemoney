@@ -1,19 +1,20 @@
+import logging
 import os
 import sys
-import logging
 import unicodedata
-from threading import local
-from hashlib import sha1
-from babel import Locale
+from collections.abc import Mapping
+from datetime import date, datetime
 from decimal import Decimal
 from gettext import translation
-from datetime import datetime, date
-from collections.abc import Mapping
-from typing import cast, Any, TypeVar
+from hashlib import sha1
+from threading import local
+from typing import Any, TypeVar, cast
+
+from babel import Locale
+from banal import ensure_list
 from normality import predict_encoding, stringify
 from normality.cleaning import remove_unsafe_chars
 from rigour.env import ENCODING
-from banal import ensure_list
 
 MEGABYTE = 1024 * 1024
 PROP_VALUE_MAX = 30 * MEGABYTE

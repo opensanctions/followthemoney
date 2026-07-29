@@ -5,15 +5,16 @@
 #
 # If anyone were to swap out the default model, this would
 # probably be the first place to break.
-from os.path import splitext
 from collections.abc import Iterable
-from normality import safe_filename, squash_spaces
-from mimetypes import guess_extension
-from itertools import product
 from datetime import datetime, timedelta
+from itertools import product
+from mimetypes import guess_extension
+from os.path import splitext
 
-from followthemoney.types import registry
+from normality import safe_filename, squash_spaces
+
 from followthemoney.proxy import E, EntityProxy
+from followthemoney.types import registry
 
 PROV_MIN_DATES = ("createdAt", "authoredAt", "publishedAt")
 PROV_MAX_DATES = ("modifiedAt", "retrievedAt")

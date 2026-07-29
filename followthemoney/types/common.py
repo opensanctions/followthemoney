@@ -1,13 +1,13 @@
+from collections.abc import Callable, Sequence
 from inspect import cleandoc
 from itertools import product
+from typing import TYPE_CHECKING, Any, Optional, TypedDict
+
 from babel.core import Locale
 from normality import stringify
-from typing import Any, Optional, TYPE_CHECKING, TypedDict
-from collections.abc import Sequence, Callable
 
+from followthemoney.util import const, get_locale, gettext, sanitize_text
 from followthemoney.value import Value
-from followthemoney.util import get_locale, const
-from followthemoney.util import gettext, sanitize_text
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy

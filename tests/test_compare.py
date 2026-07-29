@@ -1,9 +1,9 @@
-import pytest
 from copy import deepcopy
+
+import pytest
 
 from followthemoney import model
 from followthemoney.compare import compare, compare_names
-
 
 ENTITY = {
     "id": "test",

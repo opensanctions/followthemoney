@@ -1,7 +1,9 @@
 import os
-import yaml
-import responses
 from unittest import TestCase
+
+import responses
+import yaml
+
 from followthemoney import model
 from followthemoney.entity import ValueEntity
 from followthemoney.exc import InvalidMapping

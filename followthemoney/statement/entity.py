@@ -1,24 +1,22 @@
+from collections.abc import Generator, Iterable, Mapping
 from hashlib import sha1
-from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any
-from typing import TypeVar
-from collections.abc import Generator, Iterable
+from typing import TYPE_CHECKING, Any, TypeVar
+
 from rigour.langs import LangStr
 from rigour.names.pick import pick_lang_name
 
-from followthemoney.model import Model
-from followthemoney.exc import InvalidData
-from followthemoney.schema import Schema
-from followthemoney.types.common import PropertyType
-from followthemoney.property import Property
-from followthemoney.util import HASH_ENCODING, gettext
-from followthemoney.proxy import P
-from followthemoney.types import registry
-from followthemoney.value import string_list, Values
-from followthemoney.proxy import EntityProxy
 from followthemoney.dataset import Dataset, UndefinedDataset
+from followthemoney.exc import InvalidData
+from followthemoney.model import Model
+from followthemoney.property import Property
+from followthemoney.proxy import EntityProxy, P
+from followthemoney.schema import Schema
 from followthemoney.statement.statement import Statement
 from followthemoney.statement.util import BASE_ID
+from followthemoney.types import registry
+from followthemoney.types.common import PropertyType
+from followthemoney.util import HASH_ENCODING, gettext
+from followthemoney.value import Values, string_list
 
 SE = TypeVar("SE", bound="StatementEntity")
 

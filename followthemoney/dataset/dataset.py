@@ -1,16 +1,16 @@
-from pathlib import Path
-import yaml
 import logging
 from functools import cached_property
-from typing import TYPE_CHECKING
-from typing_extensions import Self
-from typing import Any, Optional, TypeVar
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Optional, TypeVar
+
+import yaml
 from pydantic import BaseModel, field_validator, model_validator
+from typing_extensions import Self
 
 from followthemoney.dataset.coverage import DataCoverage
 from followthemoney.dataset.publisher import DataPublisher
 from followthemoney.dataset.resource import DataResource
-from followthemoney.dataset.util import Url, DateTimeISO, dataset_name_check
+from followthemoney.dataset.util import DateTimeISO, Url, dataset_name_check
 from followthemoney.util import PathLike
 
 if TYPE_CHECKING:

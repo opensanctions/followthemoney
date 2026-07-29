@@ -1,8 +1,10 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
 from rigour.urls import clean_url, compare_urls
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import dampen, defer as _
+from followthemoney.util import dampen
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy

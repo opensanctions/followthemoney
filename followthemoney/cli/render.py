@@ -6,10 +6,10 @@ wants machine-readable JSON. Reach for these instead of hand-rolling output so
 every ``ref`` subcommand decides JSON-vs-table the same way."""
 
 import sys
-import orjson
-from typing import Any
 from collections.abc import Sequence
+from typing import Any
 
+import orjson
 from rich.console import Console
 from rich.markdown import Markdown
 from rich.table import Table

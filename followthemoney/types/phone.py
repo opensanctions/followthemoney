@@ -1,13 +1,13 @@
-from typing import Optional, TYPE_CHECKING
 from collections.abc import Iterable
+from typing import TYPE_CHECKING, Optional
+
+from phonenumbers import PhoneNumber, PhoneNumberFormat, format_number, is_valid_number
 from phonenumbers import parse as parse_number
-from phonenumbers import is_valid_number, format_number
-from phonenumbers import PhoneNumber, PhoneNumberFormat
-from phonenumbers.phonenumberutil import region_code_for_number, NumberParseException
+from phonenumbers.phonenumberutil import NumberParseException, region_code_for_number
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import defer as _
 from followthemoney.util import dampen
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy

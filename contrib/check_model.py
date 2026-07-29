@@ -1,7 +1,7 @@
 import sys
 from collections import defaultdict
-from followthemoney import model
 
+from followthemoney import model
 
 IGNORE_DIVERGENT_TYPES = [
     "number",

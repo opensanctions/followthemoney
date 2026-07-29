@@ -1,15 +1,16 @@
-from contextlib import contextmanager
 import os
-import yaml
-import click
-import orjson
+from collections.abc import Generator
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, BinaryIO
-from collections.abc import Generator
-from banal import is_listish, ensure_list
 
-from followthemoney.export.common import Exporter
+import click
+import orjson
+import yaml
+from banal import ensure_list, is_listish
+
 from followthemoney.entity import ValueEntity
+from followthemoney.export.common import Exporter
 from followthemoney.proxy import E, EntityProxy
 from followthemoney.util import MEGABYTE, PathLike
 

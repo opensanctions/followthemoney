@@ -1,14 +1,14 @@
 import logging
-from prefixdate import Precision
-from rdflib import Graph, Namespace
-from rdflib.term import Identifier, URIRef, Literal
-from rdflib import RDF, SKOS, XSD
-from typing import TextIO
 from collections.abc import Generator
+from typing import TextIO
+
+from prefixdate import Precision
+from rdflib import RDF, SKOS, XSD, Graph, Namespace
+from rdflib.term import Identifier, Literal, URIRef
 
 from followthemoney.export.common import Exporter
-from followthemoney.types import registry
 from followthemoney.proxy import EntityProxy
+from followthemoney.types import registry
 
 log = logging.getLogger(__name__)
 Triple = tuple[Identifier, Identifier, Identifier]

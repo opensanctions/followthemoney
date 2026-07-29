@@ -1,7 +1,8 @@
-from typing import Any, Union
-from collections.abc import Iterable, Mapping
-from datetime import datetime, date, timezone
 import typing
+from collections.abc import Iterable, Mapping
+from datetime import date, datetime, timezone
+from typing import Any, Union
+
 from prefixdate import DatePrefix
 
 from followthemoney.util import sanitize_text

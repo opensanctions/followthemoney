@@ -8,9 +8,9 @@ See https://followthemoney.tech/docs/metadata/#dataset-query-dsl for full
 documentation and examples.
 """
 
-from collections.abc import Mapping, Sequence
 import functools
-from typing import Any, TYPE_CHECKING
+from collections.abc import Mapping, Sequence
+from typing import TYPE_CHECKING, Any
 
 from followthemoney.dataset.dataset import DS
 from followthemoney.exc import InvalidDatasetQuery

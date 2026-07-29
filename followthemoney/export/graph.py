@@ -1,12 +1,13 @@
-from typing import TextIO
 from collections.abc import Iterable
+from typing import TextIO
+
 import networkx as nx  # type: ignore
 from networkx.readwrite.gexf import generate_gexf  # type: ignore
 
+from followthemoney.export.common import Exporter
 from followthemoney.graph import Edge, Graph, Node
 from followthemoney.proxy import E
 from followthemoney.types import registry
-from followthemoney.export.common import Exporter
 
 DEFAULT_EDGE_TYPES = (registry.entity.name,)
 

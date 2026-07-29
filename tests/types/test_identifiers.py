@@ -1,5 +1,5 @@
-from followthemoney.types import registry
 from followthemoney import model
+from followthemoney.types import registry
 
 identifiers = registry.identifier
 

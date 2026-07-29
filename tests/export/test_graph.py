@@ -2,8 +2,8 @@ import io
 from unittest import TestCase
 
 from followthemoney import model
-from followthemoney.types import registry
 from followthemoney.export.graph import NXGraphExporter
+from followthemoney.types import registry
 
 ENTITIES = [
     {

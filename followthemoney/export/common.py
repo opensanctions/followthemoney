@@ -1,4 +1,5 @@
 from collections.abc import Generator
+
 from followthemoney.property import Property
 from followthemoney.proxy import EntityProxy
 from followthemoney.schema import Schema

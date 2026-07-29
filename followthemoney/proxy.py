@@ -1,27 +1,32 @@
+import builtins
 import hashlib
 import logging
-from typing import TYPE_CHECKING, Any, cast
-from collections.abc import Iterable
-from typing import TypeVar
-from collections.abc import Generator
+from collections.abc import Generator, Iterable
 from itertools import product
+from typing import TYPE_CHECKING, Any, TypeVar, cast
+
 from banal import ensure_dict
 from rigour.names import pick_name
 
 from followthemoney.exc import InvalidData
+from followthemoney.model import Model
+from followthemoney.property import Property
+from followthemoney.schema import Schema
 from followthemoney.types import registry
 from followthemoney.types.common import PropertyType
-from followthemoney.property import Property
-from followthemoney.value import string_list, Values
-from followthemoney.util import HASH_ENCODING, sanitize_text, gettext
-from followthemoney.util import merge_context, make_entity_id
-from followthemoney.model import Model
-from followthemoney.schema import Schema
-import builtins
+from followthemoney.util import (
+    HASH_ENCODING,
+    gettext,
+    make_entity_id,
+    merge_context,
+    sanitize_text,
+)
+from followthemoney.value import Values, string_list
 
 if TYPE_CHECKING:
-    from followthemoney.model import Model
     from hashlib import _Hash
+
+    from followthemoney.model import Model
 
 log = logging.getLogger(__name__)
 P = Property | str

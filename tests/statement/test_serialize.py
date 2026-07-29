@@ -3,13 +3,9 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from followthemoney.dataset import UndefinedDataset
-from followthemoney.statement import Statement
+from followthemoney.statement import Statement, read_path_statements, write_statements
 from followthemoney.statement.entity import StatementEntity
-from followthemoney.statement import write_statements
-from followthemoney.statement import read_path_statements
-from followthemoney.statement.serialize import CSV, JSON, PACK
-from followthemoney.statement.serialize import read_statements
-
+from followthemoney.statement.serialize import CSV, JSON, PACK, read_statements
 
 EXAMPLE = {
     "id": "bla",

@@ -1,15 +1,16 @@
 import re
+from typing import TYPE_CHECKING, Any, TypedDict
+
 from banal import as_bool
 from rigour.ids import get_identifier_format
-from typing import TYPE_CHECKING, Any, TypedDict
 
 from followthemoney.exc import InvalidData, InvalidModel
 from followthemoney.types import registry
-from followthemoney.util import gettext, const
+from followthemoney.util import const, gettext
 
 if TYPE_CHECKING:
-    from followthemoney.schema import Schema
     from followthemoney.model import Model
+    from followthemoney.schema import Schema
 
 # Invalid property names.
 RESERVED = ["id", "caption", "schema", "schemata", "referents", "datasets"]

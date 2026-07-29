@@ -1,11 +1,12 @@
 import os
 from datetime import datetime, timezone
-from typing import Optional, TYPE_CHECKING
-from prefixdate import parse, parse_format, Precision
+from typing import TYPE_CHECKING, Optional
+
+from prefixdate import Precision, parse, parse_format
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import defer as _
 from followthemoney.util import dampen
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy

@@ -1,5 +1,6 @@
-from typing import TYPE_CHECKING, Optional
 from collections.abc import Sequence
+from typing import TYPE_CHECKING, Optional
+
 from normality import slugify_text
 from normality.cleaning import squash_spaces, strip_quotes
 from rigour.env import MAX_NAME_LENGTH

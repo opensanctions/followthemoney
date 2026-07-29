@@ -1,7 +1,8 @@
 from babel.core import Locale
 
 from followthemoney.types.common import EnumType, EnumValues
-from followthemoney.util import gettext, defer as _
+from followthemoney.util import defer as _
+from followthemoney.util import gettext
 
 
 class TopicType(EnumType):

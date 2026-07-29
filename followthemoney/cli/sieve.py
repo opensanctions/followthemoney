@@ -1,15 +1,21 @@
-import click
-from pathlib import Path
 from collections.abc import Iterable
+from pathlib import Path
+
+import click
 
 from followthemoney import model
-from followthemoney.entity import ValueEntity
-from followthemoney.types import registry
+from followthemoney.cli.cli import cli
+from followthemoney.cli.util import (
+    InPath,
+    OutPath,
+    path_entities,
+    path_writer,
+    write_entity,
+)
 from followthemoney.dataset.parse import parse_query
 from followthemoney.dataset.query import DatasetQuery, match_datasets
-from followthemoney.cli.cli import cli
-from followthemoney.cli.util import InPath, OutPath, path_entities
-from followthemoney.cli.util import path_writer, write_entity
+from followthemoney.entity import ValueEntity
+from followthemoney.types import registry
 
 
 def sieve_entity(

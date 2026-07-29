@@ -1,16 +1,17 @@
 import re
 from copy import deepcopy
-from warnings import warn
-from normality import stringify
 from typing import TYPE_CHECKING, Any, cast
-from banal import keys_values, as_bool
+from warnings import warn
 
-from followthemoney.helpers import inline_names
+from banal import as_bool, keys_values
+from normality import stringify
+
 from followthemoney.exc import InvalidMapping
+from followthemoney.helpers import inline_names
+from followthemoney.mapping.source import Record
+from followthemoney.property import Property
 from followthemoney.proxy import EntityProxy
 from followthemoney.util import sanitize_text
-from followthemoney.property import Property
-from followthemoney.mapping.source import Record
 
 if TYPE_CHECKING:
     from followthemoney.mapping.query import QueryMapping

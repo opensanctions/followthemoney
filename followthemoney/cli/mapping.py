@@ -1,18 +1,24 @@
 import sys
-import click
-from pathlib import Path
-from banal import keys_values
-from typing import TextIO
 from collections.abc import Generator
 from contextlib import contextmanager
+from pathlib import Path
+from typing import TextIO
+
+import click
+from banal import keys_values
 
 from followthemoney import model
-from followthemoney.namespace import Namespace
-from followthemoney.mapping.query import QueryMapping
-from followthemoney.mapping.csv import CSVSource
 from followthemoney.cli.cli import cli
-from followthemoney.cli.util import InPath, OutPath, load_mapping_file
-from followthemoney.cli.util import path_writer, write_entity
+from followthemoney.cli.util import (
+    InPath,
+    OutPath,
+    load_mapping_file,
+    path_writer,
+    write_entity,
+)
+from followthemoney.mapping.csv import CSVSource
+from followthemoney.mapping.query import QueryMapping
+from followthemoney.namespace import Namespace
 
 
 @contextmanager

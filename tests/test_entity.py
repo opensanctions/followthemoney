@@ -1,9 +1,9 @@
 import pickle
+
 from followthemoney.dataset.dataset import Dataset
-from followthemoney.statement.entity import StatementEntity
 from followthemoney.entity import ValueEntity
 from followthemoney.proxy import EntityProxy
-
+from followthemoney.statement.entity import StatementEntity
 
 EXAMPLE = {
     "id": "jane",

@@ -2,10 +2,10 @@ import json
 import os
 import random
 import string
+from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
-from collections.abc import Iterator
 
 from rigour.time import utc_now
 

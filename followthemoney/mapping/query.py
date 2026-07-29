@@ -1,12 +1,12 @@
-from followthemoney.mapping.source import Record, Source
 from typing import TYPE_CHECKING, Any
 
-from followthemoney.proxy import EntityProxy
 from followthemoney.entity import ValueEntity
-from followthemoney.mapping.entity import EntityMapping
-from followthemoney.mapping.sql import SQLSource
-from followthemoney.mapping.csv import CSVSource
 from followthemoney.exc import InvalidMapping
+from followthemoney.mapping.csv import CSVSource
+from followthemoney.mapping.entity import EntityMapping
+from followthemoney.mapping.source import Record, Source
+from followthemoney.mapping.sql import SQLSource
+from followthemoney.proxy import EntityProxy
 
 if TYPE_CHECKING:
     from followthemoney.model import Model

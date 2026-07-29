@@ -1,9 +1,10 @@
 import json
-from typing import Any, Optional, TYPE_CHECKING
 from collections.abc import Sequence
+from typing import TYPE_CHECKING, Any, Optional
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import sanitize_text, defer as _
+from followthemoney.util import defer as _
+from followthemoney.util import sanitize_text
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy

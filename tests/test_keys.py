@@ -1,7 +1,9 @@
 import os
-import yaml
 from hashlib import sha1
 from unittest import TestCase
+
+import yaml
+
 from followthemoney import model
 from followthemoney.exc import InvalidMapping
 

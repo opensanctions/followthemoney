@@ -14,7 +14,6 @@ from followthemoney.proxy import EntityProxy
 from followthemoney.schema import Schema
 from followthemoney.types import registry
 
-
 # Property → structural part annotation(s). A property can map to
 # multiple tags for genuinely ambiguous cases: `fatherName` /
 # `motherName` tag both MIDDLE (Slavic patronymic convention, sitting

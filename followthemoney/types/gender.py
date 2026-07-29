@@ -1,8 +1,10 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
 from babel.core import Locale
 
 from followthemoney.types.common import EnumType, EnumValues
-from followthemoney.util import gettext, defer as _
+from followthemoney.util import defer as _
+from followthemoney.util import gettext
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy

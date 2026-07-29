@@ -1,9 +1,13 @@
 from followthemoney import model
-from followthemoney.helpers import combine_names, remove_checksums
-from followthemoney.helpers import simplify_provenance
-from followthemoney.helpers import entity_filename
-from followthemoney.helpers import name_entity, check_person_cutoff
-from followthemoney.helpers import remove_prefix_dates
+from followthemoney.helpers import (
+    check_person_cutoff,
+    combine_names,
+    entity_filename,
+    name_entity,
+    remove_checksums,
+    remove_prefix_dates,
+    simplify_provenance,
+)
 
 
 def test_remove_checksums():

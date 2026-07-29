@@ -1,13 +1,12 @@
-import io
 import csv
+import io
 import shutil
 from tempfile import mkdtemp
 from unittest import TestCase
 
 from followthemoney import model
-from followthemoney.export.neo4j import CypherGraphExporter
-from followthemoney.export.neo4j import Neo4JCSVExporter
 from followthemoney.export.graph import edge_types
+from followthemoney.export.neo4j import CypherGraphExporter, Neo4JCSVExporter
 
 ENTITIES = [
     {

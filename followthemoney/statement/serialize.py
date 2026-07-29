@@ -1,13 +1,13 @@
 import csv
-import click
-import orjson
 import logging
+from collections.abc import Generator, Iterable
 from io import TextIOWrapper
 from pathlib import Path
 from types import TracebackType
-from typing import cast
-from typing import BinaryIO, TextIO
-from collections.abc import Generator, Iterable
+from typing import BinaryIO, TextIO, cast
+
+import click
+import orjson
 from rigour.boolean import text_bool
 from rigour.env import ENCODING
 

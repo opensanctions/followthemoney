@@ -1,17 +1,16 @@
 import hashlib
 import warnings
-from sqlalchemy.engine import Row
-from typing import cast
-from typing import Any, TypeGuard
 from collections.abc import Generator
-from typing_extensions import TypedDict, Self
-from rigour.time import datetime_iso, iso_datetime
+from typing import Any, TypeGuard, cast
+
 from rigour.boolean import bool_text
+from rigour.time import datetime_iso, iso_datetime
+from sqlalchemy.engine import Row
+from typing_extensions import Self, TypedDict
 
 from followthemoney.proxy import EntityProxy
-from followthemoney.statement.util import get_prop_type, BASE_ID, NON_LANG_TYPE_NAMES
+from followthemoney.statement.util import BASE_ID, NON_LANG_TYPE_NAMES, get_prop_type
 from followthemoney.util import HASH_ENCODING
-
 
 UNSET = object()
 

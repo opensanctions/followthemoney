@@ -1,11 +1,15 @@
-from followthemoney.dataset.dataset import Dataset, DS
 from followthemoney.dataset.catalog import DataCatalog
-from followthemoney.dataset.resource import DataResource
-from followthemoney.dataset.publisher import DataPublisher
 from followthemoney.dataset.coverage import DataCoverage
-from followthemoney.dataset.query import DatasetQuery, evaluate_query, match_datasets
-from followthemoney.dataset.query import validate_query
+from followthemoney.dataset.dataset import DS, Dataset
 from followthemoney.dataset.parse import parse_query
+from followthemoney.dataset.publisher import DataPublisher
+from followthemoney.dataset.query import (
+    DatasetQuery,
+    evaluate_query,
+    match_datasets,
+    validate_query,
+)
+from followthemoney.dataset.resource import DataResource
 from followthemoney.dataset.versions import Version, VersionHistory
 
 UndefinedDataset = Dataset.make({"name": Dataset.UNDEFINED})

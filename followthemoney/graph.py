@@ -7,15 +7,15 @@ to a specific output format, like Cypher or NetworkX.
 """
 
 import logging
-from typing import Any
 from collections.abc import Generator, Iterable
+from typing import Any
 
+from followthemoney.exc import InvalidModel
+from followthemoney.property import Property
+from followthemoney.proxy import EntityProxy
+from followthemoney.schema import Schema
 from followthemoney.types import registry
 from followthemoney.types.common import PropertyType
-from followthemoney.schema import Schema
-from followthemoney.proxy import EntityProxy
-from followthemoney.property import Property
-from followthemoney.exc import InvalidModel
 
 log = logging.getLogger(__name__)
 

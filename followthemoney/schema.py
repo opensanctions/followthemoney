@@ -1,12 +1,12 @@
-from typing import TYPE_CHECKING, Any
-from typing import TypedDict, Union
-from banal import as_bool
 from functools import cache
+from typing import TYPE_CHECKING, Any, TypedDict, Union
 
+from banal import as_bool
+
+from followthemoney.exc import InvalidData, InvalidModel
 from followthemoney.property import Property, PropertySpec, PropertyToDict, ReverseSpec
 from followthemoney.types import registry
-from followthemoney.exc import InvalidData, InvalidModel
-from followthemoney.util import gettext, const
+from followthemoney.util import const, gettext
 
 if TYPE_CHECKING:
     from followthemoney.model import Model

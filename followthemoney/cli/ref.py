@@ -10,24 +10,25 @@ reflects the installed version of followthemoney.
 Every command renders a rich table on a terminal and machine-readable JSON when
 ``--json`` is passed or stdout is piped (see ``followthemoney.cli.render``)."""
 
-import sys
-import click
 import difflib
+import sys
 from typing import Any
 
+import click
+
 from followthemoney import model
-from followthemoney.types import registry
-from followthemoney.types.common import EnumType, PropertyType
-from followthemoney.schema import Schema
-from followthemoney.property import Property
 from followthemoney.cli.cli import cli
 from followthemoney.cli.render import (
-    is_json_mode,
     emit_json,
+    is_json_mode,
     print_markdown,
     print_table,
     slim,
 )
+from followthemoney.property import Property
+from followthemoney.schema import Schema
+from followthemoney.types import registry
+from followthemoney.types.common import EnumType, PropertyType
 
 JSON_OPTION = click.option(
     "--json", "json_flag", is_flag=True, default=False, help="Emit JSON output."

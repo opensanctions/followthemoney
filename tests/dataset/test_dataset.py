@@ -1,9 +1,10 @@
 import json
-from pydantic import ValidationError
-import pytest
 from pathlib import Path
-from typing import Any
 from tempfile import TemporaryDirectory
+from typing import Any
+
+import pytest
+from pydantic import ValidationError
 
 from followthemoney.dataset import DataCatalog, Dataset
 from followthemoney.dataset.dataset import DatasetModel

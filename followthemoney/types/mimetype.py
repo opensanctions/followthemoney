@@ -1,6 +1,6 @@
-from typing import Optional, TYPE_CHECKING
-from rigour.mime import normalize_mimetype, parse_mimetype
-from rigour.mime import DEFAULT
+from typing import TYPE_CHECKING, Optional
+
+from rigour.mime import DEFAULT, normalize_mimetype, parse_mimetype
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _

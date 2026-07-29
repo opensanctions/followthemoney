@@ -1,18 +1,18 @@
 import io
-import os
 import logging
-import requests
-from csv import DictReader
-from urllib.parse import urlparse
-from banal import keys_values, ensure_list
-from typing import TYPE_CHECKING, cast
-from typing import Any
+import os
 from collections.abc import Generator, ItemsView, Iterable
+from csv import DictReader
+from typing import TYPE_CHECKING, Any, cast
+from urllib.parse import urlparse
 
+import requests
+from banal import ensure_list, keys_values
+
+from followthemoney.exc import InvalidMapping
 from followthemoney.mapping.source import Record, Source
 from followthemoney.settings import USER_AGENT
 from followthemoney.util import sanitize_text
-from followthemoney.exc import InvalidMapping
 
 if TYPE_CHECKING:
     from followthemoney.mapping.query import QueryMapping

@@ -1,10 +1,11 @@
 import logging
 from io import BytesIO
+
 from openpyxl import Workbook
 from openpyxl.cell import WriteOnlyCell
 from openpyxl.styles import Font, PatternFill
-from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.utils.exceptions import IllegalCharacterError
+from openpyxl.worksheet.worksheet import Worksheet
 
 from followthemoney.export.common import Exporter
 from followthemoney.proxy import E

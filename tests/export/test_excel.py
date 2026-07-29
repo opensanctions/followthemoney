@@ -1,11 +1,11 @@
 import os
-from unittest import TestCase
 from tempfile import mkstemp
+from unittest import TestCase
+
 from openpyxl import load_workbook
 
 from followthemoney import model
 from followthemoney.export.excel import ExcelExporter
-
 
 ENTITY = {
     "id": "person",

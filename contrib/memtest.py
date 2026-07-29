@@ -1,5 +1,6 @@
-import sys
 import logging
+import sys
+
 import balkhash
 
 from followthemoney import model

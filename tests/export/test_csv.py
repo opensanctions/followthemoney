@@ -6,7 +6,6 @@ from unittest import TestCase
 from followthemoney import model
 from followthemoney.export.csv import CSVExporter
 
-
 ENTITY = {
     "id": "person",
     "schema": "Person",

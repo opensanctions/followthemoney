@@ -1,5 +1,5 @@
-from typing import Optional, TYPE_CHECKING
 from ipaddress import ip_address
+from typing import TYPE_CHECKING, Optional
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _

@@ -1,23 +1,23 @@
 import os
-import yaml
-from functools import cache
-from typing import TYPE_CHECKING, Any
-from typing import Optional, TypedDict
 from collections.abc import Generator, Iterator
+from functools import cache
+from typing import TYPE_CHECKING, Any, Optional, TypedDict
+
+import yaml
 from rigour.env import ENCODING
 
+from followthemoney.exc import InvalidData, InvalidModel
+from followthemoney.property import Property
+from followthemoney.schema import Schema, SchemaToDict
+from followthemoney.settings import MODEL_PATH
 from followthemoney.types import registry
 from followthemoney.types.common import PropertyType, PropertyTypeToDict
-from followthemoney.schema import Schema, SchemaToDict
-from followthemoney.property import Property
-from followthemoney.exc import InvalidModel, InvalidData
-from followthemoney.settings import MODEL_PATH
 from followthemoney.util import const
 
 if TYPE_CHECKING:
-    from followthemoney.proxy import EntityProxy
     from followthemoney.entity import ValueEntity
     from followthemoney.mapping import QueryMapping
+    from followthemoney.proxy import EntityProxy
 
 
 class ModelToDict(TypedDict):

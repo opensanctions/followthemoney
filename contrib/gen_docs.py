@@ -1,6 +1,6 @@
 import pathlib
-from followthemoney import model
-from followthemoney import registry
+
+from followthemoney import model, registry
 
 
 def generate_schemata():

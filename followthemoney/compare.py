@@ -1,17 +1,21 @@
 import math
-from itertools import islice, product
 from collections.abc import Generator, Iterable
+from itertools import islice, product
+
 from normality import ascii_text
-from rigour.text.scripts import can_latinize
-from rigour.names import tokenize_name, remove_person_prefixes
-from rigour.names import replace_org_types_compare
+from rigour.names import (
+    remove_person_prefixes,
+    replace_org_types_compare,
+    tokenize_name,
+)
 from rigour.territories import territories_intersect
+from rigour.text.scripts import can_latinize
+
 from followthemoney.exc import InvalidData
+from followthemoney.proxy import EntityProxy
 from followthemoney.schema import Schema
 from followthemoney.types import registry
-from followthemoney.proxy import EntityProxy
 from followthemoney.types.common import PropertyType
-
 
 # Compare weights come from the glm-bernouli model in followthemoney-predict
 Weights = dict[PropertyType | None, float]

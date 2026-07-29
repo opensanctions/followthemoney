@@ -1,10 +1,10 @@
 import csv
-from pathlib import Path
 from io import TextIOWrapper
+from pathlib import Path
 from typing import Any, Protocol
 
-from followthemoney.proxy import EntityProxy
 from followthemoney.export.common import Exporter
+from followthemoney.proxy import EntityProxy
 from followthemoney.schema import Schema
 from followthemoney.util import PathLike
 

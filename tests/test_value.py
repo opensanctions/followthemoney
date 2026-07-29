@@ -1,6 +1,6 @@
-from followthemoney.value import string_list
 from followthemoney import model
 from followthemoney.proxy import EntityProxy
+from followthemoney.value import string_list
 
 
 def test_string_list():

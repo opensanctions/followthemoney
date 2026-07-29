@@ -1,11 +1,11 @@
-import os
 import json
 import logging
-from typing import Any, TextIO
+import os
 from collections.abc import Iterable
+from typing import Any, TextIO
 
 from followthemoney.export.csv import CSVMixin, CSVWriter
-from followthemoney.export.graph import GraphExporter, DEFAULT_EDGE_TYPES
+from followthemoney.export.graph import DEFAULT_EDGE_TYPES, GraphExporter
 from followthemoney.graph import Edge, Node
 from followthemoney.schema import Schema
 from followthemoney.util import PathLike, const_case

@@ -1,10 +1,12 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
 from babel.core import Locale
 from rigour.langs import iso_639_alpha3
 
-from followthemoney.types.common import EnumType, EnumValues
-from followthemoney.util import defer as _, gettext
 from followthemoney.settings import get_env_list
+from followthemoney.types.common import EnumType, EnumValues
+from followthemoney.util import defer as _
+from followthemoney.util import gettext
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy

@@ -1,16 +1,15 @@
-import click
-from typing import TextIO
 from collections.abc import Generator
-from pathlib import Path
 from contextlib import contextmanager
+from pathlib import Path
+from typing import TextIO
+
+import click
 
 from followthemoney.cli.cli import cli
 from followthemoney.cli.util import InPath, OutPath, export_stream
 from followthemoney.export.csv import CSVExporter
-from followthemoney.export.graph import edge_types, DEFAULT_EDGE_TYPES
-from followthemoney.export.graph import NXGraphExporter
-from followthemoney.export.neo4j import Neo4JCSVExporter
-from followthemoney.export.neo4j import CypherGraphExporter
+from followthemoney.export.graph import DEFAULT_EDGE_TYPES, NXGraphExporter, edge_types
+from followthemoney.export.neo4j import CypherGraphExporter, Neo4JCSVExporter
 
 
 @contextmanager

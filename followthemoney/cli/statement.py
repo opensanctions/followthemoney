@@ -1,16 +1,25 @@
-import click
-from pathlib import Path
 from collections.abc import Generator
+from pathlib import Path
 
+import click
 
 from followthemoney.cli.cli import cli
-from followthemoney.cli.util import InPath, OutPath
-from followthemoney.cli.util import path_entities, write_entity, path_writer
+from followthemoney.cli.util import (
+    InPath,
+    OutPath,
+    path_entities,
+    path_writer,
+    write_entity,
+)
 from followthemoney.dataset import Dataset, UndefinedDataset
-from followthemoney.statement import Statement, StatementEntity
-from followthemoney.statement import FORMATS, CSV
-from followthemoney.statement import write_statements
-from followthemoney.statement import read_path_statements
+from followthemoney.statement import (
+    CSV,
+    FORMATS,
+    Statement,
+    StatementEntity,
+    read_path_statements,
+    write_statements,
+)
 
 
 @cli.command("statements", help="Export entities to statements")

@@ -1,7 +1,8 @@
 import sys
 from datetime import datetime
-from rdflib import Graph, URIRef, Literal, Namespace
-from rdflib.namespace import OWL, DCTERMS, RDF, RDFS, XSD
+
+from rdflib import Graph, Literal, Namespace, URIRef
+from rdflib.namespace import DCTERMS, OWL, RDF, RDFS, XSD
 
 from followthemoney import model
 from followthemoney.property import Property

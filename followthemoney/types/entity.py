@@ -1,10 +1,10 @@
 import re
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 
-from followthemoney.types.common import PropertyType
-from followthemoney.util import ENTITY_ID_LEN, get_entity_id
-from followthemoney.util import gettext, defer as _
 from followthemoney.exc import InvalidData
+from followthemoney.types.common import PropertyType
+from followthemoney.util import ENTITY_ID_LEN, get_entity_id, gettext
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy

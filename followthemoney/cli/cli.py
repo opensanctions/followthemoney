@@ -1,15 +1,21 @@
-import sys
-import click
-import orjson
 import logging
+import sys
 from pathlib import Path
 from typing import BinaryIO
 
+import click
+import orjson
+
 from followthemoney import model
+from followthemoney.cli.util import (
+    InPath,
+    OutPath,
+    path_entities,
+    path_writer,
+    write_entity,
+)
 from followthemoney.entity import ValueEntity
 from followthemoney.namespace import Namespace
-from followthemoney.cli.util import InPath, OutPath, path_entities
-from followthemoney.cli.util import path_writer, write_entity
 
 
 @click.group(help="Utility for FollowTheMoney graph data")

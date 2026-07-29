@@ -1,12 +1,13 @@
 import re
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
 from normality import slugify_text, squash_spaces
 from rigour.addresses import normalize_address
 from rigour.text.distance import levenshtein_similarity
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import defer as _
 from followthemoney.util import dampen
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
