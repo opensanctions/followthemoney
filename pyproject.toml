@@ -120,8 +120,11 @@ ignore = [
     "B019",
     # Dunder signatures and semantics are left alone for now.
     #
-    # PYI019 and PYI034 both want `Self`, which on 3.10 means importing
-    # typing_extensions -- not a dependency. Revisit if we require 3.11.
+    # PYI019 and PYI034 both want `Self`, which needs 3.11 or an import from
+    # typing_extensions. We already import the latter in dataset.py and
+    # statement.py, but only ever get it via pydantic and sqlalchemy -- so
+    # spreading it further means either declaring it or raising the floor to
+    # 3.11, neither of which belongs in a lint change.
     #
     # PYI032 wants `__eq__(self, other: object)`. Correct, but our
     # implementations reach for `other.id` unguarded, so adopting it means
