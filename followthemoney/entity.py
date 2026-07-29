@@ -1,4 +1,4 @@
-from typing import Any, TypeVar
+from typing import Any, Self, TypeVar
 
 from rigour.names import pick_name
 
@@ -66,7 +66,7 @@ class ValueEntity(EntityProxy):
             if stmt.prop != BASE_ID:
                 self.unsafe_add(prop, stmt.value, cleaned=cleaned)
 
-    def merge(self: VE, other: EntityProxy) -> VE:
+    def merge(self, other: EntityProxy) -> Self:
         merged = super().merge(other)
         if isinstance(other, ValueEntity):
             merged._caption = pick_name(_defined(self._caption, other._caption))

@@ -17,12 +17,11 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-requires-python = ">= 3.10"
+requires-python = ">= 3.11"
 dependencies = [
     "babel >= 2.14.0, < 3.0.0",
     "pyyaml >= 5.0.0, < 7.0.0",
@@ -107,7 +106,7 @@ universal = true
 asyncio_default_fixture_loop_scope = "function"
 
 [tool.ruff]
-# `target-version` is inferred from `project.requires-python` (3.10).
+# `target-version` is inferred from `project.requires-python` (3.11).
 extend-exclude = ["site", "docs"]
 
 [tool.ruff.lint]
@@ -118,22 +117,12 @@ ignore = [
     # These live in hot paths and are never collected, so the leak B019 warns
     # about does not apply.
     "B019",
-    # Dunder signatures and semantics are left alone for now.
-    #
-    # PYI019 and PYI034 both want `Self`, which needs 3.11 or an import from
-    # typing_extensions. We already import the latter in dataset.py and
-    # statement.py, but only ever get it via pydantic and sqlalchemy -- so
-    # spreading it further means either declaring it or raising the floor to
-    # 3.11, neither of which belongs in a lint change.
-    #
-    # PYI032 wants `__eq__(self, other: object)`. Correct, but our
-    # implementations reach for `other.id` unguarded, so adopting it means
-    # narrowing `__eq__` on EntityProxy, Statement, Node and Edge -- today a
-    # mismatched type raises AttributeError, and returning False instead is a
-    # behaviour change on hot-path classes.
-    "PYI019",
+    # Wants `__eq__(self, other: object)`. Correct, but our implementations
+    # reach for `other.id` unguarded, so adopting it means narrowing `__eq__`
+    # on EntityProxy, Statement, Node and Edge -- today a mismatched type
+    # raises AttributeError, and returning False instead is a behaviour change
+    # on hot-path classes.
     "PYI032",
-    "PYI034",
 ]
 
 [tool.ruff.lint.per-file-ignores]

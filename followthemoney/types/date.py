@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Optional
 
 from prefixdate import Precision, parse, parse_format
@@ -95,5 +95,5 @@ class DateType(PropertyType):
             return None
         # We make a best effort all over the app to ensure all times are in UTC.
         if date.tzinfo is None:
-            date = date.replace(tzinfo=timezone.utc)
+            date = date.replace(tzinfo=UTC)
         return date.timestamp()

@@ -1,6 +1,6 @@
 import typing
 from collections.abc import Iterable, Mapping
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from typing import Any, Union
 
 from prefixdate import DatePrefix
@@ -38,7 +38,7 @@ def string_list(value: Any, sanitize: bool = False) -> list[str]:
         return [value.isoformat()]
     if type_ is datetime:
         if value.tzinfo is not None:
-            value = value.astimezone(tz=timezone.utc)
+            value = value.astimezone(tz=UTC)
         return [value.isoformat()]
     if type_ is set or type_ is list or type_ is tuple:
         texts: list[str] = []

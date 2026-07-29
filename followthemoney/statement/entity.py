@@ -1,6 +1,6 @@
 from collections.abc import Generator, Iterable, Mapping
 from hashlib import sha1
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, Self, TypeVar
 
 from rigour.langs import LangStr
 from rigour.names.pick import pick_lang_name
@@ -394,14 +394,14 @@ class StatementEntity(EntityProxy):
     def iterprops(self) -> list[Property]:
         return [self.schema.properties[p] for p in self._statements.keys()]
 
-    def clone(self: SE) -> SE:
+    def clone(self) -> Self:
         data = {"schema": self.schema.name, "id": self.id}
         cloned = type(self)(self.dataset, data)
         for stmt in self._iter_stmt():
             cloned.add_statement(stmt)
         return cloned
 
-    def merge(self: SE, other: EntityProxy) -> SE:
+    def merge(self, other: EntityProxy) -> Self:
         try:
             self.schema = self.schema.model.common_schema(self.schema, other.schema)
         except InvalidData as e:
@@ -494,30 +494,30 @@ class StatementEntity(EntityProxy):
 
     @classmethod
     def from_dict(
-        cls: type[SE],
+        cls,
         data: dict[str, Any],
         cleaned: bool = True,
         default_dataset: Dataset | None = None,
-    ) -> SE:
+    ) -> Self:
         # Exists only for backwards compatibility.
         dataset = default_dataset or UndefinedDataset
         return cls(dataset, data, cleaned=cleaned)
 
     @classmethod
     def from_data(
-        cls: type[SE],
+        cls,
         dataset: Dataset,
         data: dict[str, Any],
         cleaned: bool = True,
-    ) -> SE:
+    ) -> Self:
         return cls(dataset, data, cleaned=cleaned)
 
     @classmethod
     def from_statements(
-        cls: type[SE],
+        cls,
         dataset: Dataset,
         statements: Iterable[Statement],
-    ) -> SE:
+    ) -> Self:
         model = Model.instance()
         canonical_id: str | None = None
         schemata: set[str] = set()

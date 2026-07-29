@@ -3,7 +3,7 @@ import hashlib
 import logging
 from collections.abc import Generator, Iterable
 from itertools import product
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Self, TypeVar, cast
 
 from banal import ensure_dict
 from rigour.names import pick_name
@@ -453,11 +453,11 @@ class EntityProxy:
         data.update(self.get_type_inverted(matchable=matchable))
         return data
 
-    def clone(self: E) -> E:
+    def clone(self) -> Self:
         """Make a deep copy of the current entity proxy."""
         return self.__class__.from_dict(self.to_dict())
 
-    def merge(self: E, other: "EntityProxy") -> E:
+    def merge(self, other: "EntityProxy") -> Self:
         """Merge another entity proxy into this one. This will try and find
         the common schema between both entities and then add all property
         values from the other entity into this one."""
@@ -531,10 +531,10 @@ class EntityProxy:
 
     @classmethod
     def from_dict(
-        cls: type[E],
+        cls,
         data: dict[str, Any],
         cleaned: bool = True,
-    ) -> E:
+    ) -> Self:
         """Instantiate a proxy based on the given model and serialised dictionary.
 
         Use :meth:`followthemoney.model.Model.get_proxy` instead."""

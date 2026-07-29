@@ -4,7 +4,7 @@ from collections.abc import Generator, Iterable
 from io import TextIOWrapper
 from pathlib import Path
 from types import TracebackType
-from typing import BinaryIO, TextIO, cast
+from typing import BinaryIO, Self, TextIO, cast
 
 import click
 import orjson
@@ -167,7 +167,7 @@ class StatementWriter:
     def close(self) -> None:
         raise NotImplementedError()
 
-    def __enter__(self) -> "StatementWriter":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(

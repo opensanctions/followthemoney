@@ -1,12 +1,11 @@
 import hashlib
 import warnings
 from collections.abc import Generator
-from typing import Any, TypeGuard, cast
+from typing import Any, Self, TypedDict, TypeGuard, cast
 
 from rigour.boolean import bool_text
 from rigour.time import datetime_iso, iso_datetime
 from sqlalchemy.engine import Row
-from typing_extensions import Self, TypedDict
 
 from followthemoney.proxy import EntityProxy
 from followthemoney.statement.util import BASE_ID, NON_LANG_TYPE_NAMES, get_prop_type
