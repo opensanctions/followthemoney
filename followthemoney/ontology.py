@@ -1,5 +1,5 @@
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 
 from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.namespace import DCTERMS, OWL, RDF, RDFS, XSD
@@ -23,7 +23,7 @@ class Ontology:
 
         self.graph.add((self.uri, RDF.type, OWL.Ontology))
         self.graph.add((self.uri, RDFS.label, Literal("Follow The Money")))
-        modified = datetime.now().strftime("%Y-%m-%dT%H:%I:%M")
+        modified = datetime.now(UTC).replace(microsecond=0).isoformat()
         modified = Literal(modified, datatype=XSD.dateTime)
         self.graph.add((self.uri, DCTERMS.modified, modified))
 
