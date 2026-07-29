@@ -46,7 +46,7 @@ def test_divergent_types(by_name):
         if len(props) == 1 or name in IGNORE_DIVERGENT_TYPES:
             continue
 
-        types = set([p.type for p in props])
+        types = {p.type for p in props}
         if len(types) > 1:
             divergent[name] = props
 
@@ -60,7 +60,7 @@ def test_divergent_labels(by_name):
         if len(props) == 1 or name in IGNORE_DIVERGENT_LABELS:
             continue
 
-        labels = set([p.label for p in props])
+        labels = {p.label for p in props}
         if len(labels) > 1:
             divergent[name] = props
 
@@ -74,7 +74,7 @@ def test_label_collisions(by_label):
         if len(props) == 1 or label in IGNORE_LABEL_COLLISIONS:
             continue
 
-        names = set([p.name for p in props])
+        names = {p.name for p in props}
         if len(names) > 1:
             collisions[label] = props
 

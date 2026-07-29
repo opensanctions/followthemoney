@@ -25,7 +25,7 @@ def write_entity(fh: BinaryIO, entity: EntityProxy, statements: bool = False) ->
     assert entity_id is not None, data
     # Emit `id` as the first key so each JSONL line is byte-sortable by ID
     # with plain `sort`. `ftm sorted-aggregate` depends on this.
-    sort_data = dict(id=entity_id)
+    sort_data = {"id": entity_id}
     sort_data.update(data)
     out = orjson.dumps(sort_data, option=orjson.OPT_APPEND_NEWLINE)
     fh.write(out)

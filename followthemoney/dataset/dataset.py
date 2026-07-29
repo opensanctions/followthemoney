@@ -95,7 +95,7 @@ class Dataset:
 
     @property
     def datasets(self: Self) -> set[Self]:
-        current: set[Self] = set([self])
+        current: set[Self] = {self}
         for child in self.children:
             current.update(child.datasets)
         return current
@@ -107,7 +107,7 @@ class Dataset:
     @property
     def leaves(self: Self) -> set[Self]:
         """All contained datasets which are not collections (can be 'self')."""
-        return set([d for d in self.datasets if not d.is_collection])
+        return {d for d in self.datasets if not d.is_collection}
 
     @property
     def leaf_names(self: Self) -> set[str]:

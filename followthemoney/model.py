@@ -154,7 +154,7 @@ class Model:
 
     def matchable_schemata(self) -> set[Schema]:
         """Return a list of all schemata that are matchable."""
-        return set([s for s in self.schemata.values() if s.matchable])
+        return {s for s in self.schemata.values() if s.matchable}
 
     def make_entity(
         self, schema: str | Schema, key_prefix: str | None = None

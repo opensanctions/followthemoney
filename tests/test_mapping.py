@@ -123,7 +123,7 @@ class MappingTestCase(TestCase):
     def test_kek_sqlite(self):
         entities = list(model.map_entities(self.kek_mapping))
         assert len(entities) == 8712, len(entities)
-        ids = set([e.id for e in entities])
+        ids = {e.id for e in entities}
         assert len(ids) == 5607, len(ids)
 
     def test_local_csv_load(self):

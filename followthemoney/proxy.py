@@ -237,7 +237,7 @@ class EntityProxy:
                 # log.warning(msg, prop.name)
                 return None
         self._size += value_size
-        self._properties.setdefault(prop.name, list())
+        self._properties.setdefault(prop.name, [])
 
         if value not in self._properties[prop.name]:
             self._properties[prop.name].append(value)

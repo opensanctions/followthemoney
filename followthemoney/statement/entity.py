@@ -333,7 +333,7 @@ class StatementEntity(EntityProxy):
     def itervalues(self) -> Generator[tuple[Property, str], None, None]:
         for name, statements in self._statements.items():
             prop = self.schema.properties[name]
-            for value in set(s.value for s in statements):
+            for value in {s.value for s in statements}:
                 yield (prop, value)
 
     def get_type_values(
@@ -551,5 +551,5 @@ class StatementEntity(EntityProxy):
         data = {"schema": schema, "id": canonical_id}
         obj = cls(dataset, data)
         obj.last_change = max(first_seens, default=None)
-        obj._statements = {p: s for p, s in props.items()}
+        obj._statements = dict(props)
         return obj

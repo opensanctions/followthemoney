@@ -181,10 +181,10 @@ class Schema:
 
         #: All parents of this schema (including indirect parents and the schema
         #: itself).
-        self.schemata: set[Schema] = set([self])
+        self.schemata: set[Schema] = {self}
 
         #: All names of :attr:`~schemata`.
-        self.names = set([self.name])
+        self.names = {self.name}
 
         #: Inverse of :attr:`~schemata`, all derived child types of this schema
         #: and their children.
