@@ -118,15 +118,28 @@ ignore = [
     # These live in hot paths and are never collected, so the leak B019 warns
     # about does not apply.
     "B019",
-    # Wants `Self` instead of a bound TypeVar, which on 3.10 means importing
-    # typing_extensions. Revisit if we ever require 3.11.
+    # Dunder signatures and semantics are left alone for now.
+    #
+    # PYI019 and PYI034 both want `Self`, which on 3.10 means importing
+    # typing_extensions -- not a dependency. Revisit if we require 3.11.
+    #
+    # PYI032 wants `__eq__(self, other: object)`. Correct, but our
+    # implementations reach for `other.id` unguarded, so adopting it means
+    # narrowing `__eq__` on EntityProxy, Statement, Node and Edge -- today a
+    # mismatched type raises AttributeError, and returning False instead is a
+    # behaviour change on hot-path classes.
     "PYI019",
-    # Wants `__eq__(self, other: object)`. Correct, but our implementations
-    # reach for `other.id` unguarded, so adopting it means narrowing `__eq__`
-    # on EntityProxy, Statement, Node and Edge -- a behaviour change (today a
-    # mismatched type raises AttributeError) on hot-path classes.
     "PYI032",
+    "PYI034",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# These assertions pin __eq__ semantics, so the "redundant" form is the point:
+# `node == node` checks reflexivity, and `not ds == "donations"` checks that a
+# type mismatch returns False rather than raising. Rewriting the latter as `!=`
+# would exercise __ne__ instead.
+"tests/test_graph.py" = ["PLR0124"]
+"tests/dataset/test_dataset.py" = ["SIM201"]
 
 [tool.babel.extractors.followthemoney]
 "followthemoney/**.py" = "python"
