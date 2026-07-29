@@ -80,7 +80,7 @@ class NumberType(PropertyType):
             if number is None:
                 return None
             return float(number)
-        except (ValueError, TypeError):
+        except (AttributeError, ValueError, TypeError):
             return None
 
     def caption(self, value: str, format: str | None = None) -> str:

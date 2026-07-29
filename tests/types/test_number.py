@@ -9,6 +9,7 @@ def test_cast_numbers():
     assert numbers.to_number("- 1,00,000.234") == -100000.234
     assert numbers.to_number("99") == 99.0
     assert numbers.to_number("banana") is None
+    assert numbers.to_number(None) is None
 
 
 def test_parse_numbers():
