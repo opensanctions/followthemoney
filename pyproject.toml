@@ -117,6 +117,12 @@ ignore = [
     # These live in hot paths and are never collected, so the leak B019 warns
     # about does not apply.
     "B019",
+    # Our datetimes are naive-but-UTC by convention across the whole stack:
+    # Version strips tzinfo, rigour has naive_now(), and its iso_datetime()
+    # truncates to 19 characters and assumes UTC. Adopting DTZ means settling on
+    # a canonical wire format first, which is opensanctions/rigour#263. Revisit
+    # once that lands.
+    "DTZ",
     # Collapsing our nested ifs into `and` chains pushes 8 of 10 sites past the
     # line limit, and two of them carry a comment on the inner branch that then
     # has nowhere to live. The outer test is usually a guard and the inner a
