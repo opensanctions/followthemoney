@@ -23,16 +23,17 @@ ENTITY = {
 
 
 def test_rdf_export():
-    _, temp_path = mkstemp(suffix=".rdf")
-    fh = open(temp_path, "w+")
+    fd, temp_path = mkstemp(suffix=".rdf")
+    os.close(fd)
     entity = model.get_proxy(ENTITY)
-    exporter = RDFExporter(fh)
-    exporter.write(entity)
-    exporter.finalize()
-    fh.seek(0)
+    with open(temp_path, "w+") as fh:
+        exporter = RDFExporter(fh)
+        exporter.write(entity)
+        exporter.finalize()
+        fh.seek(0)
+        graph = Graph()
+        graph.parse(fh, format="nt")
 
-    graph = Graph()
-    graph.parse(fh, format="nt")
     assert len(graph) == 10, len(graph)
 
     nodes = graph.all_nodes()

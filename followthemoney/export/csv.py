@@ -29,7 +29,7 @@ class CSVMixin:
     def _open_csv_file(self, name: str) -> tuple[TextIOWrapper, CSVWriter]:
         self.directory.mkdir(parents=True, exist_ok=True)
         file_path = self.directory.joinpath(f"{name}.csv")
-        handle = open(file_path, mode="w")
+        handle = open(file_path, mode="w")  # noqa: SIM115
         writer = csv.writer(handle, dialect=csv.unix_dialect)
         return handle, writer
 

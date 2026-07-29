@@ -1,5 +1,6 @@
 import logging
 import sys
+from pathlib import Path
 
 import balkhash
 
@@ -11,7 +12,7 @@ logging.basicConfig(stream=sys.stderr, level=logging.INFO, format=fmt)
 registry.text.total_size = 1 * 1024 * 1024
 
 dataset = balkhash.init("memtest", backend="LEVELDB")
-text = open("LICENSE", "r").read()
+text = Path("LICENSE").read_text()
 bulk = dataset.bulk()
 for i in range(1000000):
     entity = model.make_entity("PlainText")

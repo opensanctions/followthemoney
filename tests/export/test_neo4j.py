@@ -85,9 +85,8 @@ class Neo4JCSVTestCase(TestCase):
             fh, writer = exporter.handles[entity.schema]
             outfile = fh.name
         exporter.finalize()
-        fh = open(outfile, "r")
-        csv_reader = csv.reader(fh)
-        rows = list(csv_reader)
+        with open(outfile, "r") as fh:
+            rows = list(csv.reader(fh))
         headers = rows[0]
         assert ":TYPE" in headers, headers
         assert ":START_ID" in headers, headers
