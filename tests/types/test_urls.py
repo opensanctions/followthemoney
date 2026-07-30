@@ -20,8 +20,17 @@ def test_is_url():
 def test_unicode_url():
     utext = "http://ko.wikipedia.org/wiki/위키백과:대문"
     assert urls.validate(utext)
-    etext = quote(utext)
+    etext = quote(utext, safe=":/")
     assert urls.validate(etext)
+
+
+def test_junk_url():
+    # https://github.com/opensanctions/followthemoney/issues/339 - source data
+    # puts labels and prose into website columns, which used to be emitted as
+    # URLs with the prose as their host name.
+    assert urls.clean("Social media: http://vk.com/sobolipress") is None
+    assert urls.clean("Official web site: http://soboli.net") is None
+    assert not urls.validate("Nr. 12.5")
 
 
 def test_parse_url():
