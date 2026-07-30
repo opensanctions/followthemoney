@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from normality import slugify_text
 from normality.cleaning import squash_spaces, strip_quotes
@@ -36,7 +36,7 @@ class NameType(PropertyType):
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         """Basic clean-up."""
         name = strip_quotes(text)

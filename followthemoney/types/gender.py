@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, ClassVar, Optional
+from typing import TYPE_CHECKING, ClassVar
 
 from babel.core import Locale
 
@@ -57,7 +57,7 @@ class GenderType(EnumType):
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         code = text.lower().strip()
         code = self.LOOKUP.get(code, code)

@@ -8,7 +8,7 @@ to a specific output format, like Cypher or NetworkX.
 
 import logging
 from collections.abc import Generator, Iterable
-from typing import Any
+from typing import Any, Self
 
 from followthemoney.exc import InvalidModel
 from followthemoney.property import Property
@@ -68,7 +68,7 @@ class Node:
         }
 
     @classmethod
-    def from_proxy(cls, proxy: EntityProxy) -> "Node":
+    def from_proxy(cls, proxy: EntityProxy) -> Self:
         """For a given :class:`~followthemoney.proxy.EntityProxy`, return a node
         based on the entity."""
         if proxy.id is None:

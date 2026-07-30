@@ -97,7 +97,7 @@ class NumberType(PropertyType):
             value (str): The string to convert.
 
         Returns:
-            Optional[float]: The parsed float value, or None if parsing fails.
+            float | None: The parsed float value, or None if parsing fails.
         """
         try:
             number, _ = self.parse(value)
@@ -112,7 +112,7 @@ class NumberType(PropertyType):
 
         Args:
             value (str): The string to format.
-            format (Optional[str]): An optional format string to use for formatting the number.
+            format (str | None): An optional format string to use for formatting the number.
 
         Returns:
             str: The formatted number string, possibly with a unit.

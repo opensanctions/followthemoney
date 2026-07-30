@@ -287,7 +287,7 @@ class Statement:
         return hashlib.sha1(key.encode(HASH_ENCODING)).hexdigest()
 
     @classmethod
-    def from_dict(cls, data: StatementDict) -> "Statement":
+    def from_dict(cls, data: StatementDict) -> Self:
         return cls(
             entity_id=data["entity_id"],
             prop=data["prop"],
@@ -305,7 +305,7 @@ class Statement:
         )
 
     @classmethod
-    def from_db_row(cls, row: Row[Any]) -> "Statement":
+    def from_db_row(cls, row: Row[Any]) -> Self:
         return cls(
             id=row.id,
             canonical_id=row.canonical_id,

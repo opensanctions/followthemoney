@@ -1,6 +1,6 @@
 import os
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from prefixdate import Precision, parse, parse_format
 
@@ -53,7 +53,7 @@ class DateType(PropertyType):
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         """The classic: date parsing, every which way."""
         if format is not None:
@@ -76,7 +76,7 @@ class DateType(PropertyType):
             value (str): The date string to convert.
 
         Returns:
-            Optional[datetime]: The parsed datetime object in UTC, or None if parsing fails.
+            datetime | None: The parsed datetime object in UTC, or None if parsing fails.
         """
         return parse(value).dt
 
@@ -88,7 +88,7 @@ class DateType(PropertyType):
             value (str): The date string to convert.
 
         Returns:
-            Optional[float]: The timestamp as a float, or None if parsing fails.
+            float | None: The timestamp as a float, or None if parsing fails.
         """
         date = self.to_datetime(value)
         if date is None:

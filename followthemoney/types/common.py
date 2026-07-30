@@ -1,7 +1,7 @@
 from collections.abc import Callable, Sequence
 from inspect import cleandoc
 from itertools import product
-from typing import TYPE_CHECKING, Any, Optional, TypedDict
+from typing import TYPE_CHECKING, Any, TypedDict
 
 from babel.core import Locale
 from normality import stringify
@@ -102,7 +102,7 @@ class PropertyType:
         raw: Value,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         """Convert a raw value into its canonical form for storage on an entity.
 
@@ -127,7 +127,7 @@ class PropertyType:
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         """Type-specific cleaning hook.
 
@@ -311,7 +311,7 @@ class EnumType(PropertyType):
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         """All code values are cleaned to be lowercase and trailing whitespace is
         removed."""

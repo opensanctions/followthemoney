@@ -1,7 +1,7 @@
 import logging
 from functools import cached_property
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Self, TypeVar
+from typing import TYPE_CHECKING, Any, Self, TypeVar
 
 import yaml
 from pydantic import BaseModel, field_validator, model_validator
@@ -133,7 +133,7 @@ class Dataset:
 
     @classmethod
     def from_path(
-        cls, path: PathLike, catalog: Optional["DataCatalog[Self]"] = None
+        cls, path: PathLike, catalog: "DataCatalog[Self] | None" = None
     ) -> Self:
         from followthemoney.dataset.catalog import DataCatalog
 

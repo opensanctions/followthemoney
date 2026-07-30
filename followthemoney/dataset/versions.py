@@ -5,7 +5,7 @@ import string
 from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any
+from typing import Any, Self
 
 from rigour.time import utc_now
 
@@ -21,7 +21,7 @@ class Version:
         self.tag: str = tag
 
     @classmethod
-    def new(cls, tag: str | None = None) -> "Version":
+    def new(cls, tag: str | None = None) -> Self:
         now = utc_now().replace(tzinfo=None)
 
         if tag is None:
@@ -35,7 +35,7 @@ class Version:
         return cls(now, tag)
 
     @classmethod
-    def from_string(cls, id: str) -> "Version":
+    def from_string(cls, id: str) -> Self:
         if "-" not in id:
             raise ValueError(f"Invalid dataset version: {id}")
         ts, tag = id.split("-", 1)
@@ -57,7 +57,7 @@ class Version:
         return encoded
 
     @classmethod
-    def from_env(cls, name: str) -> "Version":
+    def from_env(cls, name: str) -> Self:
         id = os.environ.get(name)
         if id is None:
             return cls.new()
@@ -109,7 +109,7 @@ class VersionHistory:
         return json.dumps({"items": items, "last_successful": last_successful})
 
     @classmethod
-    def from_json(cls, data: str) -> "VersionHistory":
+    def from_json(cls, data: str) -> Self:
         """Create a run history from a JSON representation."""
         items_raw = json.loads(data).get("items", [])
         last_successful_raw = json.loads(data).get("last_successful", None)
