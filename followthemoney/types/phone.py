@@ -1,10 +1,18 @@
-from collections.abc import Iterable
+from functools import cache
 from typing import TYPE_CHECKING, Optional
 
-from phonenumbers import PhoneNumber, PhoneNumberFormat, format_number, is_valid_number
+from phonenumbers import (
+    SUPPORTED_REGIONS,
+    PhoneNumber,
+    PhoneNumberFormat,
+    format_number,
+    is_valid_number,
+)
 from phonenumbers import parse as parse_number
 from phonenumbers.phonenumberutil import NumberParseException, region_code_for_number
+from rigour.territories import get_territory
 
+from followthemoney.exc import InvalidData
 from followthemoney.types.common import PropertyType
 from followthemoney.util import dampen
 from followthemoney.util import defer as _
@@ -17,18 +25,41 @@ if TYPE_CHECKING:
 # https://stackoverflow.com/questions/6478875/regular-expression-matching-e-164-formatted-phone-numbers
 
 
-class PhoneType(PropertyType):
-    """A phone number in E.164 format. This means that phone numbers always
-    include an international country prefix (e.g. `+38760183628`). The
-    cleaning and validation functions for this try to be smart about by
-    accepting a list of countries as an argument in order to add the number
-    prefix.
+@cache
+def _dialing_region(country: str) -> str:
+    """Turn a country code into a region code that phone numbers can be dialed in.
 
-    When adding a property of this type to an entity, any country-type properties
-    defined for the entity are considered for validation. That means that adding a
-    phone number to an entity before adding a country can have a different
-    validation outcome from doing the two operations the other way around. Always
-    define the country first."""
+    Accepts anything `rigour` recognises as a territory, including subdivisions
+    like `gb-eng`, which resolve to their parent country. Territories that have
+    no dialing plan of their own (`eu`, `zz`, historical states) are rejected.
+    """
+    territory = get_territory(country)
+    if territory is not None:
+        for code in (territory.code, territory.ftm_country):
+            if code is not None and code.upper() in SUPPORTED_REGIONS:
+                return code.upper()
+    raise InvalidData(f"Not a valid country for a phone number: {country!r}")
+
+
+def _parse_valid(number: str, region: str | None) -> PhoneNumber | None:
+    """Parse a number as dialed in the given region, if it yields a valid number."""
+    try:
+        parsed = parse_number(number, region)
+    except NumberParseException:
+        return None
+    if not is_valid_number(parsed):
+        return None
+    return parsed
+
+
+class PhoneType(PropertyType):
+    """A phone number in E.164 format, i.e. one that always carries an
+    international dialing prefix (e.g. `+38760183628`).
+
+    Source data often gives numbers in national format, without that prefix. Pass
+    the country the number is dialed in as the `format` hint to have the prefix
+    applied, e.g. `entity.add("phone", "017623423980", format="de")`. A number
+    that is neither in international format nor accompanied by a hint is rejected."""
 
     name = "phone"
     group = "phones"
@@ -38,39 +69,6 @@ class PhoneType(PropertyType):
     pivot = True
     max_length = 64
 
-    def _clean_countries(
-        self, proxy: Optional["EntityProxy"]
-    ) -> Iterable[str | None]:
-        yield None
-        if proxy is not None:
-            for country in proxy.countries:
-                yield country.upper()
-
-    def _parse_number(
-        self, number: str, proxy: Optional["EntityProxy"] = None
-    ) -> Iterable[PhoneNumber]:
-        """Parse a phone number and return in international format.
-
-        If no valid phone number can be detected, None is returned. If
-        a country code is supplied, this will be used to infer the
-        prefix.
-
-        https://github.com/daviddrysdale/python-phonenumbers
-        """
-        for code in self._clean_countries(proxy):
-            try:
-                yield parse_number(number, code)
-            except NumberParseException:
-                pass
-
-    def validate(
-        self, value: str, fuzzy: bool = False, format: str | None = None
-    ) -> bool:
-        for num in self._parse_number(value):
-            if is_valid_number(num):
-                return True
-        return False
-
     def clean_text(
         self,
         text: str,
@@ -78,10 +76,15 @@ class PhoneType(PropertyType):
         format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
     ) -> str | None:
-        for num in self._parse_number(text, proxy=proxy):
-            if is_valid_number(num):
-                return str(format_number(num, PhoneNumberFormat.E164))
-        return None
+        # Resolved up front so that an invalid hint is reported even when the
+        # number turns out to be in international format already:
+        region = None if format is None else _dialing_region(format)
+        parsed = _parse_valid(text, None)
+        if parsed is None and region is not None:
+            parsed = _parse_valid(text, region)
+        if parsed is None:
+            return None
+        return str(format_number(parsed, PhoneNumberFormat.E164))
 
     def country_hint(self, value: str) -> str | None:
         try:

@@ -189,7 +189,9 @@ class EntityProxy:
         :param quiet: a reference to an non-existent property will return
             an empty list instead of raising an error.
         :param fuzzy: when normalising the data, should fuzzy matching be allowed.
-        :param format: when normalising the data, formatting for a date.
+        :param format: when normalising the data, a type-specific hint: a
+            `strptime` pattern for dates, or the country a phone number is
+            dialed in.
         """
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None:
