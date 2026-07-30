@@ -1,8 +1,10 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar, Optional
+
 from babel.core import Locale
 
 from followthemoney.types.common import EnumType, EnumValues
-from followthemoney.util import gettext, defer as _
+from followthemoney.util import defer as _
+from followthemoney.util import gettext
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -18,7 +20,7 @@ class GenderType(EnumType):
     FEMALE = "female"
     OTHER = "other"
 
-    LOOKUP = {
+    LOOKUP: ClassVar[dict[str, str]] = {
         "m": MALE,
         "man": MALE,
         "masculin": MALE,
@@ -54,9 +56,9 @@ class GenderType(EnumType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         code = text.lower().strip()
         code = self.LOOKUP.get(code, code)
         if code not in self.codes:

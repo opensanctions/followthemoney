@@ -7,7 +7,6 @@ See https://followthemoney.tech/docs/metadata/#dataset-query-dsl for full
 documentation and examples.
 """
 
-from typing import List
 
 from followthemoney.dataset.query import DatasetQuery
 from followthemoney.exc import InvalidDatasetQuery
@@ -37,9 +36,7 @@ class _Parser:
     def _consume(self, expected: str) -> None:
         self._skip_whitespace()
         if self.pos >= len(self.text) or self.text[self.pos] != expected:
-            raise InvalidDatasetQuery(
-                "Expected %r at position %d" % (expected, self.pos)
-            )
+            raise InvalidDatasetQuery(f"Expected {expected!r} at position {self.pos}")
         self.pos += 1
 
     def _parse_leaf(self) -> str:
@@ -48,9 +45,7 @@ class _Parser:
         while self.pos < len(self.text) and self.text[self.pos] in _LEAF_CHARS:
             self.pos += 1
         if self.pos == start:
-            raise InvalidDatasetQuery(
-                "Expected identifier at position %d" % self.pos
-            )
+            raise InvalidDatasetQuery(f"Expected identifier at position {self.pos}")
         return self.text[start : self.pos]
 
     def _parse_atom(self) -> DatasetQuery:
@@ -62,7 +57,7 @@ class _Parser:
         return self._parse_leaf()
 
     def _parse_and(self) -> DatasetQuery:
-        items: List[DatasetQuery] = [self._parse_atom()]
+        items: list[DatasetQuery] = [self._parse_atom()]
         while self._peek() in ("&", "-"):
             op = self.text[self.pos]
             self.pos += 1
@@ -76,7 +71,7 @@ class _Parser:
         return {"and": items}
 
     def _parse_or(self) -> DatasetQuery:
-        items: List[DatasetQuery] = [self._parse_and()]
+        items: list[DatasetQuery] = [self._parse_and()]
         while self._peek() == "|":
             self.pos += 1
             items.append(self._parse_and())
@@ -91,8 +86,7 @@ class _Parser:
         self._skip_whitespace()
         if self.pos < len(self.text):
             raise InvalidDatasetQuery(
-                "Unexpected character %r at position %d"
-                % (self.text[self.pos], self.pos)
+                f"Unexpected character {self.text[self.pos]!r} at position {self.pos}"
             )
         return result
 

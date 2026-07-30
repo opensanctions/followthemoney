@@ -1,12 +1,13 @@
 import re
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
 from normality import slugify_text, squash_spaces
 from rigour.addresses import normalize_address
 from rigour.text.distance import levenshtein_similarity
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import defer as _
 from followthemoney.util import dampen
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -31,9 +32,9 @@ class AddressType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Basic clean-up."""
         address = self.LINE_BREAKS.sub(", ", text)
         address = self.COMMATA.sub(", ", address)
@@ -54,7 +55,7 @@ class AddressType(PropertyType):
     def _specificity(self, value: str) -> float:
         return dampen(10, 60, value)
 
-    def node_id(self, value: str) -> Optional[str]:
+    def node_id(self, value: str) -> str | None:
         normalized = normalize_address(value)
         if normalized is None:
             return None

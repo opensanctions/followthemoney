@@ -7,14 +7,12 @@ with structural part annotations applied from the entity's properties.
 bypass `entity_names` (tests, experiments).
 """
 
-from typing import Dict, List, Optional, Set, Tuple
 
 from rigour.names import Name, NamePartTag, NameTypeTag, analyze_names
 
 from followthemoney.proxy import EntityProxy
 from followthemoney.schema import Schema
 from followthemoney.types import registry
-
 
 # Property → structural part annotation(s). A property can map to
 # multiple tags for genuinely ambiguous cases: `fatherName` /
@@ -27,7 +25,7 @@ from followthemoney.types import registry
 # `secondName` is deliberately collapsed to MIDDLE (not FAMILY) to
 # match historical behaviour; some datasets use it for a second given
 # name, others for a second surname. Do not change without a migration.
-PART_TAG_PROPS: Tuple[Tuple[str, Tuple[NamePartTag, ...]], ...] = (
+PART_TAG_PROPS: tuple[tuple[str, tuple[NamePartTag, ...]], ...] = (
     ("firstName", (NamePartTag.GIVEN,)),
     ("lastName", (NamePartTag.FAMILY,)),
     ("secondName", (NamePartTag.MIDDLE,)),
@@ -64,7 +62,7 @@ def schema_type_tag(schema: Schema) -> NameTypeTag:
 
 def entity_names(
     entity: EntityProxy,
-    props: Optional[Tuple[str, ...]] = None,
+    props: tuple[str, ...] | None = None,
     *,
     matchable: bool = True,
     infer_initials: bool = False,
@@ -72,7 +70,7 @@ def entity_names(
     phonetics: bool = True,
     numerics: bool = True,
     consolidate: bool = True,
-) -> Set[Name]:
+) -> set[Name]:
     """Build tagged rigour `Name` objects from an FTM entity.
 
     Args:
@@ -118,13 +116,13 @@ def entity_names(
     type_tag = schema_type_tag(entity.schema)
 
     if props is None:
-        names: List[str] = entity.get_type_values(registry.name, matchable=matchable)
+        names: list[str] = entity.get_type_values(registry.name, matchable=matchable)
     else:
         names = []
         for prop in props:
             names.extend(entity.get(prop, quiet=True))
 
-    part_tags: Dict[NamePartTag, List[str]] = {}
+    part_tags: dict[NamePartTag, list[str]] = {}
     for prop, tags in PART_TAG_PROPS:
         values = entity.get(prop, quiet=True)
         if len(values) == 0:

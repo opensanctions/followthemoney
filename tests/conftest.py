@@ -1,13 +1,13 @@
 import io
 import os
-import yaml
-import pytest
 from pathlib import Path
+
+import pytest
+import yaml
 from click.testing import CliRunner
 
 from followthemoney import model
 from followthemoney.cli.util import write_entity
-
 
 FIXTURES_PATH = Path(__file__).parent.joinpath("fixtures/")
 

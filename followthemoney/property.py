@@ -1,15 +1,16 @@
 import re
+from typing import TYPE_CHECKING, Any, TypedDict
+
 from banal import as_bool
 from rigour.ids import get_identifier_format
-from typing import TYPE_CHECKING, Any, List, Optional, TypedDict
 
 from followthemoney.exc import InvalidData, InvalidModel
 from followthemoney.types import registry
-from followthemoney.util import gettext, const
+from followthemoney.util import const, gettext
 
 if TYPE_CHECKING:
-    from followthemoney.schema import Schema
     from followthemoney.model import Model
+    from followthemoney.schema import Schema
 
 # Invalid property names.
 RESERVED = ["id", "caption", "schema", "schemata", "referents", "datasets"]
@@ -19,29 +20,27 @@ PROP_NAME_RE = re.compile("^[a-z][a-zA-Z0-9]*$")
 def check_property_name(name: str) -> bool:
     if name in RESERVED:
         return False
-    if not PROP_NAME_RE.match(name):
-        return False
-    return True
+    return PROP_NAME_RE.match(name) is not None
 
 
 class ReverseSpec(TypedDict, total=False):
     name: str
-    label: Optional[str]
-    hidden: Optional[bool]
+    label: str | None
+    hidden: bool | None
 
 
 class PropertyDict(TypedDict, total=False):
-    label: Optional[str]
-    description: Optional[str]
-    type: Optional[str]
-    hidden: Optional[bool]
-    matchable: Optional[bool]
-    deprecated: Optional[bool]
-    maxLength: Optional[int]
-    examples: Optional[List[str]]
+    label: str | None
+    description: str | None
+    type: str | None
+    hidden: bool | None
+    matchable: bool | None
+    deprecated: bool | None
+    maxLength: int | None
+    examples: list[str] | None
     # stub: Optional[bool]
-    range: Optional[str]
-    format: Optional[str]
+    range: str | None
+    format: str | None
 
 
 class PropertySpec(PropertyDict):
@@ -51,8 +50,8 @@ class PropertySpec(PropertyDict):
 class PropertyToDict(PropertyDict, total=False):
     name: str
     qname: str
-    reverse: Optional[str]
-    stub: Optional[bool]
+    reverse: str | None
+    stub: bool | None
 
 
 class Property:
@@ -61,25 +60,25 @@ class Property:
     to entity references."""
 
     __slots__ = (
+        "_description",
+        "_hash",
+        "_label",
+        "_range",
+        "_reverse",
+        "deprecated",
+        "examples",
+        "format",
+        "hidden",
+        "matchable",
+        "max_length",
         "model",
-        "schema",
         "name",
         "qname",
-        "_label",
-        "_hash",
-        "_description",
-        "hidden",
-        "type",
-        "matchable",
-        "deprecated",
-        "max_length",
-        "_range",
-        "format",
         "range",
-        "stub",
-        "_reverse",
         "reverse",
-        "examples",
+        "schema",
+        "stub",
+        "type",
     )
 
     def __init__(self, schema: "Schema", name: str, data: PropertySpec) -> None:
@@ -91,14 +90,14 @@ class Property:
         #: Machine-readable name for this property.
         self.name = name
         if not check_property_name(self.name):
-            raise InvalidModel("Invalid name: %s" % self.name)
+            raise InvalidModel(f"Invalid name: {self.name}")
 
         #: Qualified property name, which also includes the schema name.
-        self.qname = const("%s:%s" % (schema.name, self.name))
+        self.qname = const(f"{schema.name}:{self.name}")
 
         self._label = data.get("label", name)
         self._description = data.get("description")
-        self._hash = hash("<Property(%r)>" % self.qname)
+        self._hash = hash(f"<Property({self.qname!r})>")
 
         #: This property is deprecated and should not be used.
         self.deprecated = as_bool(data.get("deprecated", False))
@@ -110,7 +109,7 @@ class Property:
         #: The data type for this property.
         self.type = registry.get(type_)
         if self.type is None:
-            raise InvalidModel("Invalid type: %s" % type_)
+            raise InvalidModel(f"Invalid type: {type_}")
 
         #: Whether this property should be used for matching and cross-referencing.
         _matchable = data.get("matchable")
@@ -126,18 +125,18 @@ class Property:
         #: in this property can be constrained. For example, an asset can be owned,
         #: but a person cannot be owned.
         self._range = data.get("range")
-        self.range: Optional["Schema"] = None
+        self.range: Schema | None = None
 
         #: If the property is of type ``identifier``, a more narrow definition of the
         #: identifier format can be provided. For example, LEI, INN or IBAN codes
         #: can be automatically validated.
-        self.format: Optional[str] = data.get("format")
+        self.format: str | None = data.get("format")
 
         #: When a property points to another schema, a reverse property is added for
         #: various administrative reasons. These properties are, however, not real
         #: and cannot be written to. That's why they are marked as stubs and adding
         #: values to them will raise an exception.
-        self.stub: Optional[bool] = False
+        self.stub: bool | None = False
 
         #: When a property points to another schema, a stub reverse property is
         #: added as a place to store metadata to help display the link in inverted
@@ -146,7 +145,7 @@ class Property:
         #: materialised (a hub entity referenced by thousands of others). Without a
         #: reverse, the link is not surfaced by inverted lookups (``get_inverted``).
         self._reverse = data.get("reverse")
-        self.reverse: Optional["Property"] = None
+        self.reverse: Property | None = None
 
         #: Example values for this property, which can be used in the user interface to
         #: illustrate the expected format of the value.
@@ -154,7 +153,7 @@ class Property:
         if examples is not None:
             examples = [str(e) for e in examples if e is not None]
             examples = examples if len(examples) > 0 else None
-        self.examples: Optional[List[str]] = examples
+        self.examples: list[str] | None = examples
 
     def generate(self, model: "Model") -> None:
         """Setup method used when loading the model in order to build out the reverse
@@ -167,13 +166,13 @@ class Property:
 
             if self.reverse is None and self.range and self._reverse:
                 if not isinstance(self._reverse, dict):
-                    raise InvalidModel("Invalid reverse: %s" % self)
+                    raise InvalidModel(f"Invalid reverse: {self}")
                 self.reverse = self.range._add_reverse(model, self._reverse, self)
 
         if self.type == registry.identifier and self.format is not None:
             format_ = get_identifier_format(self.format)
             if format_ is None or format_.NAME != self.format:
-                raise InvalidModel("Invalid identifier format: %s" % self.format)
+                raise InvalidModel(f"Invalid identifier format: {self.format}")
             # Internalize the string:
             self.format = format_.NAME
 
@@ -197,7 +196,7 @@ class Property:
         """Return a user-friendly caption for the given value."""
         return self.type.caption(value, format=self.format)
 
-    def validate(self, data: List[str]) -> Optional[str]:
+    def validate(self, data: list[str]) -> str | None:
         """Validate that the data should be stored.
 
         Since the types system doesn't really have validation, this currently
@@ -255,11 +254,11 @@ class Property:
 
         prop = Model.instance().get_qname(qname)
         if prop is None:
-            raise InvalidData("Unknown property: %r" % qname)
+            raise InvalidData(f"Unknown property: {qname!r}")
         return prop
 
     def __repr__(self) -> str:
-        return "<Property(%r)>" % self.qname
+        return f"<Property({self.qname!r})>"
 
     def __str__(self) -> str:
         return self.qname

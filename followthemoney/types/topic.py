@@ -1,7 +1,10 @@
+from typing import ClassVar
+
 from babel.core import Locale
 
 from followthemoney.types.common import EnumType, EnumValues
-from followthemoney.util import gettext, defer as _
+from followthemoney.util import defer as _
+from followthemoney.util import gettext
 
 
 class TopicType(EnumType):
@@ -22,7 +25,7 @@ class TopicType(EnumType):
     matchable = False
     max_length = 64
 
-    _TOPICS = {
+    _TOPICS: ClassVar[dict[str, str]] = {
         "crime": _("Crime"),
         "crime.fraud": _("Fraud"),
         "crime.cyber": _("Cybercrime"),
@@ -99,7 +102,7 @@ class TopicType(EnumType):
         "poi": _("Person of interest"),
     }
 
-    RISKS = {
+    RISKS: ClassVar[set[str]] = {
         "corp.disqual",
         "crime.boss",
         "crime.fin",

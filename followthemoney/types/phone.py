@@ -1,12 +1,13 @@
-from typing import Iterable, Optional, TYPE_CHECKING
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, Optional
+
+from phonenumbers import PhoneNumber, PhoneNumberFormat, format_number, is_valid_number
 from phonenumbers import parse as parse_number
-from phonenumbers import is_valid_number, format_number
-from phonenumbers import PhoneNumber, PhoneNumberFormat
-from phonenumbers.phonenumberutil import region_code_for_number, NumberParseException
+from phonenumbers.phonenumberutil import NumberParseException, region_code_for_number
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import defer as _
 from followthemoney.util import dampen
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -39,7 +40,7 @@ class PhoneType(PropertyType):
 
     def _clean_countries(
         self, proxy: Optional["EntityProxy"]
-    ) -> Iterable[Optional[str]]:
+    ) -> Iterable[str | None]:
         yield None
         if proxy is not None:
             for country in proxy.countries:
@@ -63,7 +64,7 @@ class PhoneType(PropertyType):
                 pass
 
     def validate(
-        self, value: str, fuzzy: bool = False, format: Optional[str] = None
+        self, value: str, fuzzy: bool = False, format: str | None = None
     ) -> bool:
         for num in self._parse_number(value):
             if is_valid_number(num):
@@ -74,15 +75,15 @@ class PhoneType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         for num in self._parse_number(text, proxy=proxy):
             if is_valid_number(num):
                 return str(format_number(num, PhoneNumberFormat.E164))
         return None
 
-    def country_hint(self, value: str) -> Optional[str]:
+    def country_hint(self, value: str) -> str | None:
         try:
             number = parse_number(value)
             code = region_code_for_number(number)
@@ -96,10 +97,10 @@ class PhoneType(PropertyType):
         # TODO: insert artificial intelligence here.
         return dampen(7, 11, value)
 
-    def node_id(self, value: str) -> Optional[str]:
+    def node_id(self, value: str) -> str | None:
         return f"tel:{value}"
 
-    def caption(self, value: str, format: Optional[str] = None) -> str:
+    def caption(self, value: str, format: str | None = None) -> str:
         try:
             number = parse_number(value)
             formatted = format_number(number, PhoneNumberFormat.INTERNATIONAL)

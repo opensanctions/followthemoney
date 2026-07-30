@@ -1,5 +1,4 @@
 import os
-from typing import Optional
 
 import pytest
 
@@ -27,7 +26,7 @@ def test_version() -> None:
     runid4 = Version.from_env("NK_RUN2222_ID")
     assert runid4.id != runid2.id
 
-    prev_id: Optional[Version] = None
+    prev_id: Version | None = None
     for i in range(100):
         next_id = Version.new()
         if prev_id is not None:

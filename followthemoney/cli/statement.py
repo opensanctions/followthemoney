@@ -1,16 +1,25 @@
-import click
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator, List, Optional
 
+import click
 
 from followthemoney.cli.cli import cli
-from followthemoney.cli.util import InPath, OutPath
-from followthemoney.cli.util import path_entities, write_entity, path_writer
+from followthemoney.cli.util import (
+    InPath,
+    OutPath,
+    path_entities,
+    path_writer,
+    write_entity,
+)
 from followthemoney.dataset import Dataset, UndefinedDataset
-from followthemoney.statement import Statement, StatementEntity
-from followthemoney.statement import FORMATS, CSV
-from followthemoney.statement import write_statements
-from followthemoney.statement import read_path_statements
+from followthemoney.statement import (
+    CSV,
+    FORMATS,
+    Statement,
+    StatementEntity,
+    read_path_statements,
+    write_statements,
+)
 
 
 @cli.command("statements", help="Export entities to statements")
@@ -19,7 +28,7 @@ from followthemoney.statement import read_path_statements
 @click.option("-d", "--dataset", type=str)
 @click.option("-f", "--format", type=click.Choice(FORMATS), default=CSV)
 def entity_statements(
-    path: Path, outpath: Path, dataset: Optional[str], format: str
+    path: Path, outpath: Path, dataset: str | None, format: str
 ) -> None:
     def make_statements() -> Generator[Statement, None, None]:
         dataset_ = dataset or Dataset.UNDEFINED
@@ -63,7 +72,7 @@ def statements_aggregate(
 ) -> None:
     dataset_ = Dataset.make({"name": dataset})
     with path_writer(outpath) as outfh:
-        group: List[Statement] = []
+        group: list[Statement] = []
         for stmt in read_path_statements(infile, format=format):
             if len(group) and group[0].canonical_id != stmt.canonical_id:
                 entity = StatementEntity.from_statements(dataset_, group)

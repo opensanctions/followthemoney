@@ -1,9 +1,9 @@
 import pickle
+
 from followthemoney.dataset.dataset import Dataset
-from followthemoney.statement.entity import StatementEntity
 from followthemoney.entity import ValueEntity
 from followthemoney.proxy import EntityProxy
-
+from followthemoney.statement.entity import StatementEntity
 
 EXAMPLE = {
     "id": "jane",
@@ -30,7 +30,7 @@ def test_value_entity():
     }
 
     # with dataset
-    data = {**EXAMPLE, **{"datasets": ["test"]}}
+    data = {**EXAMPLE, "datasets": ["test"]}
     se = ValueEntity.from_dict(data)
     assert se.datasets == {"test"}
 
@@ -42,7 +42,7 @@ def test_value_entity():
     assert sp.datasets == se.datasets == {"test"}
 
     # ValueEntity -> StatementEntity
-    data = {**EXAMPLE, **{"datasets": ["test"]}}
+    data = {**EXAMPLE, "datasets": ["test"]}
     se = ValueEntity.from_dict(data)
     sp = StatementEntity.from_data(ds, se.to_dict())
     assert sp.id == se.id == "jane"

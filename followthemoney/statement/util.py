@@ -1,5 +1,4 @@
 from functools import cache
-from typing import Tuple
 
 from followthemoney.model import Model
 from followthemoney.types import registry
@@ -38,15 +37,15 @@ def get_prop_type(schema: str, prop: str) -> str:
         return BASE_ID
     schema_obj = Model.instance().get(schema)
     if schema_obj is None:
-        raise TypeError("Schema not found: %s" % schema)
+        raise TypeError(f"Schema not found: {schema}")
     prop_obj = schema_obj.get(prop)
     if prop_obj is None:
-        raise TypeError("Property not found: %s" % prop)
+        raise TypeError(f"Property not found: {prop}")
     return prop_obj.type.name
 
 
 @cache
-def unpack_prop(id: str) -> Tuple[str, str, str]:
+def unpack_prop(id: str) -> tuple[str, str, str]:
     schema, prop = id.split(":", 1)
     prop_type = get_prop_type(schema, prop)
     return const(schema), prop_type, const(prop)

@@ -1,18 +1,20 @@
-import os
 import logging
+import os
+from collections.abc import Generator
+from typing import TYPE_CHECKING, Any, cast
 from uuid import uuid4
-from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Union, cast
+
 from banal import ensure_list, is_listish, keys_values
 from sqlalchemy import MetaData, func, select
 from sqlalchemy.engine import Engine, create_engine
-from sqlalchemy.sql.elements import Label
 from sqlalchemy.pool import NullPool
 from sqlalchemy.schema import Table
+from sqlalchemy.sql.elements import Label
 from sqlalchemy.sql.expression import Select
 
+from followthemoney.exc import InvalidMapping
 from followthemoney.mapping.source import Record, Source
 from followthemoney.util import sanitize_text
-from followthemoney.exc import InvalidMapping
 
 if TYPE_CHECKING:
     from followthemoney.mapping.query import QueryMapping
@@ -22,11 +24,11 @@ log = logging.getLogger(__name__)
 DATA_PAGE = 1000
 
 
-class QueryTable(object):
+class QueryTable:
     """A table to be joined in."""
 
     def __init__(
-        self, meta: MetaData, engine: Engine, data: Union[str, Dict[str, str]]
+        self, meta: MetaData, engine: Engine, data: str | dict[str, str]
     ) -> None:
         if isinstance(data, str):
             data = {"table": data}
@@ -37,10 +39,10 @@ class QueryTable(object):
         self.table = Table(table_ref, meta, autoload_with=engine)
         self.alias = self.table.alias(alias_ref)
 
-        self.refs: Dict[str, Label[Any]] = {}
+        self.refs: dict[str, Label[Any]] = {}
         for column in self.alias.columns:
-            name = "%s.%s" % (alias_ref, column.name)
-            labeled_column = column.label("col_%s" % uuid4().hex[:10])
+            name = f"{alias_ref}.{column.name}"
+            labeled_column = column.label(f"col_{uuid4().hex[:10]}")
             self.refs[name] = labeled_column
             self.refs[column.name] = labeled_column
 
@@ -48,8 +50,8 @@ class QueryTable(object):
 class SQLSource(Source):
     """Query mapper for loading data from a SQL query."""
 
-    def __init__(self, query: "QueryMapping", data: Dict[str, Any]) -> None:
-        super(SQLSource, self).__init__(query, data)
+    def __init__(self, query: "QueryMapping", data: dict[str, Any]) -> None:
+        super().__init__(query, data)
         database = data.get("database")
         if database is None:
             raise InvalidMapping("No database in SQL mapping!")
@@ -59,13 +61,13 @@ class SQLSource(Source):
 
         tables = keys_values(data, "table", "tables")
         self.tables = [QueryTable(self.meta, self.engine, f) for f in tables]
-        self.joins = cast(List[Dict[str, str]], ensure_list(data.get("joins")))
+        self.joins = cast(list[dict[str, str]], ensure_list(data.get("joins")))
 
-    def get_column(self, ref: Optional[str]) -> Label[Any]:
+    def get_column(self, ref: str | None) -> Label[Any]:
         for table in self.tables:
             if ref in table.refs:
                 return table.refs[ref]
-        raise InvalidMapping("Missing reference: %s" % ref)
+        raise InvalidMapping(f"Missing reference: {ref}")
 
     def apply_filters(self, q: Select[Any]) -> Select[Any]:
         for col, val in self.filters:

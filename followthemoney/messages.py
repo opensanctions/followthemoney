@@ -1,11 +1,13 @@
-import yaml
-from typing import Any, Dict, Generator, List, TextIO, Tuple
+from collections.abc import Generator
+from typing import Any, TextIO
 
-Message = Tuple[Any, Any, List[str], List[str]]
+import yaml
+
+Message = tuple[Any, Any, list[str], list[str]]
 
 
 def extract_object(
-    data: Dict[str, Any], path: List[str]
+    data: dict[str, Any], path: list[str]
 ) -> Generator[Message, None, None]:
     for key, value in data.items():
         subpath = path + [key]
@@ -14,8 +16,7 @@ def extract_object(
                 comment = ".".join(subpath)
                 yield (None, None, [value], [comment])
         if isinstance(value, dict):
-            for res in extract_object(value, subpath):
-                yield res
+            yield from extract_object(value, subpath)
 
 
 def extract_yaml(

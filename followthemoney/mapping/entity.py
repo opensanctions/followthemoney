@@ -1,37 +1,38 @@
 import logging
 from hashlib import sha1
+from typing import TYPE_CHECKING, Any
 from warnings import warn
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set
+
 from banal import keys_values
 from normality import stringify
 
-from followthemoney.types import registry
-from followthemoney.util import key_bytes
-from followthemoney.proxy import EntityProxy
 from followthemoney.entity import ValueEntity
+from followthemoney.exc import InvalidMapping
 from followthemoney.mapping.property import PropertyMapping
 from followthemoney.mapping.source import Record
-from followthemoney.exc import InvalidMapping
+from followthemoney.proxy import EntityProxy
+from followthemoney.types import registry
+from followthemoney.util import key_bytes
 
 if TYPE_CHECKING:
-    from followthemoney.model import Model
     from followthemoney.mapping.query import QueryMapping
+    from followthemoney.model import Model
 
 log = logging.getLogger(__name__)
 
 
-class EntityMapping(object):
+class EntityMapping:
     __slots__ = (
+        "dataset",
+        "dependencies",
+        "id_column",
+        "keys",
         "model",
         "name",
-        "seed",
-        "keys",
-        "id_column",
-        "schema",
-        "dataset",
-        "refs",
-        "dependencies",
         "properties",
+        "refs",
+        "schema",
+        "seed",
     )
 
     def __init__(
@@ -39,9 +40,9 @@ class EntityMapping(object):
         model: "Model",
         query: "QueryMapping",
         name: str,
-        data: Dict[str, Any],
-        key_prefix: Optional[str] = None,
-        dataset: Optional[str] = None,
+        data: dict[str, Any],
+        key_prefix: str | None = None,
+        dataset: str | None = None,
     ) -> None:
         self.model = model
         self.name = name
@@ -53,20 +54,20 @@ class EntityMapping(object):
         self.keys = keys_values(data, "key", "keys")
         self.id_column = stringify(data.get("id_column"))
         if len(self.keys) == 0 and self.id_column is None:
-            raise InvalidMapping("No keys or ID: %r" % name)
+            raise InvalidMapping(f"No keys or ID: {name!r}")
         if len(self.keys) > 0 and self.id_column is not None:
-            msg = "Please use only keys or id_column, not both: %r" % name
+            msg = f"Please use only keys or id_column, not both: {name!r}"
             raise InvalidMapping(msg)
 
         schema_name = stringify(data.get("schema"))
         if schema_name is None:
-            raise InvalidMapping("No schema: %s" % name)
+            raise InvalidMapping(f"No schema: {name}")
         schema = model.get(schema_name)
         if schema is None:
-            raise InvalidMapping("Invalid schema: %s" % schema_name)
+            raise InvalidMapping(f"Invalid schema: {schema_name}")
         if schema.deprecated:
             warn(
-                "Mapping uses a deprecated schema: %r" % schema,
+                f"Mapping uses a deprecated schema: {schema!r}",
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -75,12 +76,12 @@ class EntityMapping(object):
         self.refs = set(self.keys)
         if self.id_column:
             self.refs.add(self.id_column)
-        self.dependencies: Set[str] = set()
-        self.properties: List[PropertyMapping] = []
-        for name, prop_mapping in data.get("properties", {}).items():
-            prop = self.schema.get(name)
+        self.dependencies: set[str] = set()
+        self.properties: list[PropertyMapping] = []
+        for prop_name, prop_mapping in data.get("properties", {}).items():
+            prop = self.schema.get(prop_name)
             if prop is None:
-                raise InvalidMapping("Invalid property: %s" % name)
+                raise InvalidMapping(f"Invalid property: {prop_name}")
             mapping = PropertyMapping(query, prop_mapping, prop)
             self.properties.append(mapping)
             self.refs.update(mapping.refs)
@@ -91,7 +92,7 @@ class EntityMapping(object):
         for prop in self.properties:
             prop.bind()
 
-    def compute_key(self, record: Record) -> Optional[str]:
+    def compute_key(self, record: Record) -> str | None:
         """Generate a key for this entity, based on the given fields."""
         if self.id_column is not None:
             return record.get(self.id_column)
@@ -107,9 +108,9 @@ class EntityMapping(object):
         return None
 
     def map(
-        self, record: Record, entities: Dict[str, EntityProxy]
-    ) -> Optional[ValueEntity]:
-        data: Dict[str, Any] = {}
+        self, record: Record, entities: dict[str, EntityProxy]
+    ) -> ValueEntity | None:
+        data: dict[str, Any] = {}
         if self.dataset is not None:
             data["datasets"] = [self.dataset]
         proxy = ValueEntity(self.schema, data, key_prefix=None, cleaned=True)
@@ -162,4 +163,4 @@ class EntityMapping(object):
         return proxy
 
     def __repr__(self) -> str:
-        return "<EntityMapping(%r)>" % self.name
+        return f"<EntityMapping({self.name!r})>"

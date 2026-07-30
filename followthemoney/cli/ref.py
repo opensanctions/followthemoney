@@ -10,24 +10,25 @@ reflects the installed version of followthemoney.
 Every command renders a rich table on a terminal and machine-readable JSON when
 ``--json`` is passed or stdout is piped (see ``followthemoney.cli.render``)."""
 
-import sys
-import click
 import difflib
-from typing import Any, Dict, List, Optional
+import sys
+from typing import Any
+
+import click
 
 from followthemoney import model
-from followthemoney.types import registry
-from followthemoney.types.common import EnumType, PropertyType
-from followthemoney.schema import Schema
-from followthemoney.property import Property
 from followthemoney.cli.cli import cli
 from followthemoney.cli.render import (
-    is_json_mode,
     emit_json,
+    is_json_mode,
     print_markdown,
     print_table,
     slim,
 )
+from followthemoney.property import Property
+from followthemoney.schema import Schema
+from followthemoney.types import registry
+from followthemoney.types.common import EnumType, PropertyType
 
 JSON_OPTION = click.option(
     "--json", "json_flag", is_flag=True, default=False, help="Emit JSON output."
@@ -44,7 +45,7 @@ def _json_mode(ctx: click.Context, json_flag: bool) -> bool:
     return is_json_mode(json_flag or inherited)
 
 
-def _resolve_type(name: str) -> Optional[PropertyType]:
+def _resolve_type(name: str) -> PropertyType | None:
     """Resolve a property type by its singular name or its plural group name.
 
     Type detail commands take the singular type name (``country``), but the
@@ -56,7 +57,7 @@ def _resolve_type(name: str) -> Optional[PropertyType]:
         return registry.groups.get(name)
 
 
-def _type_names() -> List[str]:
+def _type_names() -> list[str]:
     """Names a type can be addressed by — singular type names plus plural groups.
 
     Used to power did-you-mean suggestions so a typo of either form lands."""
@@ -65,13 +66,13 @@ def _type_names() -> List[str]:
     return names
 
 
-def _suggest(name: str, valid: List[str]) -> Optional[str]:
+def _suggest(name: str, valid: list[str]) -> str | None:
     """Return the closest valid name to ``name``, or ``None`` if none is close."""
     matches = difflib.get_close_matches(name, valid, n=1, cutoff=0.6)
     return matches[0] if matches else None
 
 
-def _fail(message: str, suggestion: Optional[str] = None) -> None:
+def _fail(message: str, suggestion: str | None = None) -> None:
     """Print a usage error (with an optional did-you-mean) and exit code 2."""
     hint = f" Did you mean: {suggestion}?" if suggestion else ""
     click.echo(f"error: {message}{hint}", err=True)
@@ -106,7 +107,7 @@ def _prop_flags(prop: Property) -> str:
     return ", ".join(flags)
 
 
-def _prop_payload(prop: Property) -> Dict[str, Any]:
+def _prop_payload(prop: Property) -> dict[str, Any]:
     """Ultra-short property shape for the schema field index.
 
     The schema view lists *what* fields a schema has — name and type. Stub
@@ -114,7 +115,7 @@ def _prop_payload(prop: Property) -> Dict[str, Any]:
     of the forward property they reverse as ``reverse``, which both flags them
     as stubs and says where the edge actually lives. For a property's
     description, range, or origin schema, reach for ``ref prop Schema:name``."""
-    data: Dict[str, Any] = {"name": prop.name, "type": prop.type.name}
+    data: dict[str, Any] = {"name": prop.name, "type": prop.type.name}
     if prop.stub:
         if prop.reverse is not None:
             data["reverse"] = prop.reverse.qname
@@ -164,10 +165,10 @@ def ref(ctx: click.Context, json_flag: bool) -> None:
 @JSON_OPTION
 @click.pass_context
 def ref_schemata(
-    ctx: click.Context, matchable: bool, abstract: Optional[bool], json_flag: bool
+    ctx: click.Context, matchable: bool, abstract: bool | None, json_flag: bool
 ) -> None:
     """List schemata with their key attributes."""
-    entries: List[Dict[str, Any]] = []
+    entries: list[dict[str, Any]] = []
     for name in sorted(model.schemata.keys()):
         schema = model.schemata[name]
         if matchable and not schema.matchable:
@@ -229,7 +230,7 @@ def ref_schema(ctx: click.Context, name: str, json_flag: bool) -> None:
     # Start from the model's own serialization so new schema fields flow through
     # automatically; override the few views `ref` presents differently.
     extends = sorted(s.name for s in schema.schemata if s != schema)
-    summary: Dict[str, Any] = dict(schema.to_dict())
+    summary: dict[str, Any] = dict(schema.to_dict())
     summary["name"] = schema.name
     summary["extends"] = extends  # all ancestors, not just direct parents
     # Trim noise from the field-list payload an agent reads to construct an
@@ -298,7 +299,7 @@ def _type_detail(ctx: click.Context, name: str, json_flag: bool) -> None:
         key=lambda p: p["qname"],
     )
     # to_dict() omits the type's own name; carry it so the payload self-identifies.
-    data: Dict[str, Any] = dict(type_.to_dict())
+    data: dict[str, Any] = dict(type_.to_dict())
     data["name"] = type_.name
     data["enum"] = is_enum
     data["properties"] = using
@@ -340,16 +341,16 @@ def _type_detail(ctx: click.Context, name: str, json_flag: bool) -> None:
 @click.argument("name", required=False)
 @JSON_OPTION
 @click.pass_context
-def ref_types(ctx: click.Context, name: Optional[str], json_flag: bool) -> None:
+def ref_types(ctx: click.Context, name: str | None, json_flag: bool) -> None:
     """List all property types, or show one type's detail when NAME is given."""
     if name is not None:
         _type_detail(ctx, name, json_flag)
         return
 
-    entries: List[Dict[str, Any]] = []
+    entries: list[dict[str, Any]] = []
     for type_ in sorted(registry.types, key=lambda t: t.name):
         values = type_.names if isinstance(type_, EnumType) else {}
-        entry: Dict[str, Any] = {
+        entry: dict[str, Any] = {
             "name": type_.name,
             "label": type_.label,
             "matchable": type_.matchable,
@@ -471,7 +472,7 @@ def ref_prop(ctx: click.Context, qname: str, json_flag: bool) -> None:
         return
 
     schemata = sorted(s.name for s in model if s.get(prop.name) == prop)
-    data: Dict[str, Any] = dict(prop.to_dict())
+    data: dict[str, Any] = dict(prop.to_dict())
     data["schemata"] = schemata
     # For enum-typed props, report the value count and defer the full set to
     # `ref type-values NAME` instead of inlining hundreds of codes here.

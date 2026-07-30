@@ -1,43 +1,33 @@
-from typing import Dict, Optional, TypedDict
+from typing import TypedDict
 
 
 class ErrorSpec(TypedDict, total=False):
-    properties: Dict[str, str]
+    properties: dict[str, str]
 
 
 class FollowTheMoneyException(Exception):
     """Catch-all exception for errors emitted by this library."""
 
-    pass
-
 
 class MetadataException(FollowTheMoneyException):
     """An exception raised by dataset metadata validation."""
-
-    pass
 
 
 class InvalidData(FollowTheMoneyException):
     """Schema validation errors will be caught by the API."""
 
-    def __init__(self, message: str, errors: Optional[ErrorSpec] = None) -> None:
-        super(InvalidData, self).__init__(message)
+    def __init__(self, message: str, errors: ErrorSpec | None = None) -> None:
+        super().__init__(message)
         self.errors: ErrorSpec = errors or {}
 
 
 class InvalidModel(FollowTheMoneyException):
     """The schema model is not defined correctly."""
 
-    pass
-
 
 class InvalidMapping(FollowTheMoneyException):
     """A data mapping was invalid."""
 
-    pass
-
 
 class InvalidDatasetQuery(FollowTheMoneyException):
     """A dataset query DSL expression was invalid."""
-
-    pass

@@ -1,16 +1,15 @@
-from pathlib import Path
-import yaml
 import logging
 from functools import cached_property
-from typing import TYPE_CHECKING
-from typing_extensions import Self
-from typing import Any, Dict, List, Optional, Set, Type, TypeVar
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Optional, Self, TypeVar
+
+import yaml
 from pydantic import BaseModel, field_validator, model_validator
 
 from followthemoney.dataset.coverage import DataCoverage
 from followthemoney.dataset.publisher import DataPublisher
 from followthemoney.dataset.resource import DataResource
-from followthemoney.dataset.util import Url, DateTimeISO, dataset_name_check
+from followthemoney.dataset.util import DateTimeISO, Url, dataset_name_check
 from followthemoney.util import PathLike
 
 if TYPE_CHECKING:
@@ -24,22 +23,22 @@ log = logging.getLogger(__name__)
 class DatasetModel(BaseModel):
     name: str
     title: str
-    license: Optional[Url] = None
-    summary: Optional[str] = None
-    description: Optional[str] = None
-    url: Optional[Url] = None
-    updated_at: Optional[DateTimeISO] = None
-    last_export: Optional[DateTimeISO] = None
-    entity_count: Optional[int] = None
-    thing_count: Optional[int] = None
-    version: Optional[str] = None
-    category: Optional[str] = None
-    tags: List[str] = []
+    license: Url | None = None
+    summary: str | None = None
+    description: str | None = None
+    url: Url | None = None
+    updated_at: DateTimeISO | None = None
+    last_export: DateTimeISO | None = None
+    entity_count: int | None = None
+    thing_count: int | None = None
+    version: str | None = None
+    category: str | None = None
+    tags: list[str] = []
     publisher: DataPublisher | None = None
     coverage: DataCoverage | None = None
-    resources: List[DataResource] = []
-    children: Set[str] = set()
-    deprecation: Optional[str] = None
+    resources: list[DataResource] = []
+    children: set[str] = set()
+    deprecation: str | None = None
     deprecated: bool = False
 
     @field_validator("name", mode="after")
@@ -76,7 +75,7 @@ class DatasetModel(BaseModel):
         for res in self.resources:
             if res.name == name:
                 return res
-        raise ValueError("No resource named %r!" % name)
+        raise ValueError(f"No resource named {name!r}!")
 
 
 class Dataset:
@@ -85,33 +84,33 @@ class Dataset:
 
     UNDEFINED = "undefined"
 
-    def __init__(self: Self, data: Dict[str, Any]) -> None:
+    def __init__(self: Self, data: dict[str, Any]) -> None:
         self.model = DatasetModel.model_validate(data)
         self.name = self.model.name
-        self.children: Set[Self] = set()
+        self.children: set[Self] = set()
 
     @cached_property
     def is_collection(self: Self) -> bool:
         return len(self.model.children) > 0
 
     @property
-    def datasets(self: Self) -> Set[Self]:
-        current: Set[Self] = set([self])
+    def datasets(self: Self) -> set[Self]:
+        current: set[Self] = {self}
         for child in self.children:
             current.update(child.datasets)
         return current
 
     @property
-    def dataset_names(self: Self) -> List[str]:
+    def dataset_names(self: Self) -> list[str]:
         return [d.name for d in self.datasets]
 
     @property
-    def leaves(self: Self) -> Set[Self]:
+    def leaves(self: Self) -> set[Self]:
         """All contained datasets which are not collections (can be 'self')."""
-        return set([d for d in self.datasets if not d.is_collection])
+        return {d for d in self.datasets if not d.is_collection}
 
     @property
-    def leaf_names(self: Self) -> Set[str]:
+    def leaf_names(self: Self) -> set[str]:
         return {d.name for d in self.leaves}
 
     def __hash__(self) -> int:
@@ -126,16 +125,16 @@ class Dataset:
         for res in self.model.resources:
             if res.name == name:
                 return res
-        raise ValueError("No resource named %r!" % name)
+        raise ValueError(f"No resource named {name!r}!")
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the dataset to a dictionary representation."""
         return self.model.model_dump(mode="json", exclude_none=True)
 
     @classmethod
     def from_path(
-        cls: Type[DS], path: PathLike, catalog: Optional["DataCatalog[DS]"] = None
-    ) -> DS:
+        cls, path: PathLike, catalog: Optional["DataCatalog[Self]"] = None
+    ) -> Self:
         from followthemoney.dataset.catalog import DataCatalog
 
         path = Path(path)
@@ -148,7 +147,7 @@ class Dataset:
             return catalog.make_dataset(data)
 
     @classmethod
-    def make(cls: Type[DS], data: Dict[str, Any]) -> DS:
+    def make(cls, data: dict[str, Any]) -> Self:
         from followthemoney.dataset.catalog import DataCatalog
 
         catalog = DataCatalog(cls, {})
@@ -156,7 +155,7 @@ class Dataset:
 
     def __eq__(self, other: Any) -> bool:
         try:
-            return not not self.name == other.name
+            return bool(self.name == other.name)
         except AttributeError:
             return False
 

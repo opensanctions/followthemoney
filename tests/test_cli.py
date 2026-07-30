@@ -1,18 +1,18 @@
 import copy
-import os
-import yaml
-import orjson
 from pathlib import Path
 
+import orjson
+import yaml
 from click.testing import CliRunner
-from followthemoney.cli.cli import cli
+
+import followthemoney.cli.aggregate
+import followthemoney.cli.exports
 
 # Ensure all CLI subcommands are registered
-import followthemoney.cli.mapping  # noqa: F401
-import followthemoney.cli.exports  # noqa: F401
-import followthemoney.cli.aggregate  # noqa: F401
-import followthemoney.cli.sieve  # noqa: F401
+import followthemoney.cli.mapping
+import followthemoney.cli.sieve
 import followthemoney.cli.statement  # noqa: F401
+from followthemoney.cli.cli import cli
 
 FIXTURES_PATH = Path(__file__).parent / "fixtures"
 
@@ -143,8 +143,12 @@ def test_aggregate_statements_provenance(
     # flat form collapses provenance into an entity-level `datasets` list that a
     # statement store can't restore; `-s` keeps the statements so it can.
     from followthemoney.dataset import Dataset
-    from followthemoney.statement import CSV, Statement, StatementEntity
-    from followthemoney.statement import write_statements
+    from followthemoney.statement import (
+        CSV,
+        Statement,
+        StatementEntity,
+        write_statements,
+    )
 
     stmts = [
         Statement(

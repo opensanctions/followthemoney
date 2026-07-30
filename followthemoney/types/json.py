@@ -1,8 +1,10 @@
 import json
-from typing import Any, Optional, Sequence, TYPE_CHECKING
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Any, Optional
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import sanitize_text, defer as _
+from followthemoney.util import defer as _
+from followthemoney.util import sanitize_text
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -19,7 +21,7 @@ class JsonType(PropertyType):
     plural = _("Nested data")
     matchable = False
 
-    def pack(self, obj: Any) -> Optional[str]:
+    def pack(self, obj: Any) -> str | None:
         """Encode a given value to JSON."""
         # TODO: use a JSON encoder that handles more types?
         if obj is None:
@@ -30,16 +32,16 @@ class JsonType(PropertyType):
         """Decode a given JSON object."""
         try:
             return json.loads(obj)
-        except Exception:
+        except (ValueError, TypeError):
             return obj
 
     def clean(
         self,
         raw: Any,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         if not isinstance(raw, str):
             return self.pack(raw)
         else:

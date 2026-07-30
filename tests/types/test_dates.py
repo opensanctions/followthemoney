@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from followthemoney.types import registry
 
@@ -12,7 +12,7 @@ def test_validate():
     assert dates.validate("2017-04-04T10:30:29+0200")
     assert dates.validate("2017-04-04T10:30:29+03:00")
     assert dates.validate("2017-04-04T10:30:29-04:00")
-    assert dates.validate(datetime.now(timezone.utc).isoformat())
+    assert dates.validate(datetime.now(UTC).isoformat())
     assert not dates.validate("01-02-2003")
     assert not dates.validate("Thursday 21 March 2017")
 
@@ -47,12 +47,12 @@ def test_patch_dates():
 
 
 def test_convert_datetime():
-    dt = datetime.now(timezone.utc)
+    dt = datetime.now(UTC)
     iso, _ = dt.isoformat().split(".", 1)
     assert dates.clean(dt) == iso
     assert dates.validate(iso)
 
-    dt = datetime.now(timezone.utc)
+    dt = datetime.now(UTC)
     iso = dt.isoformat()[:19]
     assert dates.clean(dt) == iso
 

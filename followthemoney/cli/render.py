@@ -6,9 +6,10 @@ wants machine-readable JSON. Reach for these instead of hand-rolling output so
 every ``ref`` subcommand decides JSON-vs-table the same way."""
 
 import sys
-import orjson
-from typing import Any, List, Optional, Sequence
+from collections.abc import Sequence
+from typing import Any
 
+import orjson
 from rich.console import Console
 from rich.markdown import Markdown
 from rich.table import Table
@@ -81,8 +82,8 @@ def print_markdown(text: str) -> None:
 def print_table(
     rows: Sequence[Sequence[Any]],
     headers: Sequence[str],
-    title: Optional[str] = None,
-    caption: Optional[str] = None,
+    title: str | None = None,
+    caption: str | None = None,
 ) -> None:
     """Render ``rows`` as a rich table on stdout.
 
@@ -93,6 +94,6 @@ def print_table(
     for header in headers:
         table.add_column(header)
     for row in rows:
-        cells: List[str] = ["" if c is None else str(c) for c in row]
+        cells: list[str] = ["" if c is None else str(c) for c in row]
         table.add_row(*cells)
     Console().print(table)

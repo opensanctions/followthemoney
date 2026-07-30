@@ -1,6 +1,6 @@
-from typing import Optional, TYPE_CHECKING
-from rigour.mime import normalize_mimetype, parse_mimetype
-from rigour.mime import DEFAULT
+from typing import TYPE_CHECKING, Optional
+
+from rigour.mime import DEFAULT, normalize_mimetype, parse_mimetype
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
@@ -28,13 +28,13 @@ class MimeType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         text = normalize_mimetype(text)
         if text != DEFAULT:
             return text
         return None
 
-    def caption(self, value: str, format: Optional[str] = None) -> str:
+    def caption(self, value: str, format: str | None = None) -> str:
         return parse_mimetype(value).label or value

@@ -1,7 +1,8 @@
 import pytest
-from followthemoney.dataset import Dataset, DataCatalog
-from followthemoney.dataset.query import evaluate_query, match_datasets, validate_query
+
+from followthemoney.dataset import DataCatalog, Dataset
 from followthemoney.dataset.parse import parse_query
+from followthemoney.dataset.query import evaluate_query, match_datasets, validate_query
 from followthemoney.exc import InvalidDatasetQuery
 
 

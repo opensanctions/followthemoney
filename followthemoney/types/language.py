@@ -1,10 +1,12 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar, Optional
+
 from babel.core import Locale
 from rigour.langs import iso_639_alpha3
 
-from followthemoney.types.common import EnumType, EnumValues
-from followthemoney.util import defer as _, gettext
 from followthemoney.settings import get_env_list
+from followthemoney.types.common import EnumType, EnumValues
+from followthemoney.util import defer as _
+from followthemoney.util import gettext
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -24,7 +26,7 @@ class LanguageType(EnumType):
     max_length = 16
 
     # Language whitelist
-    LANGUAGES = [
+    LANGUAGES: ClassVar[list[str]] = [
         "afr",
         "amh",
         "ara",
@@ -121,9 +123,9 @@ class LanguageType(EnumType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         code = iso_639_alpha3(text)
         if code not in self.LANGUAGES:
             return None

@@ -8,9 +8,9 @@ See https://followthemoney.tech/docs/metadata/#dataset-query-dsl for full
 documentation and examples.
 """
 
-from collections.abc import Mapping, Sequence
 import functools
-from typing import Any, Dict, List, Set, TYPE_CHECKING, Union
+from collections.abc import Mapping, Sequence
+from typing import TYPE_CHECKING, Any
 
 from followthemoney.dataset.dataset import DS
 from followthemoney.exc import InvalidDatasetQuery
@@ -18,7 +18,7 @@ from followthemoney.exc import InvalidDatasetQuery
 if TYPE_CHECKING:
     from followthemoney.dataset.catalog import DataCatalog
 
-DatasetQuery = Union[str, List[Any], Dict[str, Any]]
+DatasetQuery = str | list[Any] | dict[str, Any]
 
 OPERATORS = frozenset(("or", "and", "not"))
 
@@ -40,51 +40,51 @@ def validate_query(query: Any) -> None:
             raise InvalidDatasetQuery("Operator object must have exactly one key")
         key = next(iter(query))
         if key not in OPERATORS:
-            raise InvalidDatasetQuery("Unknown operator: %r" % key)
+            raise InvalidDatasetQuery(f"Unknown operator: {key!r}")
         value = query[key]
         if key == "not":
             validate_query(value)
         else:
             if not isinstance(value, Sequence) or isinstance(value, str) or len(value) == 0:
                 raise InvalidDatasetQuery(
-                    "Operator %r requires a non-empty array" % key
+                    f"Operator {key!r} requires a non-empty array"
                 )
             for item in value:
                 validate_query(item)
         return
-    raise InvalidDatasetQuery("Invalid query node type: %s" % type(query).__name__)
+    raise InvalidDatasetQuery(f"Invalid query node type: {type(query).__name__}")
 
 
-def _resolve_leaf(catalog: "DataCatalog[DS]", leaf: str) -> Set[DS]:
+def _resolve_leaf(catalog: "DataCatalog[DS]", leaf: str) -> set[DS]:
     """Resolve a leaf string to a set of leaf datasets."""
     if leaf.startswith("#"):
         tag = leaf[1:]
-        result: Set[DS] = set()
+        result: set[DS] = set()
         for ds in catalog.datasets:
             if tag in ds.model.tags:
                 result.update(ds.leaves)
         return result
     dataset = catalog.get(leaf)
     if dataset is None:
-        raise InvalidDatasetQuery("Unknown dataset: %r" % leaf)
+        raise InvalidDatasetQuery(f"Unknown dataset: {leaf!r}")
     return dataset.leaves
 
 
-def _universe(catalog: "DataCatalog[DS]") -> Set[DS]:
+def _universe(catalog: "DataCatalog[DS]") -> set[DS]:
     """Return all leaf datasets in the catalog."""
-    result: Set[DS] = set()
+    result: set[DS] = set()
     for ds in catalog.datasets:
         if not ds.is_collection:
             result.add(ds)
     return result
 
 
-def _evaluate(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
+def _evaluate(catalog: "DataCatalog[DS]", query: DatasetQuery) -> set[DS]:
     """Recursively evaluate a query AST against a catalog."""
     if isinstance(query, str):
         return _resolve_leaf(catalog, query)
     if isinstance(query, Sequence):
-        result: Set[DS] = set()
+        result: set[DS] = set()
         for item in query:
             result.update(_evaluate(catalog, item))
         return result
@@ -99,10 +99,10 @@ def _evaluate(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
             return functools.reduce(set.intersection, results)
         if key == "not":
             return _universe(catalog) - _evaluate(catalog, value)
-    raise InvalidDatasetQuery("Invalid query node type: %s" % type(query).__name__)
+    raise InvalidDatasetQuery(f"Invalid query node type: {type(query).__name__}")
 
 
-def evaluate_query(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
+def evaluate_query(catalog: "DataCatalog[DS]", query: DatasetQuery) -> set[DS]:
     """Evaluate a query AST against a catalog, returning matching leaf datasets.
 
     The query is a dictionary-like structure using "or", "and", and "not" operators.
@@ -113,11 +113,11 @@ def evaluate_query(catalog: "DataCatalog[DS]", query: DatasetQuery) -> Set[DS]:
     return _evaluate(catalog, query)
 
 
-def _match(query: DatasetQuery, datasets: Set[str]) -> bool:
+def _match(query: DatasetQuery, datasets: set[str]) -> bool:
     """Recursively match a query AST against a set of dataset names."""
     if isinstance(query, str):
         if query.startswith("#"):
-            raise InvalidDatasetQuery("Tag selectors require a catalog: %r" % query)
+            raise InvalidDatasetQuery(f"Tag selectors require a catalog: {query!r}")
         return query in datasets
     if isinstance(query, Sequence):
         return any(_match(item, datasets) for item in query)
@@ -130,10 +130,10 @@ def _match(query: DatasetQuery, datasets: Set[str]) -> bool:
             return all(_match(item, datasets) for item in value)
         if key == "not":
             return not _match(value, datasets)
-    raise InvalidDatasetQuery("Invalid query node type: %s" % type(query).__name__)
+    raise InvalidDatasetQuery(f"Invalid query node type: {type(query).__name__}")
 
 
-def match_datasets(query: DatasetQuery, datasets: Set[str]) -> bool:
+def match_datasets(query: DatasetQuery, datasets: set[str]) -> bool:
     """Test whether a set of dataset names matches a query.
 
     Like ``evaluate_query`` but works against plain name strings instead of

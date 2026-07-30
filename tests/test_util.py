@@ -1,4 +1,4 @@
-from followthemoney.util import merge_context, join_text
+from followthemoney.util import join_text, merge_context
 
 
 def test_merge_value():

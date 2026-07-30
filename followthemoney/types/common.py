@@ -1,31 +1,32 @@
+from collections.abc import Callable, Sequence
 from inspect import cleandoc
 from itertools import product
+from typing import TYPE_CHECKING, Any, Optional, TypedDict
+
 from babel.core import Locale
 from normality import stringify
-from typing import Any, Dict, Optional, Sequence, Callable, TYPE_CHECKING, TypedDict
 
+from followthemoney.util import const, get_locale, gettext, sanitize_text
 from followthemoney.value import Value
-from followthemoney.util import get_locale, const
-from followthemoney.util import gettext, sanitize_text
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
 
-EnumValues = Dict[str, str]
+EnumValues = dict[str, str]
 
 
 class PropertyTypeToDict(TypedDict, total=False):
     label: str
     plural: str
-    description: Optional[str]
+    description: str | None
     maxLength: int
-    group: Optional[str]
-    matchable: Optional[bool]
-    pivot: Optional[bool]
-    values: Optional[EnumValues]
+    group: str | None
+    matchable: bool | None
+    pivot: bool | None
+    values: EnumValues | None
 
 
-class PropertyType(object):
+class PropertyType:
     """Base class for all FtM property types.
 
     Every property defined on a schema has a `type` attribute that points to a
@@ -41,7 +42,7 @@ class PropertyType(object):
     name: str = const("any")
     """A machine-facing, variable safe name for the given type."""
 
-    group: Optional[str] = None
+    group: str | None = None
     """Groups are used to invert all the properties of an entity that have a
     given  type into a single list before indexing them. This way, in Aleph,
     you can query for ``countries:gb`` instead of having to make a set of filters
@@ -73,21 +74,21 @@ class PropertyType(object):
     downstream databases with fixed column lengths. The unit is unicode codepoints
     (not bytes), the output of Python len()."""
 
-    total_size: Optional[int] = None
+    total_size: int | None = None
     """Some types have overall size limitations in place in order to avoid generating
     entities that are very large (upstream ElasticSearch has a 100MB document limit).
     Once the total size of all properties of this type has exceed the given limit,
     an entity will refuse to add further values."""
 
     @property
-    def docs(self) -> Optional[str]:
+    def docs(self) -> str | None:
         if not self.__doc__:
             return None
 
         return cleandoc(self.__doc__)
 
     def validate(
-        self, value: str, fuzzy: bool = False, format: Optional[str] = None
+        self, value: str, fuzzy: bool = False, format: str | None = None
     ) -> bool:
         """Returns a boolean to indicate if the given value is a valid instance of
         the type."""
@@ -100,9 +101,9 @@ class PropertyType(object):
         self,
         raw: Value,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Convert a raw value into its canonical form for storage on an entity.
 
         Returns `None` if the value is empty or cannot be interpreted as this type.
@@ -124,9 +125,9 @@ class PropertyType(object):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Type-specific cleaning hook.
 
         Override this in subclasses to normalize a non-null string value into the
@@ -147,7 +148,7 @@ class PropertyType(object):
     def _specificity(self, value: str) -> float:
         return 1.0
 
-    def specificity(self, value: Optional[str]) -> float:
+    def specificity(self, value: str | None) -> float:
         """Return a score for how specific the given value is. This can be used as a
         weighting factor in entity comparisons in order to rate matching property
         values by how specific they are. For example: a longer address is considered
@@ -157,7 +158,7 @@ class PropertyType(object):
             return 0.0
         return self._specificity(value)
 
-    def compare_safe(self, left: Optional[str], right: Optional[str]) -> float:
+    def compare_safe(self, left: str | None, right: str | None) -> float:
         """Variant of `compare()` that accepts `None` on either side.
 
         Returns `0.0` if either argument is missing. Otherwise delegates to
@@ -208,12 +209,12 @@ class PropertyType(object):
             return 0.0
         return func(results)
 
-    def country_hint(self, value: str) -> Optional[str]:
+    def country_hint(self, value: str) -> str | None:
         """Determine if the given value allows us to infer a country that it may
         be related to (e.g. using a country prefix on a phone number or IBAN)."""
         return None
 
-    def pick(self, values: Sequence[str]) -> Optional[str]:
+    def pick(self, values: Sequence[str]) -> str | None:
         """Choose the best representative value from a set of alternatives.
 
         Used when a UI needs to display a single value for a multi-valued
@@ -223,7 +224,7 @@ class PropertyType(object):
         heuristics. The base implementation raises `NotImplementedError`."""
         raise NotImplementedError
 
-    def node_id(self, value: str) -> Optional[str]:
+    def node_id(self, value: str) -> str | None:
         """Build a graph node ID for a typed property value.
 
         Used by graph exporters (Cypher, GEXF, Neo4J bulk) when [reifying](
@@ -234,13 +235,13 @@ class PropertyType(object):
         RDF URN form."""
         return f"{self.name}:{value}"
 
-    def node_id_safe(self, value: Optional[str]) -> Optional[str]:
+    def node_id_safe(self, value: str | None) -> str | None:
         """Wrapper for node_id to handle None values."""
         if value is None:
             return None
         return self.node_id(value)
 
-    def caption(self, value: str, format: Optional[str] = None) -> str:
+    def caption(self, value: str, format: str | None = None) -> str:
         """Return a label for the given property value. This is often the same as the
         value, but for types like countries or languages, it would return the label,
         while other values like phone numbers can be formatted to be nicer to read."""
@@ -283,7 +284,7 @@ class EnumType(PropertyType):
     of possible values, like languages and countries."""
 
     def __init__(self) -> None:
-        self._names: Dict[Locale, EnumValues] = {}
+        self._names: dict[Locale, EnumValues] = {}
         self.codes = set(self.names.keys())
 
     def _locale_names(self, locale: Locale) -> EnumValues:
@@ -299,7 +300,7 @@ class EnumType(PropertyType):
         return self._names[locale]
 
     def validate(
-        self, value: str, fuzzy: bool = False, format: Optional[str] = None
+        self, value: str, fuzzy: bool = False, format: str | None = None
     ) -> bool:
         """Make sure that the given code value is one of the supported set."""
         return str(value).lower().strip() in self.codes
@@ -308,9 +309,9 @@ class EnumType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """All code values are cleaned to be lowercase and trailing whitespace is
         removed."""
         code = text.lower().strip()
@@ -318,12 +319,12 @@ class EnumType(PropertyType):
             return None
         return code
 
-    def caption(self, value: str, format: Optional[str] = None) -> str:
+    def caption(self, value: str, format: str | None = None) -> str:
         """Given a code value, return the label that should be shown to a user."""
         return self.names.get(value, value)
 
     def to_dict(self) -> PropertyTypeToDict:
         """When serialising the model to JSON, include all values."""
-        data = super(EnumType, self).to_dict()
+        data = super().to_dict()
         data["values"] = self.names
         return data

@@ -1,7 +1,6 @@
 from followthemoney import model
-from followthemoney.types import registry
 from followthemoney.graph import Graph, Node
-
+from followthemoney.types import registry
 
 ENTITY = {
     "id": "ralph",

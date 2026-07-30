@@ -1,5 +1,4 @@
 import re
-from typing import Optional, Tuple
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
@@ -34,7 +33,7 @@ class NumberType(PropertyType):
 
     def parse(
         self, value: str, decimal: str = DECIMAL, separator: str = SEPARATOR
-    ) -> Tuple[Optional[str], Optional[str]]:
+    ) -> tuple[str | None, str | None]:
         """Parse a number into a numeric value and a unit. The numeric value is
         aligned with the decimal and separator settings. The unit is stripped of
         whitespace and returned as a string. If no unit is found, None is
@@ -66,7 +65,7 @@ class NumberType(PropertyType):
             number = None
         return number, unit
 
-    def to_number(self, value: str) -> Optional[float]:
+    def to_number(self, value: str) -> float | None:
         """Convert a number string to a float. The string is parsed and the unit is
         discarded if present.
 
@@ -81,10 +80,10 @@ class NumberType(PropertyType):
             if number is None:
                 return None
             return float(number)
-        except Exception:
+        except (AttributeError, ValueError, TypeError):
             return None
 
-    def caption(self, value: str, format: Optional[str] = None) -> str:
+    def caption(self, value: str, format: str | None = None) -> str:
         """Return a caption for the number. This is used for display purposes.
 
         Args:

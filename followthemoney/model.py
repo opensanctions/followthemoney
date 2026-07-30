@@ -1,51 +1,52 @@
 import os
-import yaml
+from collections.abc import Generator, Iterator
 from functools import cache
-from typing import TYPE_CHECKING, Any
-from typing import Dict, Generator, Iterator, Optional, Set, TypedDict, Union
+from typing import TYPE_CHECKING, Any, Optional, TypedDict
+
+import yaml
 from rigour.env import ENCODING
 
+from followthemoney.exc import InvalidData, InvalidModel
+from followthemoney.property import Property
+from followthemoney.schema import Schema, SchemaToDict
+from followthemoney.settings import MODEL_PATH
 from followthemoney.types import registry
 from followthemoney.types.common import PropertyType, PropertyTypeToDict
-from followthemoney.schema import Schema, SchemaToDict
-from followthemoney.property import Property
-from followthemoney.exc import InvalidModel, InvalidData
-from followthemoney.settings import MODEL_PATH
 from followthemoney.util import const
 
 if TYPE_CHECKING:
-    from followthemoney.proxy import EntityProxy
     from followthemoney.entity import ValueEntity
     from followthemoney.mapping import QueryMapping
+    from followthemoney.proxy import EntityProxy
 
 
 class ModelToDict(TypedDict):
-    schemata: Dict[str, SchemaToDict]
-    types: Dict[str, PropertyTypeToDict]
+    schemata: dict[str, SchemaToDict]
+    types: dict[str, PropertyTypeToDict]
     version: str
 
 
-class Model(object):
+class Model:
     """A collection of all the schemata available in followthemoney. The model
     provides some helper functions to find schemata, properties or to instantiate
     entity proxies based on the schema metadata."""
 
     _instance: Optional["Model"] = None
 
-    __slots__ = ("path", "schemata", "properties", "qnames")
+    __slots__ = ("path", "properties", "qnames", "schemata")
 
     def __init__(self, path: str) -> None:
         self.path = path
 
         #: A mapping with all schemata, organised by their name.
-        self.schemata: Dict[str, Schema] = {}
+        self.schemata: dict[str, Schema] = {}
 
         #: All properties defined in the model.
-        self.properties: Set[Property] = set()
-        self.qnames: Dict[str, Property] = {}
-        for path, _, filenames in os.walk(self.path):
+        self.properties: set[Property] = set()
+        self.qnames: dict[str, Property] = {}
+        for dirpath, _, filenames in os.walk(self.path):
             for filename in filenames:
-                self._load(os.path.join(path, filename))
+                self._load(os.path.join(dirpath, filename))
         self.generate()
 
     @classmethod
@@ -72,19 +73,19 @@ class Model(object):
         with open(filepath, "r", encoding=ENCODING) as fh:
             data = yaml.safe_load(fh)
             if not isinstance(data, dict):
-                raise InvalidModel("Model file is not a mapping: %s" % filepath)
+                raise InvalidModel(f"Model file is not a mapping: {filepath}")
             for name, config in data.items():
                 name = const(name)
                 self.schemata[name] = Schema(self, name, config)
 
-    def get(self, name: Union[str, Schema]) -> Optional[Schema]:
+    def get(self, name: str | Schema) -> Schema | None:
         """Get a schema object based on a schema name. If the input is already
         a schema object, it will just be returned."""
         if isinstance(name, str):
             return self.schemata.get(name)
         return name
 
-    def get_qname(self, qname: str) -> Optional[Property]:
+    def get_qname(self, qname: str) -> Property | None:
         """Get a property object based on a qualified name (i.e. schema:property)."""
         return self.qnames.get(qname)
 
@@ -92,10 +93,10 @@ class Model(object):
         """Same as get(), but throws an exception when the given name does not exist."""
         schema = self.get(name)
         if schema is None:
-            raise KeyError("No such schema: %s" % name)
+            raise KeyError(f"No such schema: {name}")
         return schema
 
-    def get_type_schemata(self, type_: PropertyType) -> Set[Schema]:
+    def get_type_schemata(self, type_: PropertyType) -> set[Schema]:
         """Return all the schemata which have a property of the given type."""
         schemata = set()
         for schema in self.schemata.values():
@@ -106,9 +107,9 @@ class Model(object):
 
     def make_mapping(
         self,
-        mapping: Dict[str, Any],
-        key_prefix: Optional[str] = None,
-        dataset: Optional[str] = None,
+        mapping: dict[str, Any],
+        key_prefix: str | None = None,
+        dataset: str | None = None,
     ) -> "QueryMapping":
         """Parse a mapping that applies (tabular) source data to the model."""
         from followthemoney.mapping import QueryMapping
@@ -117,19 +118,18 @@ class Model(object):
 
     def map_entities(
         self,
-        mapping: Dict[str, Any],
-        key_prefix: Optional[str] = None,
-        dataset: Optional[str] = None,
+        mapping: dict[str, Any],
+        key_prefix: str | None = None,
+        dataset: str | None = None,
     ) -> Generator["ValueEntity", None, None]:
         """Given a mapping, yield a series of entities from the data source."""
         gen = self.make_mapping(mapping, key_prefix=key_prefix, dataset=dataset)
         for record in gen.source.records:
-            for entity in gen.map(record).values():
-                yield entity
+            yield from gen.map(record).values()
 
     @cache
     def common_schema(
-        self, left: Union[str, Schema], right: Union[str, Schema]
+        self, left: str | Schema, right: str | Schema
     ) -> Schema:
         """Select the most narrow of two schemata.
 
@@ -149,25 +149,24 @@ class Model(object):
         # for schema in self.schemata.values():
         #     if schema.is_a(left) and schema.is_a(right):
         #         return schema
-        msg = "No common schema: %s and %s"
-        raise InvalidData(msg % (left, right))
+        raise InvalidData(f"No common schema: {left} and {right}")
 
-    def matchable_schemata(self) -> Set[Schema]:
+    def matchable_schemata(self) -> set[Schema]:
         """Return a list of all schemata that are matchable."""
-        return set([s for s in self.schemata.values() if s.matchable])
+        return {s for s in self.schemata.values() if s.matchable}
 
     def make_entity(
-        self, schema: Union[str, Schema], key_prefix: Optional[str] = None
+        self, schema: str | Schema, key_prefix: str | None = None
     ) -> "EntityProxy":
         """Instantiate an empty entity proxy of the given schema type."""
         from followthemoney.proxy import EntityProxy
 
         schema_ = self.get(schema)
         if schema_ is None:
-            raise InvalidData("Schema does not exist: %s" % schema)
+            raise InvalidData(f"Schema does not exist: {schema}")
         return EntityProxy(schema_, {}, key_prefix=key_prefix)
 
-    def get_proxy(self, data: Dict[str, Any], cleaned: bool = True) -> "EntityProxy":
+    def get_proxy(self, data: dict[str, Any], cleaned: bool = True) -> "EntityProxy":
         """Create an entity proxy to reflect the entity data in the given
         dictionary. If ``cleaned`` is disabled, all property values are
         fully re-validated and normalised. Use this if handling input data

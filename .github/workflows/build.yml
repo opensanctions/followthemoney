@@ -50,6 +50,9 @@ jobs:
             echo "⚠️ Default model is not up to date. You need to run `make default-model` and commit the changes.";
             exit 1;
           fi;
+      - name: Lint with ruff
+        run: |
+          make lint
       - name: Run the tests
         run: |
           make test

@@ -1,31 +1,31 @@
-import io
-import os
 import logging
-import requests
+import os
+from collections.abc import Generator, ItemsView, Iterable
 from csv import DictReader
+from typing import TYPE_CHECKING, Any, cast
 from urllib.parse import urlparse
-from banal import keys_values, ensure_list
-from typing import TYPE_CHECKING, cast
-from typing import Any, Dict, Generator, ItemsView, Iterable, List, Optional, Set, Tuple
 
+import requests
+from banal import ensure_list, keys_values
+
+from followthemoney.exc import InvalidMapping
 from followthemoney.mapping.source import Record, Source
 from followthemoney.settings import USER_AGENT
 from followthemoney.util import sanitize_text
-from followthemoney.exc import InvalidMapping
 
 if TYPE_CHECKING:
     from followthemoney.mapping.query import QueryMapping
 
 log = logging.getLogger(__name__)
-FilterList = List[Tuple[str, Set[Optional[str]]]]
+FilterList = list[tuple[str, set[str | None]]]
 
 
 class CSVSource(Source):
     """Special case for entity loading directly from a CSV URL"""
 
-    def __init__(self, query: "QueryMapping", data: Dict[str, Any]) -> None:
+    def __init__(self, query: "QueryMapping", data: dict[str, Any]) -> None:
         super().__init__(query, data)
-        self.urls: Set[str] = set()
+        self.urls: set[str] = set()
         for url in keys_values(data, "csv_url", "csv_urls"):
             self.urls.add(cast(str, os.path.expandvars(url)))
 
@@ -38,7 +38,7 @@ class CSVSource(Source):
     def _parse_filters(self, filters: ItemsView[str, Any]) -> FilterList:
         filters_set: FilterList = []
         for key, value in filters:
-            values = set(cast(List[Optional[str]], ensure_list(value)))
+            values = set(cast(list[str | None], ensure_list(value)))
             filters_set.append((key, values))
         return filters_set
 
@@ -68,14 +68,14 @@ class CSVSource(Source):
             headers = {"User-Agent": USER_AGENT}
             res = requests.get(url, stream=True, headers=headers)
             if not res.ok:
-                raise InvalidMapping("Failed to open CSV: %s" % url)
+                raise InvalidMapping(f"Failed to open CSV: {url}")
             # if res.encoding is None:
             res.encoding = "utf-8"
             # log.info("Detected encoding: %s", res.encoding)
             lines = res.iter_lines(decode_unicode=True)
             yield from self.read_csv(lines)
         else:
-            with io.open(parsed_url.path, "r") as fh:
+            with open(parsed_url.path, "r") as fh:
                 yield from self.read_csv(fh)
 
     @property

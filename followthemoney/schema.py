@@ -1,12 +1,12 @@
-from typing import TYPE_CHECKING, Any
-from typing import Dict, List, Optional, Set, TypedDict, Union
-from banal import as_bool
 from functools import cache
+from typing import TYPE_CHECKING, Any, TypedDict, Union
 
+from banal import as_bool
+
+from followthemoney.exc import InvalidData, InvalidModel
 from followthemoney.property import Property, PropertySpec, PropertyToDict, ReverseSpec
 from followthemoney.types import registry
-from followthemoney.exc import InvalidData, InvalidModel
-from followthemoney.util import gettext, const
+from followthemoney.util import const, gettext
 
 if TYPE_CHECKING:
     from followthemoney.model import Model
@@ -15,51 +15,51 @@ if TYPE_CHECKING:
 class EdgeSpec(TypedDict, total=False):
     source: str
     target: str
-    caption: List[str]
+    caption: list[str]
     label: str
     directed: bool
 
 
 class TemporalExtentSpec(TypedDict, total=False):
-    start: List[str]
-    end: List[str]
+    start: list[str]
+    end: list[str]
 
 
 class ValidationData(TypedDict, total=False):
-    properties: Dict[str, List[str]]
+    properties: dict[str, list[str]]
 
 
 class SchemaSpec(TypedDict, total=False):
     label: str
     plural: str
-    schemata: List[str]
-    extends: List[str]
-    properties: Dict[str, PropertySpec]
-    featured: List[str]
-    required: List[str]
-    caption: List[str]
+    schemata: list[str]
+    extends: list[str]
+    properties: dict[str, PropertySpec]
+    featured: list[str]
+    required: list[str]
+    caption: list[str]
     edge: EdgeSpec
     temporalExtent: TemporalExtentSpec
-    description: Optional[str]
+    description: str | None
     abstract: bool
     hidden: bool
     generated: bool
     matchable: bool
-    deprecated: Optional[bool]
+    deprecated: bool | None
 
 
 class SchemaToDict(TypedDict, total=False):
     label: str
     plural: str
-    schemata: List[str]
-    extends: List[str]
-    properties: Dict[str, PropertyToDict]
-    featured: List[str]
-    required: List[str]
-    caption: List[str]
+    schemata: list[str]
+    extends: list[str]
+    properties: dict[str, PropertyToDict]
+    featured: list[str]
+    required: list[str]
+    caption: list[str]
     edge: EdgeSpec
     temporalExtent: TemporalExtentSpec
-    description: Optional[str]
+    description: str | None
     abstract: bool
     hidden: bool
     generated: bool
@@ -77,35 +77,35 @@ class Schema:
     """
 
     __slots__ = (
-        "model",
-        "name",
-        "_label",
-        "_plural",
         "_description",
-        "_hash",
-        "abstract",
-        "hidden",
-        "generated",
-        "matchable",
-        "featured",
-        "required",
-        "deprecated",
-        "caption",
-        "edge",
         "_edge_label",
+        "_extends",
+        "_hash",
+        "_label",
+        "_matchable_schemata",
+        "_plural",
+        "_temporal_end",
+        "_temporal_start",
+        "abstract",
+        "caption",
+        "deprecated",
+        "descendants",
+        "edge",
+        "edge_caption",
         "edge_directed",
         "edge_source",
         "edge_target",
-        "edge_caption",
-        "_temporal_start",
-        "_temporal_end",
-        "_extends",
         "extends",
-        "schemata",
+        "featured",
+        "generated",
+        "hidden",
+        "matchable",
+        "model",
+        "name",
         "names",
-        "descendants",
         "properties",
-        "_matchable_schemata",
+        "required",
+        "schemata",
     )
 
     def __init__(self, model: "Model", name: str, data: SchemaSpec) -> None:
@@ -115,7 +115,7 @@ class Schema:
         self._label = data.get("label", name)
         self._plural = data.get("plural", self.label)
         self._description = data.get("description")
-        self._hash = hash("<Schema(%r)>" % self.name)
+        self._hash = hash(f"<Schema({self.name!r})>")
 
         #: Do not store or emit entities of this type, it is used only for
         #: inheritance.
@@ -177,23 +177,23 @@ class Schema:
 
         #: Direct parent schemata of this schema.
         self._extends = [const(s) for s in data.get("extends", [])]
-        self.extends: Set["Schema"] = set()
+        self.extends: set[Schema] = set()
 
         #: All parents of this schema (including indirect parents and the schema
         #: itself).
-        self.schemata: Set[Schema] = set([self])
+        self.schemata: set[Schema] = {self}
 
         #: All names of :attr:`~schemata`.
-        self.names = set([self.name])
+        self.names = {self.name}
 
         #: Inverse of :attr:`~schemata`, all derived child types of this schema
         #: and their children.
-        self.descendants: Set["Schema"] = set()
-        self._matchable_schemata: Optional[Set["Schema"]] = None
+        self.descendants: set[Schema] = set()
+        self._matchable_schemata: set[Schema] | None = None
 
         #: The full list of properties defined for the entity, including those
         #: inherited from parent schemata.
-        self.properties: Dict[str, Property] = {}
+        self.properties: dict[str, Property] = {}
         for pname, prop in data.get("properties", {}).items():
             pname = const(pname)
             self.properties[pname] = Property(self, pname, prop)
@@ -201,12 +201,12 @@ class Schema:
     def generate(self, model: "Model") -> None:
         """While loading the schema, this function will validate and
         load the hierarchy, properties, and flags of the definition."""
-        temporal_start: Optional[List[str]] = None
-        temporal_end: Optional[List[str]] = None
+        temporal_start: list[str] | None = None
+        temporal_end: list[str] | None = None
         for extends in self._extends:
             parent = model.get(extends)
             if parent is None:
-                raise InvalidData("Invalid extends: %r" % extends)
+                raise InvalidData(f"Invalid extends: {extends!r}")
             parent.generate(model)
 
             for name, prop in parent.properties.items():
@@ -225,14 +225,14 @@ class Schema:
                     and temporal_start != parent.temporal_start
                 ):
                     raise InvalidModel(
-                        "Conflicting temporal start properties: %s" % self.name
+                        f"Conflicting temporal start properties: {self.name}"
                     )
                 temporal_start = parent.temporal_start
 
             if len(self._temporal_end) == 0 and parent.temporal_end:
                 if temporal_end is not None and temporal_end != parent.temporal_end:
                     raise InvalidModel(
-                        "Conflicting temporal start properties: %s" % self.name
+                        f"Conflicting temporal start properties: {self.name}"
                     )
                 temporal_end = parent.temporal_end
 
@@ -241,26 +241,26 @@ class Schema:
 
         for featured in self.featured:
             if self.get(featured) is None:
-                raise InvalidModel("Missing featured property: %s" % featured)
+                raise InvalidModel(f"Missing featured property: {featured}")
 
         for caption in self.caption:
             prop_ = self.get(caption)
             if prop_ is None:
-                raise InvalidModel("Missing caption property: %s" % caption)
+                raise InvalidModel(f"Missing caption property: {caption}")
             if prop_.type == registry.entity:
-                raise InvalidModel("Caption cannot be entity: %s" % caption)
+                raise InvalidModel(f"Caption cannot be entity: {caption}")
 
         for required in self.required:
             if self.get(required) is None:
-                raise InvalidModel("Missing required property: %s" % required)
+                raise InvalidModel(f"Missing required property: {required}")
 
         if self.edge:
             if self.source_prop is None:
-                msg = "Missing edge source: %s" % self.edge_source
+                msg = f"Missing edge source: {self.edge_source}"
                 raise InvalidModel(msg)
 
             if self.target_prop is None:
-                msg = "Missing edge target: %s" % self.edge_target
+                msg = f"Missing edge target: {self.edge_target}"
                 raise InvalidModel(msg)
 
     def _add_reverse(
@@ -268,7 +268,7 @@ class Schema:
     ) -> Property:
         name = data.get("name")
         if name is None:
-            raise InvalidModel("Unnamed reverse: %s" % other)
+            raise InvalidModel(f"Unnamed reverse: {other}")
         name = const(name)
 
         prop = self.get(name)
@@ -297,17 +297,17 @@ class Schema:
         return gettext(self._plural)
 
     @property
-    def description(self) -> Optional[str]:
+    def description(self) -> str | None:
         """A longer description of the semantics of the schema."""
         return gettext(self._description)
 
     @property
-    def edge_label(self) -> Optional[str]:
+    def edge_label(self) -> str | None:
         """Description label for edges derived from entities of this schema."""
         return gettext(self._edge_label)
 
     @property
-    def source_prop(self) -> Optional[Property]:
+    def source_prop(self) -> Property | None:
         """The entity property to be used as an edge source when the schema is
         considered as a relationship."""
         if self.edge_source is None:
@@ -315,7 +315,7 @@ class Schema:
         return self.get(self.edge_source)
 
     @property
-    def target_prop(self) -> Optional[Property]:
+    def target_prop(self) -> Property | None:
         """The entity property to be used as an edge target when the schema is transformed
         into a relationship."""
         if self.edge_target is None:
@@ -323,7 +323,7 @@ class Schema:
         return self.get(self.edge_target)
 
     @property
-    def temporal_start(self) -> List[str]:
+    def temporal_start(self) -> list[str]:
         """The entity properties to be used as the start when representing the entity
         in a timeline."""
         if len(self._temporal_start) == 0:
@@ -333,7 +333,7 @@ class Schema:
         return self._temporal_start
 
     @property
-    def temporal_end(self) -> List[str]:
+    def temporal_end(self) -> list[str]:
         """The entity properties to be used as the end when representing the entity
         in a timeline."""
         if len(self._temporal_end) == 0:
@@ -343,21 +343,21 @@ class Schema:
         return self._temporal_end
 
     @property
-    def temporal_start_props(self) -> List[Property]:
+    def temporal_start_props(self) -> list[Property]:
         """The entity properties to be used as the start when representing the entity
         in a timeline."""
         props = [self.get(prop_name) for prop_name in self.temporal_start]
         return [prop for prop in props if prop is not None]
 
     @property
-    def temporal_end_props(self) -> List[Property]:
+    def temporal_end_props(self) -> list[Property]:
         """The entity properties to be used as the end when representing the entity
         in a timeline."""
         props = [self.get(prop_name) for prop_name in self.temporal_end]
         return [prop for prop in props if prop is not None]
 
     @property
-    def sorted_properties(self) -> List[Property]:
+    def sorted_properties(self) -> list[Property]:
         """All properties of the schema in the order in which they should be shown
         to the user (alphabetically, with captions and featured properties first)."""
         return sorted(
@@ -370,7 +370,7 @@ class Schema:
         )
 
     @property
-    def matchable_schemata(self) -> Set["Schema"]:
+    def matchable_schemata(self) -> set["Schema"]:
         """Return the set of schemata to which it makes sense to compare with this
         schema. For example, it makes sense to compare a legal entity with a company,
         but it does not make sense to compare a car and a person."""
@@ -401,13 +401,13 @@ class Schema:
             other = other.name
         return other in self.names
 
-    def get(self, name: str) -> Optional[Property]:
+    def get(self, name: str) -> Property | None:
         """Retrieve a property defined for this schema by its name."""
         if name is None:
             return None
         return self.properties.get(name)
 
-    def validate(self, data: ValidationData) -> Optional[str]:
+    def validate(self, data: ValidationData) -> str | None:
         """Validate a dictionary against the given schema. This works on the assumption
         that values have already been cleaned and converted to strings, so it only checks
         that required properties are present and that all values are valid for their
@@ -437,8 +437,8 @@ class Schema:
         data: SchemaToDict = {
             "label": self.label,
             "plural": self.plural,
-            "schemata": list(sorted(self.names)),
-            "extends": list(sorted([e.name for e in self.extends])),
+            "schemata": sorted(self.names),
+            "extends": sorted([e.name for e in self.extends]),
         }
         if self.edge_source and self.edge_target and self.edge_label:
             data["edge"] = {
@@ -471,7 +471,7 @@ class Schema:
             data["matchable"] = True
         if self.deprecated:
             data["deprecated"] = True
-        properties: Dict[str, PropertyToDict] = {}
+        properties: dict[str, PropertyToDict] = {}
         for name, prop in self.properties.items():
             if prop.schema == self:
                 properties[name] = prop.to_dict()
@@ -487,7 +487,7 @@ class Schema:
 
         schema = Model.instance().get(name)
         if schema is None:
-            raise InvalidData("Unknown schema: %r" % name)
+            raise InvalidData(f"Unknown schema: {name!r}")
         return schema
 
     def __eq__(self, other: Any) -> bool:
@@ -504,4 +504,4 @@ class Schema:
         return self._hash
 
     def __repr__(self) -> str:
-        return "<Schema(%r)>" % self.name
+        return f"<Schema({self.name!r})>"

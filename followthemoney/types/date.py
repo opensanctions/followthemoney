@@ -1,11 +1,12 @@
 import os
-from datetime import datetime, timezone
-from typing import Optional, TYPE_CHECKING
-from prefixdate import parse, parse_format, Precision
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Optional
+
+from prefixdate import Precision, parse, parse_format
 
 from followthemoney.types.common import PropertyType
-from followthemoney.util import defer as _
 from followthemoney.util import dampen
+from followthemoney.util import defer as _
 
 if TYPE_CHECKING:
     from followthemoney.proxy import EntityProxy
@@ -38,7 +39,7 @@ class DateType(PropertyType):
     """A cutoff date value representing the maximum relevant date for modern fincrime applications."""
 
     def validate(
-        self, value: str, fuzzy: bool = False, format: Optional[str] = None
+        self, value: str, fuzzy: bool = False, format: str | None = None
     ) -> bool:
         """Check if a thing is a valid date."""
         if format is not None:
@@ -51,9 +52,9 @@ class DateType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """The classic: date parsing, every which way."""
         if format is not None:
             return parse_format(text, format).text
@@ -66,7 +67,7 @@ class DateType(PropertyType):
         prefix = os.path.commonprefix([left, right])
         return dampen(4, 10, prefix)
 
-    def to_datetime(self, value: str) -> Optional[datetime]:
+    def to_datetime(self, value: str) -> datetime | None:
         """Convert a date string to a datetime object in UTC for handling in Python. This
         will convert the unset fields beyond the prefix to the first possible value, e.g.
         `2021-02` will become `2021-02-01T00:00:00Z`.
@@ -79,7 +80,7 @@ class DateType(PropertyType):
         """
         return parse(value).dt
 
-    def to_number(self, value: str) -> Optional[float]:
+    def to_number(self, value: str) -> float | None:
         """Convert a date string to a number, which is the number of seconds since the epoch
         (1970-01-01T00:00:00Z).
 
@@ -94,5 +95,5 @@ class DateType(PropertyType):
             return None
         # We make a best effort all over the app to ensure all times are in UTC.
         if date.tzinfo is None:
-            date = date.replace(tzinfo=timezone.utc)
+            date = date.replace(tzinfo=UTC)
         return date.timestamp()

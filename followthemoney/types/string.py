@@ -1,5 +1,6 @@
 from followthemoney.types.common import PropertyType
-from followthemoney.util import PROP_VALUE_MAX, const, defer as _
+from followthemoney.util import PROP_VALUE_MAX, const
+from followthemoney.util import defer as _
 
 
 class StringType(PropertyType):

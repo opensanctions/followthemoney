@@ -1,13 +1,12 @@
-import io
 import csv
+import io
 import shutil
 from tempfile import mkdtemp
 from unittest import TestCase
 
 from followthemoney import model
-from followthemoney.export.neo4j import CypherGraphExporter
-from followthemoney.export.neo4j import Neo4JCSVExporter
 from followthemoney.export.graph import edge_types
+from followthemoney.export.neo4j import CypherGraphExporter, Neo4JCSVExporter
 
 ENTITIES = [
     {
@@ -83,12 +82,11 @@ class Neo4JCSVTestCase(TestCase):
         for entity in ENTITIES:
             entity = model.get_proxy(entity)
             exporter.write(entity, extra=["test"])
-            fh, writer = exporter.handles[entity.schema]
+            fh, _writer = exporter.handles[entity.schema]
             outfile = fh.name
         exporter.finalize()
-        fh = open(outfile, "r")
-        csv_reader = csv.reader(fh)
-        rows = list(csv_reader)
+        with open(outfile, "r") as fh:
+            rows = list(csv.reader(fh))
         headers = rows[0]
         assert ":TYPE" in headers, headers
         assert ":START_ID" in headers, headers

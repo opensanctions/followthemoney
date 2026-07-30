@@ -1,10 +1,9 @@
 import orjson
 from click.testing import CliRunner
 
-from followthemoney.cli.cli import cli
-
 # Importing the module registers the `ref` group on the root CLI.
 import followthemoney.cli.ref as refmod  # noqa: F401
+from followthemoney.cli.cli import cli
 
 
 def _json(cli_runner: CliRunner, args: list[str]):

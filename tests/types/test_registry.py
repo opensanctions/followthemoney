@@ -1,4 +1,5 @@
 import pytest
+
 from followthemoney.types import registry
 
 

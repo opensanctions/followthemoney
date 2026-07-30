@@ -1,7 +1,8 @@
 import sys
-from datetime import datetime
-from rdflib import Graph, URIRef, Literal, Namespace
-from rdflib.namespace import OWL, DCTERMS, RDF, RDFS, XSD
+from datetime import UTC, datetime
+
+from rdflib import Graph, Literal, Namespace, URIRef
+from rdflib.namespace import DCTERMS, OWL, RDF, RDFS, XSD
 
 from followthemoney import model
 from followthemoney.property import Property
@@ -12,7 +13,7 @@ from followthemoney.util import PathLike
 NS = Namespace("https://schema.followthemoney.tech/#")
 
 
-class Ontology(object):
+class Ontology:
     def __init__(self) -> None:
         self.uri = URIRef(NS)
         self.graph = Graph(identifier=self.uri)
@@ -22,7 +23,7 @@ class Ontology(object):
 
         self.graph.add((self.uri, RDF.type, OWL.Ontology))
         self.graph.add((self.uri, RDFS.label, Literal("Follow The Money")))
-        modified = datetime.now().strftime("%Y-%m-%dT%H:%I:%M")
+        modified = datetime.now(UTC).replace(microsecond=0).isoformat()
         modified = Literal(modified, datatype=XSD.dateTime)
         self.graph.add((self.uri, DCTERMS.modified, modified))
 
@@ -67,7 +68,7 @@ class Ontology(object):
             self.graph.add((puri, RDFS.range, XSD.dateTime))
 
     def write_namespace_docs(self, path: PathLike) -> None:
-        xml_fn = "%s/ftm.xml" % path
+        xml_fn = f"{path}/ftm.xml"
         with open(xml_fn, "w") as xml_file:
             xml_file.write(self.graph.serialize(format="xml"))
 
@@ -76,4 +77,4 @@ if __name__ == "__main__":
     path = sys.argv[1]
     ontology = Ontology()
     ontology.write_namespace_docs(path)
-    print("Namespace docs written to %s" % path)
+    print(f"Namespace docs written to {path}")

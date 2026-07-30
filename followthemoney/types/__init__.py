@@ -1,29 +1,28 @@
-from typing import Dict, Iterable, List, Set, cast
+from collections.abc import Iterable
+from typing import cast
 
-from followthemoney.types.url import UrlType
-from followthemoney.types.name import NameType
-from followthemoney.types.email import EmailType
-from followthemoney.types.ip import IpType
 from followthemoney.types.address import AddressType
-from followthemoney.types.date import DateType
-from followthemoney.types.phone import PhoneType
+from followthemoney.types.checksum import ChecksumType
+from followthemoney.types.common import PropertyType
 from followthemoney.types.country import CountryType
+from followthemoney.types.date import DateType
+from followthemoney.types.email import EmailType
+from followthemoney.types.entity import EntityType
+from followthemoney.types.gender import GenderType
+from followthemoney.types.identifier import IdentifierType
+from followthemoney.types.ip import IpType
+from followthemoney.types.json import JsonType
 from followthemoney.types.language import LanguageType
 from followthemoney.types.mimetype import MimeType
-from followthemoney.types.checksum import ChecksumType
-from followthemoney.types.identifier import IdentifierType
-from followthemoney.types.entity import EntityType
-from followthemoney.types.topic import TopicType
-from followthemoney.types.gender import GenderType
-from followthemoney.types.json import JsonType
-from followthemoney.types.string import TextType
-from followthemoney.types.string import HTMLType
-from followthemoney.types.string import StringType
+from followthemoney.types.name import NameType
 from followthemoney.types.number import NumberType
-from followthemoney.types.common import PropertyType
+from followthemoney.types.phone import PhoneType
+from followthemoney.types.string import HTMLType, StringType, TextType
+from followthemoney.types.topic import TopicType
+from followthemoney.types.url import UrlType
 
 
-class Registry(object):
+class Registry:
     """This registry keeps the processing helpers for all property types in the system. The
     registry can be used to get a type, which can itself then clean, validate or format values
     of that type."""
@@ -50,10 +49,10 @@ class Registry(object):
     number = NumberType()
 
     def __init__(self) -> None:
-        self.matchable: Set[PropertyType] = set()
-        self.types: Set[PropertyType] = set()
-        self.groups: Dict[str, PropertyType] = {}
-        self.pivots: Set[PropertyType] = set()
+        self.matchable: set[PropertyType] = set()
+        self.types: set[PropertyType] = set()
+        self.groups: dict[str, PropertyType] = {}
+        self.pivots: set[PropertyType] = set()
         for name in dir(self):
             type_ = getattr(self, name)
             if not isinstance(type_, PropertyType):
@@ -75,7 +74,7 @@ class Registry(object):
             return name
         return cast(PropertyType, getattr(self, name))
 
-    def get_types(self, names: Iterable[str]) -> List[PropertyType]:
+    def get_types(self, names: Iterable[str]) -> list[PropertyType]:
         """Get a list of all property type objects linked to a set of names."""
         types = [self.get(n) for n in names]
         return [t for t in types if t is not None]

@@ -1,12 +1,12 @@
 import pickle
-from pytest import raises
 from datetime import datetime
-from followthemoney.exc import InvalidData
+
+from pytest import raises
 
 from followthemoney import model
-from followthemoney.types import registry
+from followthemoney.exc import InvalidData
 from followthemoney.proxy import EntityProxy
-
+from followthemoney.types import registry
 
 ENTITY = {
     "id": "test",

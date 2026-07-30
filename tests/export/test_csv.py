@@ -6,7 +6,6 @@ from unittest import TestCase
 from followthemoney import model
 from followthemoney.export.csv import CSVExporter
 
-
 ENTITY = {
     "id": "person",
     "schema": "Person",
@@ -32,12 +31,11 @@ class CSVExportTestCase(TestCase):
         entity = model.get_proxy(ENTITY)
         exporter = CSVExporter(self.outdir, extra=["source"])
         exporter.write(entity, extra=["test"])
-        fh, writer = exporter.handles[entity.schema]
+        fh, _writer = exporter.handles[entity.schema]
         outfile = fh.name
         exporter.finalize()
-        fh = open(outfile, "r")
-        csv_reader = csv.reader(fh)
-        rows = list(csv_reader)
+        with open(outfile, "r") as fh:
+            rows = list(csv.reader(fh))
         props = exporter.exportable_properties(entity.schema)
         self.assertListEqual(rows[0], ["id", "source"] + [prop.name for prop in props])
         self.assertListEqual(rows[1][:3], ["person", "test", "Ralph Tester"])

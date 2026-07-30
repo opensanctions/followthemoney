@@ -1,7 +1,13 @@
-from typing import Callable, Optional, TYPE_CHECKING, Sequence
+from collections.abc import Callable, Sequence
+from typing import TYPE_CHECKING, Optional
+
 from babel.core import Locale
-from rigour.territories import get_ftm_countries, lookup_territory
-from rigour.territories import territories_intersect, get_territory
+from rigour.territories import (
+    get_ftm_countries,
+    get_territory,
+    lookup_territory,
+    territories_intersect,
+)
 
 from followthemoney.types.common import EnumType, EnumValues
 from followthemoney.util import defer as _
@@ -44,9 +50,9 @@ class CountryType(EnumType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Determine a two-letter country code based on an input.
 
         The input may be a country code, a country name, etc.
@@ -61,7 +67,7 @@ class CountryType(EnumType):
     def country_hint(self, value: str) -> str:
         return value
 
-    def caption(self, value: str, format: Optional[str] = None) -> str:
+    def caption(self, value: str, format: str | None = None) -> str:
         """Turn country codes into short names."""
         territory = get_territory(value)
         if territory is not None:

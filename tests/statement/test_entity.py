@@ -1,12 +1,12 @@
 import pytest
-from rigour.time import utc_now, datetime_iso
+from rigour.time import datetime_iso, utc_now
 
+from followthemoney.dataset import Dataset, UndefinedDataset
+from followthemoney.exc import InvalidData
+from followthemoney.proxy import EntityProxy
+from followthemoney.statement import Statement, StatementEntity
 from followthemoney.statement.util import BASE_ID
 from followthemoney.types import registry
-from followthemoney.proxy import EntityProxy
-from followthemoney.exc import InvalidData
-from followthemoney.dataset import Dataset, UndefinedDataset
-from followthemoney.statement import StatementEntity, Statement
 
 DAIMLER = "66ce9f62af8c7d329506da41cb7c36ba058b3d28"
 EXAMPLE = {
@@ -62,7 +62,7 @@ def test_example_entity():
     assert sp.caption == "John Doe"
     assert sp.checksum == "01b955d90ddb0999750531893bff991318d5c559"
     assert sp.key_prefix == UndefinedDataset.name
-    assert "John Doe", sp.get_type_values(registry.name)
+    assert "John Doe" in sp.get_type_values(registry.name)
     assert len(list(sp.iterprops())) == 3
     assert len(sp.properties) == 3
     sp.add("country", "us")
@@ -142,7 +142,7 @@ def test_example_entity():
 
     stmts = list(sp.statements)
     assert len(stmts) == len(sp), stmts
-    assert sorted(stmts)[0].prop == Statement.BASE
+    assert min(stmts).prop == Statement.BASE
 
 
 def test_advanced_props():

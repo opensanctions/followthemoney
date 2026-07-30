@@ -1,14 +1,16 @@
-from contextlib import contextmanager
 import os
-import yaml
+from collections.abc import Generator
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Any, BinaryIO
+
 import click
 import orjson
-from pathlib import Path
-from typing import Any, BinaryIO, Generator, Type
-from banal import is_listish, ensure_list
+import yaml
+from banal import ensure_list, is_listish
 
-from followthemoney.export.common import Exporter
 from followthemoney.entity import ValueEntity
+from followthemoney.export.common import Exporter
 from followthemoney.proxy import E, EntityProxy
 from followthemoney.util import MEGABYTE, PathLike
 
@@ -23,14 +25,14 @@ def write_entity(fh: BinaryIO, entity: EntityProxy, statements: bool = False) ->
     assert entity_id is not None, data
     # Emit `id` as the first key so each JSONL line is byte-sortable by ID
     # with plain `sort`. `ftm sorted-aggregate` depends on this.
-    sort_data = dict(id=entity_id)
+    sort_data = {"id": entity_id}
     sort_data.update(data)
     out = orjson.dumps(sort_data, option=orjson.OPT_APPEND_NEWLINE)
     fh.write(out)
 
 
 def binary_entities(
-    fh: BinaryIO, entity_type: Type[E], cleaned: bool = True, max_line: int = MAX_LINE
+    fh: BinaryIO, entity_type: type[E], cleaned: bool = True, max_line: int = MAX_LINE
 ) -> Generator[E, None, None]:
     while line := fh.readline(max_line):
         data = orjson.loads(line)
@@ -39,7 +41,7 @@ def binary_entities(
 
 def path_entities(
     path: PathLike,
-    entity_type: Type[E],
+    entity_type: type[E],
     cleaned: bool = True,
     max_line: int = MAX_LINE,
 ) -> Generator[E, None, None]:

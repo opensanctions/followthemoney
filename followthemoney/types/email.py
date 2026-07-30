@@ -1,11 +1,11 @@
-import re
 import logging
-from typing import Optional, TYPE_CHECKING
+import re
+from typing import TYPE_CHECKING, Optional
+
 from rigour.env import ENCODING
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
-
 
 # Regex to filter out invalid emails from a CSV file:
 # csvgrep -c value -r '^(?![a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)' contrib/statements_emails.csv > contrib/test_invalid_emails.csv
@@ -20,8 +20,10 @@ class EmailType(PropertyType):
     """Internet mail address (e.g. user@example.com). These are notoriously hard
     to validate, but we use an irresponsibly simple rule and hope for the best."""
 
-    DOMAIN_RE = re.compile(r"^(?!-)(?:[a-z0-9-]{1,63}(?<!-)\.)+[a-z0-9-]{2,}$", re.U)
-    LOCAL_RE = re.compile(r"^[^<>()\[\]\,;:\?\s@\"]{1,64}$", re.U)
+    DOMAIN_RE = re.compile(
+        r"^(?!-)(?:[a-z0-9-]{1,63}(?<!-)\.)+[a-z0-9-]{2,}$", re.UNICODE
+    )
+    LOCAL_RE = re.compile(r"^[^<>()\[\]\,;:\?\s@\"]{1,64}$", re.UNICODE)
 
     name = "email"
     group = "emails"
@@ -39,7 +41,7 @@ class EmailType(PropertyType):
     #     except:
     #         return False
 
-    def clean_domain_part(self, domain: str) -> Optional[str]:
+    def clean_domain_part(self, domain: str) -> str | None:
         """Clean and normalize the domain part of the email."""
         domain = domain.rstrip(".").lower()
         try:
@@ -58,7 +60,7 @@ class EmailType(PropertyType):
             return None
 
     def validate(
-        self, value: str, fuzzy: bool = False, format: Optional[str] = None
+        self, value: str, fuzzy: bool = False, format: str | None = None
     ) -> bool:
         """Check to see if this is a valid email address."""
         return self.clean_text(value, fuzzy=fuzzy, format=format) is not None
@@ -67,9 +69,9 @@ class EmailType(PropertyType):
         self,
         text: str,
         fuzzy: bool = False,
-        format: Optional[str] = None,
+        format: str | None = None,
         proxy: Optional["EntityProxy"] = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Parse and normalize an email address.
 
         Returns None if this is not an email address.
@@ -80,8 +82,7 @@ class EmailType(PropertyType):
 
         # Remove mailto: prefix if present
         email = text.strip()
-        if email.startswith("mailto:"):
-            email = email[7:]
+        email = email.removeprefix("mailto:")
 
         try:
             local, domain = email.rsplit("@", 1)

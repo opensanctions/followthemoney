@@ -1,16 +1,18 @@
-from typing import Dict, Iterable, List, Optional, TextIO, Union
+from collections.abc import Iterable
+from typing import TextIO
+
 import networkx as nx  # type: ignore
 from networkx.readwrite.gexf import generate_gexf  # type: ignore
 
+from followthemoney.export.common import Exporter
 from followthemoney.graph import Edge, Graph, Node
 from followthemoney.proxy import E
 from followthemoney.types import registry
-from followthemoney.export.common import Exporter
 
 DEFAULT_EDGE_TYPES = (registry.entity.name,)
 
 
-def edge_types() -> List[str]:
+def edge_types() -> list[str]:
     return [t.name for t in registry.matchable if t is not None]
 
 
@@ -19,18 +21,18 @@ class GraphExporter(Exporter):
     of entities."""
 
     def __init__(self, edge_types: Iterable[str] = DEFAULT_EDGE_TYPES) -> None:
-        super(GraphExporter, self).__init__()
+        super().__init__()
         types = registry.get_types(edge_types)
         self.graph = Graph(edge_types=types)
 
-    def get_attributes(self, element: Union[Node, Edge]) -> Dict[str, str]:
+    def get_attributes(self, element: Node | Edge) -> dict[str, str]:
         attributes = {}
         if element.proxy:
             for prop, values in self.exportable_fields(element.proxy):
                 attributes[prop.name] = prop.type.join(values)
         return attributes
 
-    def write(self, proxy: E, extra: Optional[List[str]] = None) -> None:
+    def write(self, proxy: E, extra: list[str] | None = None) -> None:
         self.graph.add(proxy)
         self.write_graph()
 
@@ -52,7 +54,7 @@ class NXGraphExporter(GraphExporter):
     def __init__(
         self, fh: TextIO, edge_types: Iterable[str] = DEFAULT_EDGE_TYPES
     ) -> None:
-        super(NXGraphExporter, self).__init__(edge_types=edge_types)
+        super().__init__(edge_types=edge_types)
         self.fh = fh
 
     def finalize_graph(self) -> None:

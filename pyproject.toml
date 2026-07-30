@@ -17,12 +17,11 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-requires-python = ">= 3.10"
+requires-python = ">= 3.11"
 dependencies = [
     "babel >= 2.14.0, < 3.0.0",
     "pyyaml >= 5.0.0, < 7.0.0",
@@ -63,7 +62,7 @@ dev = [
     "types-setuptools",
     "types-openpyxl",
     "types-PyYAML",
-    "flake8>=2.6.0",
+    "ruff>=0.16.0",
     "transifex-client",
     "responses>=0.9.0",
     "coverage>=4.1",
@@ -105,6 +104,45 @@ universal = true
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+# `target-version` is inferred from `project.requires-python` (3.11).
+extend-exclude = ["site", "docs"]
+
+[tool.ruff.lint]
+# We take ruff's default rule selection as-is, so a ruff upgrade brings in new
+# checks by design. `ignore` records the deliberate exceptions:
+ignore = [
+    # `@cache` on methods is intentional on our singletons (Model, Schema).
+    # These live in hot paths and are never collected, so the leak B019 warns
+    # about does not apply.
+    "B019",
+    # Our datetimes are naive-but-UTC by convention across the whole stack:
+    # Version strips tzinfo, rigour has naive_now(), and its iso_datetime()
+    # truncates to 19 characters and assumes UTC. Adopting DTZ means settling on
+    # a canonical wire format first, which is opensanctions/rigour#263. Revisit
+    # once that lands.
+    "DTZ",
+    # Collapsing our nested ifs into `and` chains pushes 8 of 10 sites past the
+    # line limit, and two of them carry a comment on the inner branch that then
+    # has nowhere to live. The outer test is usually a guard and the inner a
+    # predicate, which the nesting conveys better than a flat condition.
+    "SIM102",
+    # Wants `__eq__(self, other: object)`. Correct, but our implementations
+    # reach for `other.id` unguarded, so adopting it means narrowing `__eq__`
+    # on EntityProxy, Statement, Node and Edge -- today a mismatched type
+    # raises AttributeError, and returning False instead is a behaviour change
+    # on hot-path classes.
+    "PYI032",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# These assertions pin __eq__ semantics, so the "redundant" form is the point:
+# `node == node` checks reflexivity, and `not ds == "donations"` checks that a
+# type mismatch returns False rather than raising. Rewriting the latter as `!=`
+# would exercise __ne__ instead.
+"tests/test_graph.py" = ["PLR0124"]
+"tests/dataset/test_dataset.py" = ["SIM201"]
 
 [tool.babel.extractors.followthemoney]
 "followthemoney/**.py" = "python"

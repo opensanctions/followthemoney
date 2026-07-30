@@ -1,4 +1,3 @@
-from typing import Optional
 
 from pydantic import BaseModel, computed_field
 
@@ -10,18 +9,18 @@ class DataPublisher(BaseModel):
     """Publisher information, eg. the government authority."""
 
     name: str
-    url: Optional[Url] = None
-    name_en: Optional[str] = None
-    acronym: Optional[str] = None
-    description: Optional[str] = None
-    country: Optional[CountryCode] = None
-    official: Optional[bool] = False
-    logo_url: Optional[Url] = None
+    url: Url | None = None
+    name_en: str | None = None
+    acronym: str | None = None
+    description: str | None = None
+    country: CountryCode | None = None
+    official: bool | None = False
+    logo_url: Url | None = None
 
     # Re: the type: ignore, see https://github.com/python/mypy/issues/1362 and https://docs.pydantic.dev/2.0/usage/computed_fields/
     @computed_field # type: ignore[prop-decorator]
     @property
-    def country_label(self) -> Optional[str]:
+    def country_label(self) -> str | None:
         if self.country is None:
             return None
         return registry.country.caption(self.country)

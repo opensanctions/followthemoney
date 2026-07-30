@@ -1,19 +1,24 @@
-import click
 from pathlib import Path
-from typing import Dict, Optional, Type
 
-from followthemoney.proxy import E
+import click
+
+from followthemoney.cli.cli import cli
+from followthemoney.cli.util import (
+    InPath,
+    OutPath,
+    path_entities,
+    path_writer,
+    write_entity,
+)
 from followthemoney.entity import ValueEntity
 from followthemoney.namespace import Namespace
-from followthemoney.cli.cli import cli
-from followthemoney.cli.util import InPath, OutPath, path_entities
-from followthemoney.cli.util import path_writer, write_entity
+from followthemoney.proxy import E
 
 
-def sorted_aggregate(path: Path, outpath: Path, entity_type: Type[E]) -> None:
+def sorted_aggregate(path: Path, outpath: Path, entity_type: type[E]) -> None:
     """Aggregate entities based on the premise that the fragments in the source
     stream are sorted by their ID."""
-    entity: Optional[E] = None
+    entity: E | None = None
     with path_writer(outpath) as outfh:
         for next_entity in path_entities(path, entity_type=entity_type):
             if entity is None:
@@ -33,7 +38,7 @@ def sorted_aggregate(path: Path, outpath: Path, entity_type: Type[E]) -> None:
 @click.option("-i", "--infile", type=InPath, default="-")
 @click.option("-o", "--outfile", type=OutPath, default="-")
 def aggregate(infile: Path, outfile: Path) -> None:
-    buffer: Dict[str, ValueEntity] = {}
+    buffer: dict[str, ValueEntity] = {}
     namespace = Namespace(None)
     try:
         with path_writer(outfile) as outfh:
