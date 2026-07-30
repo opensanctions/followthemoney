@@ -108,10 +108,11 @@ class PropertyType:
 
         Returns `None` if the value is empty or cannot be interpreted as this type.
         The `fuzzy` flag loosens validation for types that support it (dates,
-        identifiers). `format` supplies a type-specific hint — for example, a
-        `strptime` format string for dates. `proxy` is the entity the value is
-        being added to, which some types use for context-aware cleaning (address
-        normalization can use the entity's country, for example).
+        identifiers). `format` supplies a type-specific hint — a `strptime` format
+        string for dates, or the country a phone number is dialed in. `proxy` is
+        the entity the value is being added to, which a few types use for
+        context-aware cleaning (an entity reference cannot point at itself, for
+        example).
 
         This method converts the input to a string, drops null-equivalents, and
         then delegates to `clean_text`. Subclasses normally override `clean_text`

@@ -8282,7 +8282,7 @@
       "plural": "Numbers"
     },
     "phone": {
-      "description": "A phone number in E.164 format. This means that phone numbers always\ninclude an international country prefix (e.g. `+38760183628`). The\ncleaning and validation functions for this try to be smart about by\naccepting a list of countries as an argument in order to add the number\nprefix.\n\nWhen adding a property of this type to an entity, any country-type properties\ndefined for the entity are considered for validation. That means that adding a\nphone number to an entity before adding a country can have a different\nvalidation outcome from doing the two operations the other way around. Always\ndefine the country first.",
+      "description": "A phone number in E.164 format, i.e. one that always carries an\ninternational dialing prefix (e.g. `+38760183628`).\n\nSource data often gives numbers in national format, without that prefix. Pass\nthe country the number is dialed in as the `format` hint to have the prefix\napplied, e.g. `entity.add(\"phone\", \"017623423980\", format=\"de\")`. A number\nthat is neither in international format nor accompanied by a hint is rejected.",
       "group": "phones",
       "label": "Phone number",
       "matchable": true,
