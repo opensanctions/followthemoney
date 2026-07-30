@@ -1,7 +1,30 @@
 import re
+from functools import cache
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
+
+
+@cache
+def _number_pattern(decimal: str, separator: str) -> re.Pattern[str]:
+    """Build a strict, fully-anchored number+unit pattern for a given locale.
+
+    A separator (or whitespace) is only accepted as a thousands/lakh grouping
+    when it splits digits into valid groups; a lone run of digits is accepted
+    ungrouped. Anything the pattern cannot match end-to-end is rejected by the
+    caller rather than silently truncated (see issue #331)."""
+    dec = re.escape(decimal)
+    grp = rf"[{re.escape(separator)}\s]"
+    # Either grouped digits (western 3s, indian 2/3s) or a plain run of digits.
+    integer = rf"(?:\d{{1,3}}(?:{grp}\d{{2,3}})+|\d+)"
+    number = rf"[+-]?\s?{integer}(?:{dec}\d+)?"
+    # A unit is digit-free: any digit after the number may belong to a second,
+    # glued-on number (a compact range, scientific notation, or a repeated
+    # decimal/grouping char), which then fails the end-anchored match rather
+    # than being mistaken for a unit (see issue #331).
+    unit = r"[^\s\d]+"
+    pattern = rf"^\s*(?P<number>{number})\s*(?P<unit>{unit})?\s*$"
+    return re.compile(pattern, re.UNICODE)
 
 
 class NumberType(PropertyType):
@@ -16,10 +39,6 @@ class NumberType(PropertyType):
     SEPARATOR = ","
     PRECISION = 2
 
-    _NUM_UNIT_RE = (
-        f"(\\s?\\-?\\s?\\d+(?:{re.escape(DECIMAL)}\\d+)?)\\s*([^\\s\\d][^\\s]*)?"
-    )
-    NUM_UNIT_RE = re.compile(_NUM_UNIT_RE, re.UNICODE)
     _FLOAT_FMT = "{:" + SEPARATOR + "." + str(PRECISION) + "f}"
     _INT_FMT = "{:" + SEPARATOR + "d}"
 
@@ -46,23 +65,28 @@ class NumberType(PropertyType):
 
         Returns:
             A tuple of (number, unit), where number is a string and unit is a string or None.
+
+        Returns (None, None) when the string is not a single, well-formed number
+        with an optional unit. Ambiguous or multi-number inputs (e.g. ranges, or a
+        European decimal comma under the default separator) are rejected rather
+        than silently coerced into a structurally different value (see issue #331).
         """
-        value = value.replace(separator, "")
-        if decimal != self.DECIMAL:
-            value = value.replace(decimal, self.DECIMAL)
-        match = self.NUM_UNIT_RE.match(value)
-        if not match:
+        match = _number_pattern(decimal, separator).match(value.strip())
+        if match is None:
             return None, None
-        number, unit = match.groups()
+        unit = match.group("unit")
         if unit is not None:
             unit = unit.strip()
             if len(unit) == 0:
                 unit = None
         # TODO: We could have a lookup table for common units, e.g. kg, m, etc. to
         # convert them to a standard form.
-        number = number.replace(" ", "")
+        number = match.group("number").replace(separator, "")
+        number = re.sub(r"\s+", "", number)
+        if decimal != self.DECIMAL:
+            number = number.replace(decimal, self.DECIMAL)
         if number == "":
-            number = None
+            return None, None
         return number, unit
 
     def to_number(self, value: str) -> float | None:
