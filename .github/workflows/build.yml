@@ -1,8 +1,10 @@
 name: build
 on:
-  - push
-  - pull_request
-  - workflow_dispatch
+  push:
+    branches: [main]
+    tags: ['*']
+  pull_request:
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -11,6 +13,13 @@ permissions:
   attestations: write
   artifact-metadata: write
 
+# Supersede in-flight runs for the same ref, but only for pull requests. Tag
+# pushes must never be cancelled: the publish steps below push to PyPI, NPM,
+# Maven and GHCR in sequence, so an abort mid-run leaves a half-released version.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   python:
     runs-on: ubuntu-latest
@@ -18,8 +27,6 @@ jobs:
       matrix:
         python:
           - "3.11"
-          - "3.12"
-          - "3.13"
           - "3.14"
     steps:
       - uses: actions/checkout@v7
@@ -71,7 +78,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.13"
+          python-version: "3.14"
       - name: Install build tool
         run: python -m pip install --upgrade pip build
       - name: Build wheel and sdist

@@ -2,6 +2,8 @@ name: docs
 
 on:
   push:
+    branches: [main]
+    tags: ['*']
   pull_request:
   workflow_dispatch:
 
@@ -10,9 +12,12 @@ permissions:
   pages: write
   id-token: write
 
+# Scoped per ref so PR docs builds don't queue behind each other, or behind a
+# deploy from main. The serialised "pages" group lives on the deploy job, which
+# is the only part that must not run concurrently with itself.
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: docs-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   # Build job
@@ -48,6 +53,9 @@ jobs:
   # Deployment job
   deploy:
     if: ${{ github.ref == 'refs/heads/main' }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
