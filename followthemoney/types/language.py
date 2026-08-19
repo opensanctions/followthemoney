@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, ClassVar, Optional
+from typing import TYPE_CHECKING, ClassVar
 
 from babel.core import Locale
 from rigour.langs import iso_639_alpha3
@@ -124,7 +124,7 @@ class LanguageType(EnumType):
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         code = iso_639_alpha3(text)
         if code not in self.LANGUAGES:

@@ -1,6 +1,6 @@
 import json
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
@@ -40,7 +40,7 @@ class JsonType(PropertyType):
         raw: Any,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         if not isinstance(raw, str):
             return self.pack(raw)

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from rigour.urls import clean_url, compare_urls
 
@@ -31,7 +31,7 @@ class UrlType(PropertyType):
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         """Perform intensive care on URLs to make sure they have a scheme
         and a host name. If no scheme is given HTTP is assumed."""

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from rigour.mime import DEFAULT, normalize_mimetype, parse_mimetype
 
@@ -29,7 +29,7 @@ class MimeType(PropertyType):
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         text = normalize_mimetype(text)
         if text != DEFAULT:

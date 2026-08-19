@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from normality import slugify_text, squash_spaces
 from rigour.addresses import normalize_address
@@ -33,7 +33,7 @@ class AddressType(PropertyType):
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         """Basic clean-up."""
         address = self.LINE_BREAKS.sub(", ", text)

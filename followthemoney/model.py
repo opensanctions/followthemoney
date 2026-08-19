@@ -1,7 +1,7 @@
 import os
 from collections.abc import Generator, Iterator
 from functools import cache
-from typing import TYPE_CHECKING, Any, Optional, TypedDict
+from typing import TYPE_CHECKING, Any, TypedDict
 
 import yaml
 from rigour.env import ENCODING
@@ -31,7 +31,7 @@ class Model:
     provides some helper functions to find schemata, properties or to instantiate
     entity proxies based on the schema metadata."""
 
-    _instance: Optional["Model"] = None
+    _instance: "Model | None" = None
 
     __slots__ = ("path", "properties", "qnames", "schemata")
 

@@ -1,5 +1,5 @@
 from functools import cache
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from phonenumbers import (
     SUPPORTED_REGIONS,
@@ -74,7 +74,7 @@ class PhoneType(PropertyType):
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         # Resolved up front so that an invalid hint is reported even when the
         # number turns out to be in international format already:

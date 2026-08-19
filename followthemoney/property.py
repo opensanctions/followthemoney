@@ -38,7 +38,7 @@ class PropertyDict(TypedDict, total=False):
     deprecated: bool | None
     maxLength: int | None
     examples: list[str] | None
-    # stub: Optional[bool]
+    # stub: bool | None
     range: str | None
     format: str | None
 

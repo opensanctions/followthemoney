@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from followthemoney.exc import InvalidData
 from followthemoney.types.common import PropertyType
@@ -39,7 +39,7 @@ class EntityType(PropertyType):
         raw: Any,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         entity_id = get_entity_id(raw)
         if entity_id is None:
@@ -51,7 +51,7 @@ class EntityType(PropertyType):
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         """Specific types can apply their own cleaning routines here (this is called
         by ``clean`` after the value has been converted to a string and null values

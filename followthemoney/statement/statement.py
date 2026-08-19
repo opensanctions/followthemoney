@@ -208,7 +208,7 @@ class Statement:
         canonical_id: str | None = None,
         last_seen: str | None | object = UNSET,
         origin: str | None | object = UNSET,
-    ) -> "Statement":
+    ) -> Self:
         """Make a deep copy of the given statement."""
         lang = lang if is_not_unset(lang) else self._lang
         ov = original_value if is_not_unset(original_value) else self.original_value
@@ -236,7 +236,7 @@ class Statement:
             stmt_id = None
         if lang != self._lang:
             stmt_id = None
-        return Statement(
+        return type(self)(
             id=stmt_id,
             entity_id=entity_id or self._entity_id,
             prop=prop or self._prop,
@@ -287,7 +287,7 @@ class Statement:
         return hashlib.sha1(key.encode(HASH_ENCODING)).hexdigest()
 
     @classmethod
-    def from_dict(cls, data: StatementDict) -> "Statement":
+    def from_dict(cls, data: StatementDict) -> Self:
         return cls(
             entity_id=data["entity_id"],
             prop=data["prop"],
@@ -305,7 +305,7 @@ class Statement:
         )
 
     @classmethod
-    def from_db_row(cls, row: Row[Any]) -> "Statement":
+    def from_db_row(cls, row: Row[Any]) -> Self:
         return cls(
             id=row.id,
             canonical_id=row.canonical_id,

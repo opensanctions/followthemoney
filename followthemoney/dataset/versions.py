@@ -5,7 +5,7 @@ import string
 from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any
+from typing import Any, Self
 
 from rigour.time import utc_now
 
@@ -21,7 +21,7 @@ class Version:
         self.tag: str = tag
 
     @classmethod
-    def new(cls, tag: str | None = None) -> "Version":
+    def new(cls, tag: str | None = None) -> Self:
         now = utc_now().replace(tzinfo=None)
 
         if tag is None:
@@ -35,7 +35,7 @@ class Version:
         return cls(now, tag)
 
     @classmethod
-    def from_string(cls, id: str) -> "Version":
+    def from_string(cls, id: str) -> Self:
         if "-" not in id:
             raise ValueError(f"Invalid dataset version: {id}")
         ts, tag = id.split("-", 1)
@@ -57,7 +57,7 @@ class Version:
         return encoded
 
     @classmethod
-    def from_env(cls, name: str) -> "Version":
+    def from_env(cls, name: str) -> Self:
         id = os.environ.get(name)
         if id is None:
             return cls.new()
@@ -94,7 +94,11 @@ class VersionHistory:
         """Creates a new history with the given RunID appended."""
         items = list(self.items)
         items.append(version)
-        return VersionHistory(items[-self.max_length :], self.last_successful)
+        return VersionHistory(
+            items[-self.max_length :],
+            self.last_successful,
+            max_length=self.max_length,
+        )
 
     @property
     def latest(self) -> Version | None:
@@ -104,15 +108,16 @@ class VersionHistory:
 
     def to_json(self) -> str:
         """Return a JSON representation of the version history."""
-        items = [str(run) for run in self.items[-self.LENGTH :]]
+        items = [str(run) for run in self.items[-self.max_length :]]
         last_successful = self.last_successful.id if self.last_successful else None
         return json.dumps({"items": items, "last_successful": last_successful})
 
     @classmethod
-    def from_json(cls, data: str) -> "VersionHistory":
+    def from_json(cls, data: str) -> Self:
         """Create a run history from a JSON representation."""
-        items_raw = json.loads(data).get("items", [])
-        last_successful_raw = json.loads(data).get("last_successful", None)
+        parsed = json.loads(data)
+        items_raw = parsed.get("items", [])
+        last_successful_raw = parsed.get("last_successful", None)
         items = [Version.from_string(item_raw) for item_raw in items_raw]
         last_successful = (
             Version.from_string(last_successful_raw) if last_successful_raw else None

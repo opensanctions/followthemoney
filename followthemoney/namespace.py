@@ -24,7 +24,7 @@ the server without compromising isolation.
 """
 
 import hmac
-from typing import Any, Union
+from typing import Any
 
 from followthemoney.proxy import E
 from followthemoney.types import registry
@@ -111,7 +111,7 @@ class Namespace:
         return signed
 
     @classmethod
-    def make(cls, name: Union[str, "Namespace"]) -> "Namespace":
+    def make(cls, name: "str | Namespace") -> "Namespace":
         if isinstance(name, str):
             return cls(name)
         return name

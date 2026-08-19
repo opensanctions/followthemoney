@@ -1,5 +1,5 @@
 from ipaddress import ip_address
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
@@ -36,7 +36,7 @@ class IpType(PropertyType):
         text: str,
         fuzzy: bool = False,
         format: str | None = None,
-        proxy: Optional["EntityProxy"] = None,
+        proxy: "EntityProxy | None" = None,
     ) -> str | None:
         """Create a more clean, but still user-facing version of an
         instance of the type."""

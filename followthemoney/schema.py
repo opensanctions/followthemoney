@@ -1,5 +1,5 @@
 from functools import cache
-from typing import TYPE_CHECKING, Any, TypedDict, Union
+from typing import TYPE_CHECKING, Any, TypedDict
 
 from banal import as_bool
 
@@ -394,7 +394,7 @@ class Schema:
         return other in self.matchable_schemata
 
     @cache
-    def is_a(self, other: Union[str, "Schema"]) -> bool:
+    def is_a(self, other: "str | Schema") -> bool:
         """Check if the schema or one of its parents is the same as the given
         candidate ``other``."""
         if not isinstance(other, str):

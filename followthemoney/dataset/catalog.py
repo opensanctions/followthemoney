@@ -1,4 +1,4 @@
-from typing import Any, Generic, Optional
+from typing import Any, Generic, Self
 
 import yaml
 
@@ -40,7 +40,7 @@ class DataCatalog(Generic[DS]):
         self.add(dataset)
         return dataset
 
-    def get(self, name: str) -> Optional["DS"]:
+    def get(self, name: str) -> "DS | None":
         """Get a dataset by name. Returns None if the dataset does not exist."""
         for ds in self.datasets:
             if ds.name == name:
@@ -73,6 +73,6 @@ class DataCatalog(Generic[DS]):
         }
 
     @classmethod
-    def from_path(cls, dataset_type: type[DS], path: PathLike) -> "DataCatalog[DS]":
+    def from_path(cls, dataset_type: type[DS], path: PathLike) -> Self:
         with open(path, "r") as fh:
             return cls(dataset_type, yaml.safe_load(fh))
