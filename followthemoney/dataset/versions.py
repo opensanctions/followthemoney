@@ -94,7 +94,11 @@ class VersionHistory:
         """Creates a new history with the given RunID appended."""
         items = list(self.items)
         items.append(version)
-        return VersionHistory(items[-self.max_length :], self.last_successful)
+        return VersionHistory(
+            items[-self.max_length :],
+            self.last_successful,
+            max_length=self.max_length,
+        )
 
     @property
     def latest(self) -> Version | None:
@@ -104,15 +108,16 @@ class VersionHistory:
 
     def to_json(self) -> str:
         """Return a JSON representation of the version history."""
-        items = [str(run) for run in self.items[-self.LENGTH :]]
+        items = [str(run) for run in self.items[-self.max_length :]]
         last_successful = self.last_successful.id if self.last_successful else None
         return json.dumps({"items": items, "last_successful": last_successful})
 
     @classmethod
     def from_json(cls, data: str) -> Self:
         """Create a run history from a JSON representation."""
-        items_raw = json.loads(data).get("items", [])
-        last_successful_raw = json.loads(data).get("last_successful", None)
+        parsed = json.loads(data)
+        items_raw = parsed.get("items", [])
+        last_successful_raw = parsed.get("last_successful", None)
         items = [Version.from_string(item_raw) for item_raw in items_raw]
         last_successful = (
             Version.from_string(last_successful_raw) if last_successful_raw else None

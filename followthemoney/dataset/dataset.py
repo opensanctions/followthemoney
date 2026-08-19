@@ -60,7 +60,7 @@ class DatasetModel(BaseModel):
         return data
 
     @model_validator(mode="after")
-    def evaluate_data(self) -> "DatasetModel":
+    def evaluate_data(self) -> Self:
         # derive deprecated from deprecation notice:
         if self.deprecation is not None:
             self.deprecation = self.deprecation.strip()
