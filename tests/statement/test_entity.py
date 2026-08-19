@@ -258,3 +258,63 @@ def test_entity_origin():
     sp.add_statement(stmt)
     data = sp.to_dict()
     assert data["origin"] == ["space"]
+
+
+def test_entity_external():
+    dx = Dataset.make({"name": "test", "title": "Test"})
+    empty = StatementEntity(dx, {"id": "bla", "schema": "Person"})
+    assert empty.external is False
+
+    sp = StatementEntity.from_data(dx, EXAMPLE)
+    assert sp.external is False
+
+    ext = StatementEntity(dx, {"id": "bla", "schema": "Person"})
+    ext.add("name", "John Doe", external=True)
+    ext.add("birthDate", "1976", external=True)
+    assert ext.external is True
+
+    stmts = ext.get_statements("name")
+    assert len(stmts) == 1
+    assert stmts[0].external is True
+    assert stmts[0].id != sp.get_statements("name")[0].id
+
+    # A single internal statement makes the whole entity internal again:
+    ext.add("lastName", "Doe")
+    assert ext.external is False
+    ext.pop("lastName")
+    assert ext.external is True
+
+    # The same value added both ways yields two distinct statements:
+    ext.add("name", "John Doe")
+    assert ext.external is False
+    assert len(ext.get_statements("name")) == 2
+    assert ext.get("name") == ["John Doe"]
+
+    # set() replaces the property and applies the flag:
+    ext.set("name", "John Doe", external=True)
+    assert ext.external is True
+    assert len(ext.get_statements("name")) == 1
+
+
+def test_entity_external_roundtrip():
+    dx = Dataset.make({"name": "test", "title": "Test"})
+    ext = StatementEntity(dx, {"id": "bla", "schema": "Person"})
+    ext.add("name", "John Doe", external=True)
+    ext.add("birthDate", "1976", external=True)
+
+    other = StatementEntity.from_data(dx, ext.to_statement_dict())
+    assert other.external is True
+
+    statements = list(ext._iter_stmt())
+    assert StatementEntity.from_statements(dx, statements).external is True
+
+    mixed = statements + [
+        Statement(
+            entity_id="bla",
+            prop="lastName",
+            schema="Person",
+            value="Doe",
+            dataset=dx.name,
+        )
+    ]
+    assert StatementEntity.from_statements(dx, mixed).external is False

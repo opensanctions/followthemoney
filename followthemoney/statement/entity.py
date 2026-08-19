@@ -132,6 +132,24 @@ class StatementEntity(EntityProxy):
         return max(seen, default=None)
 
     @property
+    def external(self) -> bool:
+        """Whether every statement backing this entity is external, i.e. the whole
+        entity is a pre-verification suggestion rather than published data.
+
+        Reach for this when deciding if an entity can be treated as real: a single
+        non-external statement means some part of the entity has been verified, so
+        the entity as a whole counts as internal. An entity without any statements
+        is not external.
+        """
+        found = False
+        for stmts in self._statements.values():
+            for stmt in stmts:
+                if not stmt.external:
+                    return False
+                found = True
+        return found
+
+    @property
     def datasets(self) -> set[str]:
         datasets: set[str] = set()
         for stmt in self._iter_stmt():
@@ -212,6 +230,7 @@ class StatementEntity(EntityProxy):
         lang: str | None = None,
         original_value: str | None = None,
         origin: str | None = None,
+        external: bool = False,
     ) -> None:
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None:
@@ -227,6 +246,7 @@ class StatementEntity(EntityProxy):
             lang=lang,
             original_value=original_value,
             origin=origin,
+            external=external,
         )
 
     def add(
@@ -240,6 +260,7 @@ class StatementEntity(EntityProxy):
         lang: str | None = None,
         original_value: str | None = None,
         origin: str | None = None,
+        external: bool = False,
     ) -> None:
         prop_name = self._prop_name(prop, quiet=quiet)
         if prop_name is None:
@@ -256,6 +277,7 @@ class StatementEntity(EntityProxy):
                 lang=lang,
                 original_value=original_value,
                 origin=origin,
+                external=external,
             )
         return
 
@@ -273,6 +295,7 @@ class StatementEntity(EntityProxy):
         lang: str | None = None,
         original_value: str | None = None,
         origin: str | None = None,
+        external: bool = False,
     ) -> str | None:
         """Add a statement to the entity, possibly the value."""
         if value is None or len(value) == 0:
@@ -310,6 +333,7 @@ class StatementEntity(EntityProxy):
             original_value=original_value,
             first_seen=seen,
             origin=origin,
+            external=external,
         )
         self.add_statement(stmt)
         return clean
