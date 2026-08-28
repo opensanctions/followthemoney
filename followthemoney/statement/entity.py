@@ -318,9 +318,6 @@ class StatementEntity(EntityProxy):
         if clean is None:
             return None
 
-        if original_value is None and clean != value:
-            original_value = value
-
         if self.id is None:
             raise InvalidData("Cannot add statement to entity without ID!")
         stmt = Statement(
@@ -330,7 +327,7 @@ class StatementEntity(EntityProxy):
             value=clean,
             dataset=dataset or self.dataset.name,
             lang=lang,
-            original_value=original_value,
+            original_value=original_value or value,
             first_seen=seen,
             origin=origin,
             external=external,
