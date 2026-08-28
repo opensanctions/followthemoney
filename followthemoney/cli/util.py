@@ -2,7 +2,7 @@ import os
 from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, BinaryIO
+from typing import Any, BinaryIO, cast
 
 import click
 import orjson
@@ -45,22 +45,17 @@ def path_entities(
     cleaned: bool = True,
     max_line: int = MAX_LINE,
 ) -> Generator[E, None, None]:
-    if str(path) == "-":
-        fh = click.get_binary_stream("stdin")
-        yield from binary_entities(fh, entity_type, cleaned=cleaned, max_line=max_line)
-        return
-    with open(path, "rb") as fh:
-        yield from binary_entities(fh, entity_type, cleaned=cleaned, max_line=max_line)
+    with click.open_file(path, "rb") as fh:
+        yield from binary_entities(
+            cast(BinaryIO, fh), entity_type, cleaned=cleaned, max_line=max_line
+        )
 
 
 @contextmanager
 def path_writer(path: PathLike) -> Generator[BinaryIO, None, None]:
     """Open a file for writing binary content, or use stdout."""
-    if str(path) == "-":
-        yield click.get_binary_stream("stdout")
-        return
-    with open(path, "wb") as fh:
-        yield fh
+    with click.open_file(path, "wb") as fh:
+        yield cast(BinaryIO, fh)
 
 
 def export_stream(exporter: Exporter, path: Path) -> None:
