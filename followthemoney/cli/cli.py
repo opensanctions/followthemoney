@@ -65,7 +65,7 @@ def sign(infile: Path, outfile: Path, signature: str | None) -> None:
 @cli.command(help="Format a stream of entities to make it readable")
 @click.option("-i", "--infile", type=InPath, default="-")
 def pretty(infile: Path) -> None:
-    stdout = click.get_binary_stream("stdout")
+    stdout = click.open_file("-", "wb")
     try:
         f = orjson.OPT_INDENT_2 | orjson.OPT_APPEND_NEWLINE
         for entity in path_entities(infile, ValueEntity):

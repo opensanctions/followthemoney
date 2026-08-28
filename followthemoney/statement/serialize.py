@@ -131,12 +131,8 @@ def read_statements(fh: BinaryIO, format: str) -> Generator[Statement, None, Non
 
 
 def read_path_statements(path: Path, format: str) -> Generator[Statement, None, None]:
-    if str(path) == "-":
-        fh = click.get_binary_stream("stdin")
-        yield from read_statements(fh, format=format)
-        return
-    with open(path, "rb") as fh:
-        yield from read_statements(fh, format=format)
+    with click.open_file(path, "rb") as fh:
+        yield from read_statements(cast(BinaryIO, fh), format=format)
 
 
 def get_statement_writer(fh: BinaryIO, format: str) -> "StatementWriter":

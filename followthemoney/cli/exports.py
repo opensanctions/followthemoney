@@ -1,7 +1,7 @@
 from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import TextIO
+from typing import TextIO, cast
 
 import click
 
@@ -14,11 +14,8 @@ from followthemoney.export.neo4j import CypherGraphExporter, Neo4JCSVExporter
 
 @contextmanager
 def text_out(path: Path) -> Generator[TextIO, None, None]:
-    if str(path) == "-":
-        yield click.get_text_stream("stdout")
-        return
-    with open(path, "w") as fh:
-        yield fh
+    with click.open_file(path, "w") as fh:
+        yield cast(TextIO, fh)
 
 
 @cli.command("export-csv", help="Export to CSV")
