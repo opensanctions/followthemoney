@@ -8427,6 +8427,7 @@
       "plural": "Topics",
       "values": {
         "asset.frozen": "Frozen asset",
+        "corp.clone": "Clone of real entity",
         "corp.disqual": "Disqualified",
         "corp.offshore": "Offshore",
         "corp.public": "Public listed company",
