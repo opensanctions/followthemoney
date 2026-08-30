@@ -1,0 +1,60 @@
+Control:
+  label: "Control"
+  plural: "Control relationships"
+  description: >
+    One entity exercising control over another, not necessarily by owning it:
+    the power to direct the management, the right to appoint or remove directors,
+    contractual or trust arrangements, or other significant influence.
+  extends:
+    - Interest
+  matchable: false
+  featured:
+    - controller
+    - controlled
+    - controlType
+    - startDate
+    - endDate
+  required:
+    - controller
+    - controlled
+  caption:
+    - controlType
+  edge: # CONTROLLER controls CONTROLLED
+    source: controller
+    label: "controls"
+    target: controlled
+    directed: true
+    caption:
+      - controlType
+  properties:
+    controller:
+      label: "Controller"
+      description: "The entity exercising control"
+      reverse:
+        name: controlController
+        label: "Controlled entities"
+      type: entity
+      range: LegalEntity
+    controlled:
+      label: "Controlled entity"
+      description: "The entity being controlled"
+      reverse:
+        name: controlControlled
+        label: "Controlling parties"
+      type: entity
+      range: LegalEntity
+    controlType:
+      label: "Type of control"
+      description: "The mechanism through which control is exercised"
+      examples:
+        - voting
+        - appointment
+        - management
+        - contractual
+        - trust
+        - nominee
+        - state
+        - indirect
+    legalBasis:
+      label: "Legal basis"
+      description: "Statute, regulation or register rule under which the control is asserted"
