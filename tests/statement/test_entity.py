@@ -318,3 +318,51 @@ def test_entity_external_roundtrip():
         )
     ]
     assert StatementEntity.from_statements(dx, mixed).external is False
+
+
+def test_entity_original_value():
+    def ovs(entity: StatementEntity, prop: str) -> dict[str, str | None]:
+        return {
+            s.value: s.original_value for s in entity._iter_stmt() if s.prop == prop
+        }
+
+    # Normalisation changed the value: keep what the source said.
+    sp = StatementEntity(UndefinedDataset, {"id": "x", "schema": "Person"})
+    sp.add("nationality", "Russia")
+    assert ovs(sp, "nationality") == {"ru": "Russia"}
+
+    # Nothing was normalised: nothing to record.
+    sp = StatementEntity(UndefinedDataset, {"id": "x", "schema": "Person"})
+    sp.add("nationality", "ru")
+    assert ovs(sp, "nationality") == {"ru": None}
+
+    sp = StatementEntity(UndefinedDataset, {"id": "x", "schema": "Person"})
+    sp.add("name", "Jane Doe")
+    assert ovs(sp, "name") == {"Jane Doe": None}
+
+    # add() sanitises whitespace before building the statement, so by the time
+    # a value is compared there is no transformation left to record.
+    sp = StatementEntity(UndefinedDataset, {"id": "x", "schema": "Person"})
+    sp.add("name", "  Jane Doe  ")
+    assert ovs(sp, "name") == {"Jane Doe": None}
+
+    # unsafe_add does not sanitise, so the cleaning is visible there.
+    sp = StatementEntity(UndefinedDataset, {"id": "x", "schema": "Person"})
+    prop = sp.schema.properties["name"]
+    sp.unsafe_add(prop, "  Jane Doe  ")
+    assert ovs(sp, "name") == {"Jane Doe": "  Jane Doe  "}
+
+    # An explicit original_value wins over the derived one...
+    sp = StatementEntity(UndefinedDataset, {"id": "x", "schema": "Person"})
+    sp.add("nationality", "Russia", original_value="Rossiya")
+    assert ovs(sp, "nationality") == {"ru": "Rossiya"}
+
+    # ...unless it just repeats the value, in which case it records nothing.
+    sp = StatementEntity(UndefinedDataset, {"id": "x", "schema": "Person"})
+    sp.add("nationality", "Russia", original_value="ru")
+    assert ovs(sp, "nationality") == {"ru": None}
+
+    # An empty original_value is the same as passing none at all: derive it.
+    sp = StatementEntity(UndefinedDataset, {"id": "x", "schema": "Person"})
+    sp.add("nationality", "Russia", original_value="")
+    assert ovs(sp, "nationality") == {"ru": "Russia"}

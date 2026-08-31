@@ -39,3 +39,44 @@ def test_statement_state():
     ext = stmt.clone(external=True)
     assert ext.external is True
     assert ext.id != stmt.id
+
+
+def test_statement_redundant_original_value():
+    stmt = Statement(
+        schema="Person",
+        entity_id="entity1",
+        prop="name",
+        value="Alice",
+        dataset="test-dataset",
+        original_value="Alice",
+    )
+    assert stmt.original_value is None
+
+    kept = stmt.clone(value="Alicia", original_value="Alice")
+    assert kept.original_value == "Alice"
+
+    assert kept.clone(value="Alice").original_value is None
+
+
+def test_statement_empty_original_value():
+    stmt = Statement(
+        schema="Person",
+        entity_id="entity1",
+        prop="name",
+        value="Alice",
+        dataset="test-dataset",
+        original_value="",
+    )
+    assert stmt.original_value is None
+
+    from_dict = Statement.from_dict(
+        {
+            "entity_id": "entity1",
+            "prop": "name",
+            "schema": "Person",
+            "value": "Alice",
+            "dataset": "test-dataset",
+            "original_value": "",
+        }
+    )
+    assert from_dict.original_value is None

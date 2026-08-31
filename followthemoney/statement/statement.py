@@ -97,6 +97,8 @@ class Statement:
                 lang = None
         self._lang = lang
 
+        if not original_value or original_value == value:
+            original_value = None
         self.original_value = original_value
         self.first_seen = first_seen
         self.last_seen = last_seen or first_seen

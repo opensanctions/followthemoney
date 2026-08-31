@@ -318,7 +318,7 @@ class StatementEntity(EntityProxy):
         if clean is None:
             return None
 
-        if original_value is None and clean != value:
+        if not original_value:
             original_value = value
 
         if self.id is None:
