@@ -1,0 +1,72 @@
+Territory:
+  label: Territory
+  plural: Territories
+  description: >
+    A country, subnational division or other administrative area. Territories are
+    reference data with deterministic identifiers, not a geospatial model.
+  extends:
+    - Thing
+  matchable: true
+  featured:
+    - name
+    - territoryCode
+    - country
+    - level
+    - partOf
+  required:
+    - name
+  caption:
+    - name
+    - alias
+  properties:
+    partOf:
+      label: "Part of"
+      description: "The administrative unit this territory is part of, e.g. the country for a state, the state for a county"
+      type: entity
+      range: Territory
+      reverse:
+        name: subdivisions
+        label: "Subdivisions"
+    level:
+      label: "Level"
+      description: "Administrative level of the territory"
+      examples:
+        - country
+        - adm1
+        - adm2
+        - adm3
+        - locality
+    territoryCode:
+      # FIXME: rigour currently has over 600 political territories, but the `country` type
+      # only has ~240 (well north of UN members but not a full list of territories).
+      label: "Territory code"
+      description: "ISO 3166-1 alpha-2 code, ISO 3166-2 subdivision, or FollowTheMoney political territory code"
+      type: identifier
+      maxLength: 16
+      examples:
+        - us-de
+        - ua-cri
+        - ae-du
+    fipsCode:
+      label: "FIPS code"
+      description: "US Census / INCITS geocode for states or counties"
+      type: identifier
+      maxLength: 16
+      examples:
+        - "12"
+        - "12086"
+    zipCode:
+      label: "ZIP code"
+      description: "US postal ZIP code"
+      type: identifier
+      maxLength: 16
+      examples:
+        - "10001"
+        - "90210"
+    nutsCode:
+      label: "NUTS code"
+      description: "Eurostat regional statistics code"
+      type: identifier
+      maxLength: 16
+      examples:
+        - DE21

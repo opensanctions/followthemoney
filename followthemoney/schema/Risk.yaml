@@ -1,15 +1,17 @@
 Risk:
   label: Risk
   plural: Risks
-  description: "A risk associated with an entity."
+  description: >
+    A risk designation attached to an entity by an authority. Distinct from `Sanction`:
+    a `Risk` flags heightened exposure or scrutiny, not a legally binding restriction.
   extends:
     - Interval
   matchable: false
   featured:
     - entity
     - country
-    - reason
-    - status
+    - authority
+    - program
     - startDate
   required:
     - entity
@@ -24,6 +26,19 @@ Risk:
         label: "Risks"
       type: entity
       range: Thing
+    authority:
+      label: "Authority"
+      description: "The body issuing the designation, e.g. FATF, European Commission, FinCEN, ONDCP"
+    program:
+      label: "Program"
+      description: "The list or programme under which the designation is made"
+    programId:
+      label: "Program ID"
+      type: identifier
+      maxLength: 64
+    programUrl:
+      label: "Program URL"
+      type: url
     topics:
       label: Topics
       type: topic

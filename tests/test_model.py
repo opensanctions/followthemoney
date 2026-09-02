@@ -179,6 +179,50 @@ def test_risk_source_property():
     assert "riskLinked" not in thing.properties
 
 
+def test_territory_schema():
+    thing = model.schemata["Thing"]
+    territory = model.schemata["Territory"]
+    assert territory.is_a(thing)
+    assert territory.matchable is True
+    assert territory in model.matchable_schemata()
+
+    part_of = territory.get("partOf")
+    assert part_of is not None, part_of
+    assert part_of.stub is False, part_of
+    assert part_of.range == territory, part_of
+    assert part_of.reverse is not None
+    rev = part_of.reverse
+    assert rev.name == "subdivisions", rev
+    assert rev.range == territory, rev
+    assert rev.stub is True, rev
+    assert territory.get("subdivisions") == rev
+
+    for name in ("territoryCode", "fipsCode", "nutsCode"):
+        prop = territory.get(name)
+        assert prop is not None, name
+        assert prop.type == registry.identifier, prop
+
+    for schema_name in ("Risk", "Sanction"):
+        entity_prop = model.schemata[schema_name].get("entity")
+        assert entity_prop is not None
+        assert entity_prop.range is not None
+        assert territory.is_a(entity_prop.range), (schema_name, entity_prop.range)
+
+
+def test_risk_designation_properties():
+    risk = model.schemata["Risk"]
+    for name in ("authority", "program"):
+        prop = risk.get(name)
+        assert prop is not None, name
+        assert prop.type == registry.string, prop
+    program_id = risk.get("programId")
+    assert program_id is not None
+    assert program_id.type == registry.identifier, program_id
+    program_url = risk.get("programUrl")
+    assert program_url is not None
+    assert program_url.type == registry.url, program_url
+
+
 def test_matchable():
     le = model.schemata["LegalEntity"]
     company = model.schemata["Company"]

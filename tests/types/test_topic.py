@@ -21,3 +21,10 @@ def test_topic_risks():
     assert "corp.clone" in topics.RISKS
     assert "corp.public" not in topics.RISKS
     assert topics.RISKS.issubset(topics._TOPICS)
+
+
+def test_topic_geo_risk():
+    topics = registry.topic
+    assert topics.clean("geo.risk") == "geo.risk"
+    assert "geo.risk" in topics.names
+    assert "geo.risk" in topics.RISKS
