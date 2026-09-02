@@ -45,6 +45,7 @@ class TopicType(EnumType):
         "corp.shell": _("Shell company"),
         "corp.public": _("Public listed company"),
         "corp.disqual": _("Disqualified"),
+        "corp.clone": _("Clone of real entity"),
         "gov": _("Government"),
         "gov.national": _("National government"),
         "gov.state": _("State government"),
@@ -103,6 +104,7 @@ class TopicType(EnumType):
     }
 
     RISKS: ClassVar[set[str]] = {
+        "corp.clone",
         "corp.disqual",
         "crime.boss",
         "crime.fin",

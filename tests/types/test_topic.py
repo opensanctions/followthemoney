@@ -13,3 +13,11 @@ def test_topic_country_codes():
     assert topics.validate("") is False
     assert topics.validate(None) is False
     assert "topic:role.pep" in topics.node_id("role.pep")
+
+
+def test_topic_risks():
+    topics = registry.topic
+    assert topics.validate("corp.clone") is True
+    assert "corp.clone" in topics.RISKS
+    assert "corp.public" not in topics.RISKS
+    assert topics.RISKS.issubset(topics._TOPICS)
