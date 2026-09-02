@@ -1599,6 +1599,101 @@
         ]
       }
     },
+    "Control": {
+      "caption": [
+        "controlType"
+      ],
+      "description": "One entity exercising control over another, not necessarily by owning it: the power to direct the management, the right to appoint or remove directors, contractual or trust arrangements, or other significant influence.\n",
+      "edge": {
+        "caption": [
+          "controlType"
+        ],
+        "directed": true,
+        "label": "controls",
+        "source": "controller",
+        "target": "controlled"
+      },
+      "extends": [
+        "Interest"
+      ],
+      "featured": [
+        "controller",
+        "controlled",
+        "controlType",
+        "startDate",
+        "endDate"
+      ],
+      "label": "Control",
+      "plural": "Control relationships",
+      "properties": {
+        "controlType": {
+          "description": "The mechanism through which control is exercised",
+          "examples": [
+            "voting",
+            "appointment",
+            "management",
+            "contractual",
+            "trust",
+            "nominee",
+            "state",
+            "indirect"
+          ],
+          "label": "Type of control",
+          "maxLength": 1024,
+          "name": "controlType",
+          "qname": "Control:controlType",
+          "type": "string"
+        },
+        "controlled": {
+          "description": "The entity being controlled",
+          "label": "Controlled entity",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "controlled",
+          "qname": "Control:controlled",
+          "range": "LegalEntity",
+          "reverse": "controllingEntities",
+          "type": "entity"
+        },
+        "controller": {
+          "description": "The entity exercising control",
+          "label": "Controller",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "controller",
+          "qname": "Control:controller",
+          "range": "LegalEntity",
+          "reverse": "controlledEntities",
+          "type": "entity"
+        },
+        "legalBasis": {
+          "description": "Statute, regulation or register rule under which the control is asserted",
+          "label": "Legal basis",
+          "maxLength": 1024,
+          "name": "legalBasis",
+          "qname": "Control:legalBasis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "controller",
+        "controlled"
+      ],
+      "schemata": [
+        "Control",
+        "Interest",
+        "Interval"
+      ],
+      "temporalExtent": {
+        "end": [
+          "endDate"
+        ],
+        "start": [
+          "startDate",
+          "date"
+        ]
+      }
+    },
     "CourtCase": {
       "caption": [
         "name",
@@ -3534,6 +3629,28 @@
           "qname": "LegalEntity:contractAwardSupplier",
           "range": "ContractAward",
           "reverse": "supplier",
+          "stub": true,
+          "type": "entity"
+        },
+        "controlledEntities": {
+          "label": "Controlled entities",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "controlledEntities",
+          "qname": "LegalEntity:controlledEntities",
+          "range": "Control",
+          "reverse": "controller",
+          "stub": true,
+          "type": "entity"
+        },
+        "controllingEntities": {
+          "label": "Controlling entities",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "controllingEntities",
+          "qname": "LegalEntity:controllingEntities",
+          "range": "Control",
+          "reverse": "controlled",
           "stub": true,
           "type": "entity"
         },
@@ -8310,6 +8427,7 @@
       "plural": "Topics",
       "values": {
         "asset.frozen": "Frozen asset",
+        "corp.clone": "Clone of real entity",
         "corp.disqual": "Disqualified",
         "corp.offshore": "Offshore",
         "corp.public": "Public listed company",
