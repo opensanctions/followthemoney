@@ -31,7 +31,7 @@ Control:
       label: "Controller"
       description: "The entity exercising control"
       reverse:
-        name: controlController
+        name: controlledEntities
         label: "Controlled entities"
       type: entity
       range: LegalEntity
@@ -39,8 +39,8 @@ Control:
       label: "Controlled entity"
       description: "The entity being controlled"
       reverse:
-        name: controlControlled
-        label: "Controlling parties"
+        name: controllingEntities
+        label: "Controlling entities"
       type: entity
       range: LegalEntity
     controlType:

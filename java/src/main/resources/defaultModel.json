@@ -1652,7 +1652,7 @@
           "name": "controlled",
           "qname": "Control:controlled",
           "range": "LegalEntity",
-          "reverse": "controlControlled",
+          "reverse": "controllingEntities",
           "type": "entity"
         },
         "controller": {
@@ -1663,7 +1663,7 @@
           "name": "controller",
           "qname": "Control:controller",
           "range": "LegalEntity",
-          "reverse": "controlController",
+          "reverse": "controlledEntities",
           "type": "entity"
         },
         "legalBasis": {
@@ -3632,25 +3632,25 @@
           "stub": true,
           "type": "entity"
         },
-        "controlControlled": {
-          "label": "Controlling parties",
-          "matchable": true,
-          "maxLength": 200,
-          "name": "controlControlled",
-          "qname": "LegalEntity:controlControlled",
-          "range": "Control",
-          "reverse": "controlled",
-          "stub": true,
-          "type": "entity"
-        },
-        "controlController": {
+        "controlledEntities": {
           "label": "Controlled entities",
           "matchable": true,
           "maxLength": 200,
-          "name": "controlController",
-          "qname": "LegalEntity:controlController",
+          "name": "controlledEntities",
+          "qname": "LegalEntity:controlledEntities",
           "range": "Control",
           "reverse": "controller",
+          "stub": true,
+          "type": "entity"
+        },
+        "controllingEntities": {
+          "label": "Controlling entities",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "controllingEntities",
+          "qname": "LegalEntity:controllingEntities",
+          "range": "Control",
+          "reverse": "controlled",
           "stub": true,
           "type": "entity"
         },
