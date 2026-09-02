@@ -6319,20 +6319,28 @@
         "reason",
         "status"
       ],
-      "description": "A risk associated with an entity.",
+      "description": "A risk designation attached to an entity by an authority. Distinct from `Sanction`: a `Risk` flags heightened exposure or scrutiny, not a legally binding restriction.\n",
       "extends": [
         "Interval"
       ],
       "featured": [
         "entity",
         "country",
-        "reason",
-        "status",
+        "authority",
+        "program",
         "startDate"
       ],
       "label": "Risk",
       "plural": "Risks",
       "properties": {
+        "authority": {
+          "description": "The body issuing the designation, e.g. FATF, European Commission, FinCEN, ONDCP",
+          "label": "Authority",
+          "maxLength": 1024,
+          "name": "authority",
+          "qname": "Risk:authority",
+          "type": "string"
+        },
         "country": {
           "label": "Country",
           "matchable": true,
@@ -6365,6 +6373,30 @@
           "name": "listingDate",
           "qname": "Risk:listingDate",
           "type": "date"
+        },
+        "program": {
+          "description": "The list or programme under which the designation is made",
+          "label": "Program",
+          "maxLength": 1024,
+          "name": "program",
+          "qname": "Risk:program",
+          "type": "string"
+        },
+        "programId": {
+          "label": "Program ID",
+          "matchable": true,
+          "maxLength": 64,
+          "name": "programId",
+          "qname": "Risk:programId",
+          "type": "identifier"
+        },
+        "programUrl": {
+          "label": "Program URL",
+          "matchable": true,
+          "maxLength": 4096,
+          "name": "programUrl",
+          "qname": "Risk:programUrl",
+          "type": "url"
         },
         "reason": {
           "label": "Reason",
@@ -6944,6 +6976,123 @@
           "date"
         ]
       }
+    },
+    "Territory": {
+      "caption": [
+        "name",
+        "alias"
+      ],
+      "description": "A country, subnational division or other administrative area. Territories are reference data with deterministic identifiers, not a geospatial model.\n",
+      "extends": [
+        "Thing"
+      ],
+      "featured": [
+        "name",
+        "territoryCode",
+        "country",
+        "level",
+        "partOf"
+      ],
+      "label": "Territory",
+      "plural": "Territories",
+      "properties": {
+        "fipsCode": {
+          "description": "US Census / INCITS geocode for states or counties",
+          "examples": [
+            "12",
+            "12086"
+          ],
+          "label": "FIPS code",
+          "matchable": true,
+          "maxLength": 16,
+          "name": "fipsCode",
+          "qname": "Territory:fipsCode",
+          "type": "identifier"
+        },
+        "level": {
+          "description": "Administrative level of the territory",
+          "examples": [
+            "country",
+            "adm1",
+            "adm2",
+            "adm3",
+            "locality"
+          ],
+          "label": "Level",
+          "maxLength": 1024,
+          "name": "level",
+          "qname": "Territory:level",
+          "type": "string"
+        },
+        "nutsCode": {
+          "description": "Eurostat NUTS region code; codes are reused across NUTS revisions, so the producer must pin the vintage",
+          "examples": [
+            "DE21"
+          ],
+          "label": "NUTS code",
+          "matchable": true,
+          "maxLength": 16,
+          "name": "nutsCode",
+          "qname": "Territory:nutsCode",
+          "type": "identifier"
+        },
+        "partOf": {
+          "description": "The administrative unit this territory is part of, e.g. the country for a state, the state for a county",
+          "label": "Part of",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "partOf",
+          "qname": "Territory:partOf",
+          "range": "Territory",
+          "reverse": "subdivisions",
+          "type": "entity"
+        },
+        "subdivisions": {
+          "label": "Subdivisions",
+          "matchable": true,
+          "maxLength": 200,
+          "name": "subdivisions",
+          "qname": "Territory:subdivisions",
+          "range": "Territory",
+          "reverse": "partOf",
+          "stub": true,
+          "type": "entity"
+        },
+        "territoryCode": {
+          "description": "ISO 3166-1 alpha-2 code, ISO 3166-2 subdivision, or FollowTheMoney political territory code",
+          "examples": [
+            "us-de",
+            "ua-cri",
+            "ae-du"
+          ],
+          "label": "Territory code",
+          "matchable": true,
+          "maxLength": 16,
+          "name": "territoryCode",
+          "qname": "Territory:territoryCode",
+          "type": "identifier"
+        },
+        "zipCode": {
+          "description": "US postal ZIP code",
+          "examples": [
+            "10001",
+            "90210"
+          ],
+          "label": "ZIP code",
+          "matchable": true,
+          "maxLength": 16,
+          "name": "zipCode",
+          "qname": "Territory:zipCode",
+          "type": "identifier"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "schemata": [
+        "Territory",
+        "Thing"
+      ]
     },
     "Thing": {
       "abstract": true,
@@ -8453,6 +8602,7 @@
         "fin.bank": "Bank",
         "fin.fund": "Fund",
         "forced.labor": "Forced labor",
+        "geo.risk": "High-risk area",
         "gov": "Government",
         "gov.admin": "Civil service",
         "gov.executive": "Executive branch of government",
