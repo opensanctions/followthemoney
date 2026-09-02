@@ -6994,6 +6994,7 @@
         "partOf"
       ],
       "label": "Territory",
+      "matchable": true,
       "plural": "Territories",
       "properties": {
         "fipsCode": {
@@ -7025,7 +7026,7 @@
           "type": "string"
         },
         "nutsCode": {
-          "description": "Eurostat NUTS region code; codes are reused across NUTS revisions, so the producer must pin the vintage",
+          "description": "Eurostat regional statistics code",
           "examples": [
             "DE21"
           ],

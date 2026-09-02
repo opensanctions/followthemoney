@@ -6,7 +6,7 @@ Territory:
     reference data with deterministic identifiers, not a geospatial model.
   extends:
     - Thing
-  matchable: false
+  matchable: true
   featured:
     - name
     - territoryCode
@@ -65,7 +65,7 @@ Territory:
         - "90210"
     nutsCode:
       label: "NUTS code"
-      description: "Eurostat NUTS region code; codes are reused across NUTS revisions, so the producer must pin the vintage"
+      description: "Eurostat regional statistics code"
       type: identifier
       maxLength: 16
       examples:

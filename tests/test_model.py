@@ -183,8 +183,8 @@ def test_territory_schema():
     thing = model.schemata["Thing"]
     territory = model.schemata["Territory"]
     assert territory.is_a(thing)
-    assert territory.matchable is False
-    assert territory not in model.matchable_schemata()
+    assert territory.matchable is True
+    assert territory in model.matchable_schemata()
 
     part_of = territory.get("partOf")
     assert part_of is not None, part_of
