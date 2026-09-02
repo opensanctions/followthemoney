@@ -1,9 +1,9 @@
 import re
+from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING
 
 from normality import slugify_text, squash_spaces
-from rigour.addresses import normalize_address
-from rigour.text.distance import levenshtein_similarity
+from rigour.addresses import address_fingerprint, compare_address, compare_address_many
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import dampen
@@ -43,20 +43,26 @@ class AddressType(PropertyType):
             return None
         return collapsed
 
+    def compare_sets(
+        self,
+        left: Sequence[str],
+        right: Sequence[str],
+        func: Callable[[Sequence[float]], float] = max,
+    ) -> float:
+        """Compare two sets of addresses. This can be done entirely in native code if
+        the comparison function is max, otherwise we defer to the superclass."""
+        if func is not max:
+            return super().compare_sets(left, right, func)
+        return compare_address_many(list(left), list(right))
+
     def compare(self, left: str, right: str) -> float:
-        left_norm = normalize_address(left)
-        right_norm = normalize_address(right)
-        if left_norm is None or right_norm is None:
-            return 0.0
-        base_len = min(len(left_norm), len(right_norm))
-        max_edits = int(base_len * 0.33)
-        return levenshtein_similarity(left_norm, right_norm, max_edits=max_edits)
+        return compare_address(left, right)
 
     def _specificity(self, value: str) -> float:
         return dampen(10, 60, value)
 
     def node_id(self, value: str) -> str | None:
-        normalized = normalize_address(value)
+        normalized = address_fingerprint(value)
         if normalized is None:
             return None
         slug = slugify_text(normalized)
