@@ -1,27 +1,62 @@
 version: 2
 updates:
   - package-ecosystem: pip
-    open-pull-requests-limit: 99
+    open-pull-requests-limit: 5
     directory: "/"
     schedule:
       interval: monthly
+    groups:
+      pip-minor-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+      pip-security:
+        applies-to: security-updates
+        patterns: ["*"]
   - package-ecosystem: npm
-    open-pull-requests-limit: 99
+    open-pull-requests-limit: 5
     directory: "/js"
     schedule:
       interval: monthly
+    groups:
+      npm-minor-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+      npm-security:
+        applies-to: security-updates
+        patterns: ["*"]
   - package-ecosystem: docker
-    open-pull-requests-limit: 99
+    open-pull-requests-limit: 5
     directory: "/"
     schedule:
       interval: monthly
+    groups:
+      docker-minor-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+      docker-security:
+        applies-to: security-updates
+        patterns: ["*"]
   - package-ecosystem: maven
-    open-pull-requests-limit: 99
+    open-pull-requests-limit: 5
     directory: "/java"
     schedule:
       interval: monthly
+    groups:
+      maven-minor-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+      maven-security:
+        applies-to: security-updates
+        patterns: ["*"]
   - package-ecosystem: "github-actions"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     directory: "/"
     schedule:
       interval: monthly
+    groups:
+      actions-minor-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+      actions-security:
+        applies-to: security-updates
+        patterns: ["*"]
