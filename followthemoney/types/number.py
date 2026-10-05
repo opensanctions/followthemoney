@@ -17,11 +17,13 @@ def _number_pattern(decimal: str, separator: str) -> re.Pattern[str]:
     grp = rf"[{re.escape(separator)}\s]"
     # Either grouped digits (western 3s, indian 2/3s) or a plain run of digits.
     integer = rf"(?:\d{{1,3}}(?:{grp}\d{{2,3}})+|\d+)"
-    number = rf"[+-]?\s?{integer}(?:{dec}\d+)?"
+    exponent = r"(?:[eE][+-]?\d+)?"
+    number = rf"[+-]?\s?{integer}(?:{dec}\d+)?{exponent}"
     # A unit is digit-free: any digit after the number may belong to a second,
-    # glued-on number (a compact range, scientific notation, or a repeated
-    # decimal/grouping char), which then fails the end-anchored match rather
-    # than being mistaken for a unit (see issue #331).
+    # glued-on number (a compact range, or a repeated decimal/grouping char),
+    # which then fails the end-anchored match rather than being mistaken for a
+    # unit (see issue #331). An exponent is part of the number, not a second
+    # one, so it is matched above and `1e6` is a million.
     unit = r"[^\s\d]+"
     pattern = rf"^\s*(?P<number>{number})\s*(?P<unit>{unit})?\s*$"
     return re.compile(pattern, re.UNICODE)
@@ -71,7 +73,16 @@ class NumberType(PropertyType):
         European decimal comma under the default separator) are rejected rather
         than silently coerced into a structurally different value (see issue #331).
         """
-        match = _number_pattern(decimal, separator).match(value.strip())
+        text = value.strip()
+        match = _number_pattern(decimal, separator).match(text)
+        if match is None and decimal in text and separator in text:
+            # No convention mixes grouping characters, so a value the given
+            # locale cannot read and that holds both is the other one, with
+            # the rightmost as the decimal (issue #340). Second, because a
+            # unit is part of the string: `1.5 m,s` carries a comma that is not.
+            if text.rindex(separator) > text.rindex(decimal):
+                decimal, separator = separator, decimal
+                match = _number_pattern(decimal, separator).match(text)
         if match is None:
             return None, None
         unit = match.group("unit")
