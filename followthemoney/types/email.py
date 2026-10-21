@@ -2,7 +2,7 @@ import logging
 import re
 from typing import TYPE_CHECKING
 
-from rigour.env import ENCODING
+import idna
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
@@ -20,9 +20,6 @@ class EmailType(PropertyType):
     """Internet mail address (e.g. user@example.com). These are notoriously hard
     to validate, but we use an irresponsibly simple rule and hope for the best."""
 
-    DOMAIN_RE = re.compile(
-        r"^(?!-)(?:[a-z0-9-]{1,63}(?<!-)\.)+[a-z0-9-]{2,}$", re.UNICODE
-    )
     LOCAL_RE = re.compile(r"^[^<>()\[\]\,;:\?\s@\"]{1,64}$", re.UNICODE)
 
     name = "email"
@@ -45,18 +42,19 @@ class EmailType(PropertyType):
         """Clean and normalize the domain part of the email."""
         domain = domain.rstrip(".").lower()
         try:
-            # Convert domain to IDNA encoding if it contains non-ASCII characters. This should
-            # be idempotent for domains that are already IDNA-encoded.
-            domain = domain.encode("idna").decode(ENCODING)
+            # IDNA 2008 with UTS #46 mapping. The stdlib "idna" codec implements IDNA 2003,
+            # which folds deviation characters (ß -> ss, ς -> σ) into a different domain.
+            # This is idempotent for domains that are already IDNA-encoded.
+            domain = idna.encode(domain, uts46=True).decode("ascii")
 
-            # Check if the domain matches the regex pattern, which requires labels to be
-            # alphanumeric and hyphenated, and the TLD to be at least two characters long.
-            if self.DOMAIN_RE.match(domain) is None:
+            # idna accepts any DNS name; a public mail domain additionally needs a TLD
+            # that is not a single character or numeric (rules out localhost, IPs).
+            _, dot, tld = domain.rpartition(".")
+            if len(dot) == 0 or len(tld) < 2 or tld.isdigit():
                 return None
 
-            domain = domain.encode(ENCODING).decode("idna")
-            return domain
-        except UnicodeError:
+            return idna.decode(domain)
+        except (idna.IDNAError, UnicodeError):
             return None
 
     def validate(
