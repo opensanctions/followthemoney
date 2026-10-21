@@ -71,6 +71,7 @@ class LanguageType(EnumType):
         "mlt",
         "mon",
         "msa",
+        "mul",
         "mya",
         "nep",
         "nld",

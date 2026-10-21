@@ -14,6 +14,8 @@ def test_language_clean():
     languages = registry.language
     assert languages.clean("deu") == "deu"
     assert languages.clean("de") == "deu"
+    assert languages.clean("mul") == "mul"
+    assert languages.clean("und") is None
     assert languages.clean("xx") is None
     assert languages.clean(None) is None
 
