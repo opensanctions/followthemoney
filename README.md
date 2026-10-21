@@ -32,7 +32,7 @@ There's also a number of viewers for the RDF schema definitions generated from F
 
 ## Installation
 
-You can install `followthemomey` via PyPI like this:
+You can install `followthemoney` via PyPI like this:
 
 ```bash
 pip install followthemoney
