@@ -20,9 +20,6 @@ class EmailType(PropertyType):
     """Internet mail address (e.g. user@example.com). These are notoriously hard
     to validate, but we use an irresponsibly simple rule and hope for the best."""
 
-    DOMAIN_RE = re.compile(
-        r"^(?!-)(?:[a-z0-9-]{1,63}(?<!-)\.)+[a-z0-9-]{2,}$", re.UNICODE
-    )
     LOCAL_RE = re.compile(r"^[^<>()\[\]\,;:\?\s@\"]{1,64}$", re.UNICODE)
 
     name = "email"
@@ -50,9 +47,10 @@ class EmailType(PropertyType):
             # This is idempotent for domains that are already IDNA-encoded.
             domain = idna.encode(domain, uts46=True).decode("ascii")
 
-            # Check if the domain matches the regex pattern, which requires labels to be
-            # alphanumeric and hyphenated, and the TLD to be at least two characters long.
-            if self.DOMAIN_RE.match(domain) is None:
+            # idna accepts any DNS name; a public mail domain additionally needs a TLD
+            # that is not a single character or numeric (rules out localhost, IPs).
+            _, dot, tld = domain.rpartition(".")
+            if len(dot) == 0 or len(tld) < 2 or tld.isdigit():
                 return None
 
             return idna.decode(domain)

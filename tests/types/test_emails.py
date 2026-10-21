@@ -56,6 +56,21 @@ def test_email_parse():
     assert emails.clean("foo@ς.example") == "foo@ς.example"
     assert emails.clean("foo@münchen.de") == "foo@münchen.de"
     assert emails.clean("foo@☃.net") is None
+    assert emails.clean("foo@почта.рф") == "foo@почта.рф"
+
+    # Valid DNS names, but not public mail domains:
+    assert emails.clean("no-reply@localhost") is None
+    assert emails.clean("bert@foo.c") is None
+    assert emails.clean("foo@1.2.3.4") is None
+    assert emails.clean("foo@foo.123") is None
+    # Hyphen and length rules from IDNA:
+    assert emails.clean("foo@-pudo.org") is None
+    assert emails.clean("foo@pudo-.org") is None
+    assert emails.clean("foo@pudo.-org") is None
+    assert emails.clean("foo@pudo.org-") is None
+    assert emails.clean("foo@ab--cd.org") is None
+    assert emails.clean("foo@pudo..org") is None
+    assert emails.clean(f"foo@{(long + '.') * 5}org") is None
 
 
 def test_domain_validity():
