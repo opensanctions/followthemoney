@@ -49,6 +49,14 @@ def test_email_parse():
 
     assert emails.clean(f"{long}{long}@example.com") is None
 
+    # IDNA 2008 keeps deviation characters distinct:
+    assert emails.clean("foo@straße.example") == "foo@straße.example"
+    assert emails.clean("foo@STRASSE.example") == "foo@strasse.example"
+    assert emails.clean("foo@xn--strae-oqa.example") == "foo@straße.example"
+    assert emails.clean("foo@ς.example") == "foo@ς.example"
+    assert emails.clean("foo@münchen.de") == "foo@münchen.de"
+    assert emails.clean("foo@☃.net") is None
+
 
 def test_domain_validity():
     assert emails.validate("foo@pudo.org") is True

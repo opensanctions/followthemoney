@@ -2,7 +2,7 @@ import logging
 import re
 from typing import TYPE_CHECKING
 
-from rigour.env import ENCODING
+import idna
 
 from followthemoney.types.common import PropertyType
 from followthemoney.util import defer as _
@@ -45,18 +45,18 @@ class EmailType(PropertyType):
         """Clean and normalize the domain part of the email."""
         domain = domain.rstrip(".").lower()
         try:
-            # Convert domain to IDNA encoding if it contains non-ASCII characters. This should
-            # be idempotent for domains that are already IDNA-encoded.
-            domain = domain.encode("idna").decode(ENCODING)
+            # IDNA 2008 with UTS #46 mapping. The stdlib "idna" codec implements IDNA 2003,
+            # which folds deviation characters (ß -> ss, ς -> σ) into a different domain.
+            # This is idempotent for domains that are already IDNA-encoded.
+            domain = idna.encode(domain, uts46=True).decode("ascii")
 
             # Check if the domain matches the regex pattern, which requires labels to be
             # alphanumeric and hyphenated, and the TLD to be at least two characters long.
             if self.DOMAIN_RE.match(domain) is None:
                 return None
 
-            domain = domain.encode(ENCODING).decode("idna")
-            return domain
-        except UnicodeError:
+            return idna.decode(domain)
+        except (idna.IDNAError, UnicodeError):
             return None
 
     def validate(
