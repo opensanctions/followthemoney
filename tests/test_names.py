@@ -1,4 +1,4 @@
-from rigour.names import NamePartTag, NameTypeTag
+from rigour.names import NamePartTag, NameTypeTag, Symbol
 
 from followthemoney import model
 from followthemoney.dataset.dataset import Dataset
@@ -175,3 +175,20 @@ def test_entity_names_father_name_does_not_crash():
     assert len(names) >= 1
     main = next(iter(names))
     assert "ivanov" in {part.form for part in main.parts}
+
+
+def test_entity_names_type_tag_override():
+    entity = ValueEntity.from_dict(
+        {
+            "id": "legal-entity-initials",
+            "schema": "LegalEntity",
+            "properties": {"name": ["J Smith"]},
+        }
+    )
+    (default,) = entity_names(entity, infer_initials=True)
+    assert default.tag == NameTypeTag.ENT
+    assert not any(s.category == Symbol.Category.INITIAL for s in default.symbols)
+
+    (person,) = entity_names(entity, type_tag=NameTypeTag.PER, infer_initials=True)
+    assert person.tag == NameTypeTag.PER
+    assert any(s.category == Symbol.Category.INITIAL for s in person.symbols)
