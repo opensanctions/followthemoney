@@ -1,3 +1,4 @@
+import math
 import re
 from functools import cache
 
@@ -6,17 +7,19 @@ from followthemoney.util import defer as _
 
 
 @cache
-def _number_pattern(decimal: str, separator: str) -> re.Pattern[str]:
+def _number_pattern(decimal: str, separator: str, lakh: bool = True) -> re.Pattern[str]:
     """Build a strict, fully-anchored number+unit pattern for a given locale.
 
     A separator (or whitespace) is only accepted as a thousands/lakh grouping
     when it splits digits into valid groups; a lone run of digits is accepted
     ungrouped. Anything the pattern cannot match end-to-end is rejected by the
-    caller rather than silently truncated (see issue #331)."""
+    caller rather than silently truncated (see issue #331). With `lakh` off,
+    only groups of three are valid."""
     dec = re.escape(decimal)
     grp = rf"[{re.escape(separator)}\s]"
+    group = r"\d{2,3}" if lakh else r"\d{3}"
     # Either grouped digits (western 3s, indian 2/3s) or a plain run of digits.
-    integer = rf"(?:\d{{1,3}}(?:{grp}\d{{2,3}})+|\d+)"
+    integer = rf"(?:\d{{1,3}}(?:{grp}{group})+|\d+)"
     exponent = r"(?:[eE][+-]?\d+)?"
     number = rf"[+-]?\s?{integer}(?:{dec}\d+)?{exponent}"
     # A unit is digit-free: any digit after the number may belong to a second,
@@ -72,17 +75,29 @@ class NumberType(PropertyType):
         with an optional unit. Ambiguous or multi-number inputs (e.g. ranges, or a
         European decimal comma under the default separator) are rejected rather
         than silently coerced into a structurally different value (see issue #331).
+
+        `to_number` feeds the numeric search index of an installed base, so a
+        change to this method may only turn a (None, None) into a value. It never
+        changes or drops an answer an earlier version gave, with one exception: a
+        number that is not finite as a float is (None, None). The corpus in
+        `tests/fixtures/numbers.csv` holds that rule.
         """
         text = value.strip()
         match = _number_pattern(decimal, separator).match(text)
-        if match is None and decimal in text and separator in text:
-            # No convention mixes grouping characters, so a value the given
-            # locale cannot read and that holds both is the other one, with
-            # the rightmost as the decimal (issue #340). Second, because a
-            # unit is part of the string: `1.5 m,s` carries a comma that is not.
-            if text.rindex(separator) > text.rindex(decimal):
-                decimal, separator = separator, decimal
-                match = _number_pattern(decimal, separator).match(text)
+        if (
+            match is None
+            and decimal == self.DECIMAL
+            and separator == self.SEPARATOR
+            and decimal in text
+            and separator in text
+            and text.rindex(separator) > text.rindex(decimal)
+        ):
+            # No convention mixes grouping characters, so a value the default
+            # locale cannot read and that holds both is the other one, with the
+            # rightmost as the decimal and groups of three only (issue #340). A
+            # locale the caller passed is never second-guessed.
+            decimal, separator = separator, decimal
+            match = _number_pattern(decimal, separator, lakh=False).match(text)
         if match is None:
             return None, None
         unit = match.group("unit")
@@ -97,6 +112,9 @@ class NumberType(PropertyType):
         if decimal != self.DECIMAL:
             number = number.replace(decimal, self.DECIMAL)
         if number == "":
+            return None, None
+        # An infinity cannot be indexed as a double, so `1e400` is no number.
+        if not math.isfinite(float(number)):
             return None, None
         return number, unit
 

@@ -1,6 +1,10 @@
+import csv
+from pathlib import Path
+
 from followthemoney.types import registry
 
 numbers = registry.number
+FIXTURES_PATH = Path(__file__).parent.parent.joinpath("fixtures/")
 
 
 def test_cast_numbers():
@@ -147,9 +151,10 @@ def test_parse_numbers_infers_separator_from_both():
     assert numbers.parse("1.000") == ("1.000", None)
     assert numbers.parse("12,34") == ("1234", None)
 
-    # An explicit locale that disagrees with the inference is honoured,
-    # because the inference only fires when both characters are present.
+    # An explicit locale is honoured, and a value that does not fit it fails
+    # rather than being read in the other one.
     assert numbers.parse("1,5", decimal=",", separator=".") == ("1.5", None)
+    assert numbers.parse("1,234.56", decimal=",", separator=".") == (None, None)
 
     # A unit is part of the value and a grouping character inside one is no
     # locale signal, so the inference runs only where the given locale reads
@@ -175,3 +180,43 @@ def test_parse_numbers_scientific_notation():
     assert numbers.parse("5eV") == ("5", "eV")
     assert numbers.parse("5 eV") == ("5", "eV")
     assert numbers.parse("1e") == ("1", "e")
+
+
+def test_parse_numbers_inferred_locale_strict_grouping():
+    # An inferred locale takes groups of three only, so an IP address, a date
+    # or a lakh-style grouping with a trailing comma is no European number.
+    assert numbers.parse("192.168.10,5") == (None, None)
+    assert numbers.parse("12.03,2020") == (None, None)
+    assert numbers.parse("10.20.30,40") == (None, None)
+    assert numbers.parse("1.23,45") == (None, None)
+    assert numbers.parse("1.2.3,4") == (None, None)
+    assert numbers.parse("1.0000,5") == (None, None)
+
+    assert numbers.parse("1.000,5") == ("1000.5", None)
+    assert numbers.parse("12.345.678,9 EUR") == ("12345678.9", "EUR")
+    assert numbers.parse("-1.234,56") == ("-1234.56", None)
+
+
+def test_parse_numbers_rejects_non_finite():
+    assert numbers.parse("1e400") == (None, None)
+    assert numbers.parse("-1e400") == (None, None)
+    assert numbers.parse("1e400 kg") == (None, None)
+    assert numbers.parse("9" * 400) == (None, None)
+    assert numbers.to_number("1e400") is None
+    assert numbers.parse("1e308") == ("1e308", None)
+
+
+def test_parse_numbers_corpus():
+    # Expected answers for a fixed corpus in three locales. Every value an
+    # earlier version could read is in it with that version's answer, so a
+    # change that alters or drops one fails here (see the `parse` docstring).
+    path = FIXTURES_PATH.joinpath("numbers.csv")
+    with open(path, "r", encoding="utf-8", newline="") as fh:
+        rows = list(csv.DictReader(fh))
+    assert len(rows) > 1000
+    for row in rows:
+        number, unit = numbers.parse(
+            row["value"], decimal=row["decimal"], separator=row["separator"]
+        )
+        assert number == (row["number"] or None), row
+        assert unit == (row["unit"] or None), row
