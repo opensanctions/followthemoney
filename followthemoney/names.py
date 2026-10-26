@@ -64,6 +64,7 @@ def entity_names(
     entity: EntityProxy,
     props: tuple[str, ...] | None = None,
     *,
+    type_tag: NameTypeTag | None = None,
     matchable: bool = True,
     infer_initials: bool = False,
     symbols: bool = True,
@@ -78,6 +79,11 @@ def entity_names(
         props: Property names that feed the primary name pool. `None`
             (default) takes all name-typed properties off the entity,
             honouring `matchable`.
+        type_tag: The name type to analyze the names as. `None`
+            (default) derives it from the entity's schema. A matcher
+            that compares a `LegalEntity` with a `Person` can pass
+            `PER` so both sides get the person-name treatment
+            (INITIAL symbols, person tagger).
         matchable: `True` (default) restricts the name properties used
             to those marked `matchable` in the schema.
         infer_initials: When `True`, every single-character latin
@@ -113,7 +119,8 @@ def entity_names(
     Returns:
         A de-duplicated set of tagged `Name` objects.
     """
-    type_tag = schema_type_tag(entity.schema)
+    if type_tag is None:
+        type_tag = schema_type_tag(entity.schema)
 
     if props is None:
         names: list[str] = entity.get_type_values(registry.name, matchable=matchable)
