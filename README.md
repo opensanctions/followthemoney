@@ -65,10 +65,10 @@ git pull --rebase
 make build
 make test
 git add . && git commit -m "Updating translation files"
-bumpversion patch
+bump-my-version bump patch
 git push --atomic origin main $(git describe --tags --abbrev=0)
 ```
 
-This will create a new patch release and upload a distribution of it. If the changes are more significant, you can run `bumpversion` with the `minor` or `major` arguments.
+This will create a new patch release and upload a distribution of it. If the changes are more significant, you can run `bump-my-version bump` with the `minor` or `major` arguments.
 
 When the schema is updated, please update the docs, ideally including the diagrams. For the RDF namespace and JavaScript version of the model, run `make generate`.

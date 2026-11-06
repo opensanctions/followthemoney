@@ -51,7 +51,7 @@ Issues = "https://github.com/opensanctions/followthemoney/issues"
 [project.optional-dependencies]
 dev = [
     "pip>=10.0.0",
-    "bump2version",
+    "bump-my-version",
     "wheel>=0.29.0",
     "twine",
     "build",
@@ -96,6 +96,39 @@ gexf = "followthemoney.cli.exports:export_gexf"
 cypher = "followthemoney.cli.exports:export_cypher"
 statements = "followthemoney.cli.statement:entity_statements"
 ref = "followthemoney.cli.ref:ref"
+
+[tool.bumpversion]
+current_version = "4.11.1"
+commit = true
+tag = true
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "followthemoney/__init__.py"
+
+[[tool.bumpversion.files]]
+filename = "js/package.json"
+search = '"version": "{current_version}"'
+replace = '"version": "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "js/src/defaultModel.json"
+search = '"version": "{current_version}"'
+replace = '"version": "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "java/src/main/resources/defaultModel.json"
+search = '"version": "{current_version}"'
+replace = '"version": "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "java/pom.xml"
+search = '<version><!-- bump -->{current_version}</version>'
+replace = '<version><!-- bump -->{new_version}</version>'
 
 [tool.hatch.build.targets.sdist]
 only-include = ["followthemoney", "LICENSE", "README.md"]
