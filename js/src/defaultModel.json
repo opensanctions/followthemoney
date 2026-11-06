@@ -1122,15 +1122,6 @@
           "qname": "Company:capital",
           "type": "number"
         },
-        "cikCode": {
-          "description": "US SEC Central Index Key for listed companies",
-          "label": "SEC Central Index Key",
-          "matchable": true,
-          "maxLength": 64,
-          "name": "cikCode",
-          "qname": "Company:cikCode",
-          "type": "identifier"
-        },
         "coatoCode": {
           "description": "Soviet classifier for territories, regions, districts, villages. Aka. SOATO and same as OKATO.",
           "label": "COATO / SOATO / OKATO",
@@ -3595,6 +3586,15 @@
           "reverse": "receiver",
           "stub": true,
           "type": "entity"
+        },
+        "cikCode": {
+          "description": "US SEC Central Index Key, assigned to companies, funds and individuals filing with the SEC",
+          "label": "SEC Central Index Key",
+          "matchable": true,
+          "maxLength": 64,
+          "name": "cikCode",
+          "qname": "LegalEntity:cikCode",
+          "type": "identifier"
         },
         "classification": {
           "description": "Classification as provided by the data source or inferred based on other provided data; prefer `sector` if relevant",
