@@ -1,3 +1,4 @@
+import decimal
 import re
 from functools import cache
 
@@ -40,7 +41,7 @@ class NumberType(PropertyType):
     PRECISION = 2
 
     _FLOAT_FMT = "{:" + SEPARATOR + "." + str(PRECISION) + "f}"
-    _INT_FMT = "{:" + SEPARATOR + "d}"
+    _INT_FMT = "{:" + SEPARATOR + ".0f}"
 
     name = "number"
     label = _("Number")
@@ -121,15 +122,19 @@ class NumberType(PropertyType):
         if number is None:
             return value
         try:
-            fnumber = float(number)
-        except ValueError:
+            dnumber = decimal.Decimal(number)
+        except decimal.InvalidOperation:
             return value
         if format is not None:
-            number = format.format(fnumber)
-        elif fnumber.is_integer():
-            number = self._INT_FMT.format(int(fnumber))
+            number = format.format(float(dnumber))
+        elif dnumber == dnumber.to_integral_value():
+            if dnumber.is_zero():
+                dnumber = dnumber.copy_abs()
+            number = self._INT_FMT.format(dnumber)
         else:
-            number = self._FLOAT_FMT.format(fnumber)
+            with decimal.localcontext() as context:
+                context.rounding = decimal.ROUND_HALF_EVEN
+                number = self._FLOAT_FMT.format(dnumber)
         if unit is not None:
             return f"{number} {unit}"
         return number
