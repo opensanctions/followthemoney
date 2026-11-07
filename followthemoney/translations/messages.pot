@@ -1,49 +1,49 @@
 # Translations template for PROJECT.
-# Copyright (C) 2025 ORGANIZATION
+# Copyright (C) 2026 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-08 07:43+0100\n"
+"POT-Creation-Date: 2026-11-07 10:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.16.0\n"
+"Generated-By: Babel 2.18.0\n"
 
-#: followthemoney/property.py:182
+#: followthemoney/property.py:206
 msgid "Property cannot be written"
 msgstr ""
 
-#: followthemoney/property.py:187
-msgid "Invalid value"
+#: followthemoney/property.py:209
+msgid "Invalid value:"
 msgstr ""
 
-#: followthemoney/proxy.py:62
-msgid "No schema for entity."
-msgstr ""
-
-#: followthemoney/proxy.py:120
+#: followthemoney/proxy.py:114
 #, python-format
 msgid "Unknown property (%s): %s"
 msgstr ""
 
-#: followthemoney/proxy.py:192
+#: followthemoney/proxy.py:205 followthemoney/statement/entity.py:308
 #, python-format
 msgid "Stub property (%s): %s"
 msgstr ""
 
-#: followthemoney/schema.py:387
+#: followthemoney/proxy.py:542 followthemoney/statement/entity.py:49
+msgid "No schema for entity."
+msgstr ""
+
+#: followthemoney/schema.py:427
 msgid "Required"
 msgstr ""
 
-#: followthemoney/schema.py:391
+#: followthemoney/schema.py:431
 msgid "Entity validation failed"
 msgstr ""
 
@@ -52,12 +52,12 @@ msgstr ""
 #. Thing.properties.address.label
 #. Thing.properties.addressEntity.label
 #: followthemoney/schema/Address.yaml followthemoney/schema/CryptoWallet.yaml
-#: followthemoney/schema/Thing.yaml followthemoney/types/address.py:24
+#: followthemoney/schema/Thing.yaml followthemoney/types/address.py:26
 msgid "Address"
 msgstr ""
 
 #. Address.plural
-#: followthemoney/schema/Address.yaml followthemoney/types/address.py:25
+#: followthemoney/schema/Address.yaml followthemoney/types/address.py:27
 msgid "Addresses"
 msgstr ""
 
@@ -78,7 +78,7 @@ msgstr ""
 
 #. Address.properties.remarks.description
 #: followthemoney/schema/Address.yaml
-msgid "Handling instructions, like 'care of'."
+msgid "Handling instructions, like 'care of'"
 msgstr ""
 
 #. Address.properties.postOfficeBox.label
@@ -118,7 +118,7 @@ msgstr ""
 
 #. Address.properties.postalCode.description
 #: followthemoney/schema/Address.yaml
-msgid "Zip code or postcode."
+msgid "Zip code or postcode"
 msgstr ""
 
 #. Address.properties.region.label
@@ -128,7 +128,7 @@ msgstr ""
 
 #. Address.properties.region.description
 #: followthemoney/schema/Address.yaml
-msgid "Also province or area."
+msgid "Also province or area"
 msgstr ""
 
 #. Address.properties.state.label
@@ -138,7 +138,7 @@ msgstr ""
 
 #. Address.properties.state.description
 #: followthemoney/schema/Address.yaml
-msgid "State or federal unit."
+msgid "State or federal unit"
 msgstr ""
 
 #. Address.properties.latitude.label
@@ -151,19 +151,6 @@ msgstr ""
 #. RealEstate.properties.longitude.label
 #: followthemoney/schema/Address.yaml followthemoney/schema/RealEstate.yaml
 msgid "Longitude"
-msgstr ""
-
-#. Address.properties.country.label
-#. Event.properties.country.label
-#. Identification.properties.country.label
-#. Sanction.properties.country.label
-#. TaxRoll.properties.country.label
-#. Thing.properties.country.label
-#: followthemoney/schema/Address.yaml followthemoney/schema/Event.yaml
-#: followthemoney/schema/Identification.yaml
-#: followthemoney/schema/Sanction.yaml followthemoney/schema/TaxRoll.yaml
-#: followthemoney/schema/Thing.yaml followthemoney/types/country.py:21
-msgid "Country"
 msgstr ""
 
 #. Address.properties.osmId.label
@@ -288,42 +275,6 @@ msgstr ""
 msgid "A piece of media reporting about a subject.\n"
 msgstr ""
 
-#. Assessment.label
-#: followthemoney/schema/Assessment.yaml
-msgid "Assessment"
-msgstr ""
-
-#. Assessment.plural
-#: followthemoney/schema/Assessment.yaml
-msgid "Assessments"
-msgstr ""
-
-#. Assessment.properties.publishDate.label
-#: followthemoney/schema/Assessment.yaml
-msgid "Date of publishing"
-msgstr ""
-
-#. Assessment.properties.assessmentId.label
-#: followthemoney/schema/Assessment.yaml
-msgid "Assessment ID"
-msgstr ""
-
-#. Assessment.properties.author.label
-#. Document.properties.author.label
-#: followthemoney/schema/Assessment.yaml followthemoney/schema/Document.yaml
-msgid "Author"
-msgstr ""
-
-#. Assessment.properties.author.plural
-#: followthemoney/schema/Assessment.yaml
-msgid "Authors"
-msgstr ""
-
-#. Assessment.properties.author.reverse.label
-#: followthemoney/schema/Assessment.yaml
-msgid "Assessments authored"
-msgstr ""
-
 #. Asset.label
 #. Ownership.properties.asset.label
 #: followthemoney/schema/Asset.yaml followthemoney/schema/Ownership.yaml
@@ -354,7 +305,7 @@ msgstr ""
 
 #. Associate.description
 #: followthemoney/schema/Associate.yaml
-msgid "Non-family association between two people"
+msgid "Non-family association between two people."
 msgstr ""
 
 #. Associate.edge.label
@@ -372,12 +323,12 @@ msgstr ""
 
 #. Associate.properties.person.description
 #: followthemoney/schema/Associate.yaml
-msgid "The subject of the association."
+msgid "The subject of the association"
 msgstr ""
 
 #. Associate.properties.associate.description
 #: followthemoney/schema/Associate.yaml
-msgid "An associate of the subject person."
+msgid "An associate of the subject person"
 msgstr ""
 
 #. Associate.properties.associate.reverse.label
@@ -408,10 +359,12 @@ msgstr ""
 
 #. Audio.properties.duration.label
 #. Call.properties.duration.label
+#. Risk.properties.duration.label
 #. Sanction.properties.duration.label
 #. Video.properties.duration.label
 #: followthemoney/schema/Audio.yaml followthemoney/schema/Call.yaml
-#: followthemoney/schema/Sanction.yaml followthemoney/schema/Video.yaml
+#: followthemoney/schema/Risk.yaml followthemoney/schema/Sanction.yaml
+#: followthemoney/schema/Video.yaml
 msgid "Duration"
 msgstr ""
 
@@ -460,7 +413,7 @@ msgid "Account number"
 msgstr ""
 
 #. BankAccount.properties.iban.label
-#: followthemoney/schema/BankAccount.yaml followthemoney/types/iban.py:23
+#: followthemoney/schema/BankAccount.yaml
 msgid "IBAN"
 msgstr ""
 
@@ -470,7 +423,7 @@ msgid "Bank Identifier Code"
 msgstr ""
 
 #. BankAccount.properties.bank.label
-#: followthemoney/schema/BankAccount.yaml followthemoney/types/topic.py:58
+#: followthemoney/schema/BankAccount.yaml followthemoney/types/topic.py:64
 msgid "Bank"
 msgstr ""
 
@@ -573,7 +526,7 @@ msgstr ""
 #: followthemoney/schema/CallForTenders.yaml
 msgid ""
 "A public appeal issued by an authority, possibly on behalf of another, "
-"for buying a specific work, supply or service\n"
+"for buying a specific work, supply or service.\n"
 msgstr ""
 
 #. CallForTenders.properties.callId.label
@@ -672,8 +625,10 @@ msgstr ""
 
 #. CallForTenders.properties.nutsCode.label
 #. ContractAward.properties.nutsCode.label
+#. Territory.properties.nutsCode.label
 #: followthemoney/schema/CallForTenders.yaml
 #: followthemoney/schema/ContractAward.yaml
+#: followthemoney/schema/Territory.yaml
 msgid "NUTS code"
 msgstr ""
 
@@ -749,7 +704,7 @@ msgstr ""
 
 #. CallForTenders.properties.fallsUnderGPPScope.description
 #: followthemoney/schema/CallForTenders.yaml
-msgid "European Green Public Procurement (GPP) or green purchasing."
+msgid "European Green Public Procurement (GPP) or green purchasing"
 msgstr ""
 
 #. CallForTenders.properties.certificationCheck.label
@@ -801,23 +756,6 @@ msgid ""
 "owned by other legal entities.\n"
 msgstr ""
 
-#. Company.properties.jurisdiction.label
-#. LegalEntity.properties.jurisdiction.label
-#: followthemoney/schema/Company.yaml followthemoney/schema/LegalEntity.yaml
-msgid "Jurisdiction"
-msgstr ""
-
-#. Company.properties.registrationNumber.label
-#. LegalEntity.properties.registrationNumber.label
-#. RealEstate.properties.registrationNumber.label
-#. Security.properties.registrationNumber.label
-#. Vehicle.properties.registrationNumber.label
-#: followthemoney/schema/Company.yaml followthemoney/schema/LegalEntity.yaml
-#: followthemoney/schema/RealEstate.yaml followthemoney/schema/Security.yaml
-#: followthemoney/schema/Vehicle.yaml
-msgid "Registration number"
-msgstr ""
-
 #. Company.properties.capital.label
 #: followthemoney/schema/Company.yaml
 msgid "Capital"
@@ -842,32 +780,12 @@ msgstr ""
 #: followthemoney/schema/Company.yaml
 msgid ""
 "Soviet classifier for territories, regions, districts, villages. Aka. "
-"SOATO and same as OKATO"
-msgstr ""
-
-#. Company.properties.irsCode.label
-#: followthemoney/schema/Company.yaml
-msgid "IRS Number"
-msgstr ""
-
-#. Company.properties.irsCode.description
-#: followthemoney/schema/Company.yaml
-msgid "US tax ID"
+"SOATO and same as OKATO."
 msgstr ""
 
 #. Company.properties.ipoCode.label
 #: followthemoney/schema/Company.yaml
 msgid "IPO"
-msgstr ""
-
-#. Company.properties.cikCode.label
-#: followthemoney/schema/Company.yaml
-msgid "SEC Central Index Key"
-msgstr ""
-
-#. Company.properties.cikCode.description
-#: followthemoney/schema/Company.yaml
-msgid "US SEC Central Index Key"
 msgstr ""
 
 #. Company.properties.jibCode.label
@@ -885,11 +803,6 @@ msgstr ""
 msgid "MBS"
 msgstr ""
 
-#. Company.properties.ibcRuc.label
-#: followthemoney/schema/Company.yaml
-msgid "ibcRUC"
-msgstr ""
-
 #. Company.properties.caemCode.label
 #: followthemoney/schema/Company.yaml
 msgid "COD CAEM"
@@ -897,7 +810,9 @@ msgstr ""
 
 #. Company.properties.caemCode.description
 #: followthemoney/schema/Company.yaml
-msgid "(RO) What kind of activity a legal entity is allowed to develop"
+msgid ""
+"Romanian classifier used to identify the types of economic activities "
+"that a business can provide in Romania"
 msgstr ""
 
 #. Company.properties.kppCode.label
@@ -907,17 +822,11 @@ msgstr ""
 
 #. Company.properties.kppCode.description
 #: followthemoney/schema/Company.yaml
-msgid "(RU, КПП) in addition to INN for orgs; reason for registration at FNS"
-msgstr ""
-
-#. Company.properties.okvedCode.label
-#: followthemoney/schema/Company.yaml
-msgid "OKVED(2) Classifier"
-msgstr ""
-
-#. Company.properties.okvedCode.description
-#: followthemoney/schema/Company.yaml
-msgid "(RU, ОКВЭД) Economical activity classifier. OKVED2 is the same but newer"
+msgid ""
+"(RU, КПП) Russian code issued by the tax authority, identifies the reason"
+" for registration at the Federal Tax Service. A company may have multiple"
+" KPP codes (e.g. for different branches), and the codes are not unique "
+"across companies."
 msgstr ""
 
 #. Company.properties.okopfCode.label
@@ -927,7 +836,9 @@ msgstr ""
 
 #. Company.properties.okopfCode.description
 #: followthemoney/schema/Company.yaml
-msgid "(RU, ОКОПФ) What kind of business entity"
+msgid ""
+"(RU, ОКОПФ) Russian classifier that categorizes different types of legal "
+"entities in Russia based on their organizational and legal structure"
 msgstr ""
 
 #. Company.properties.fnsCode.label
@@ -969,7 +880,8 @@ msgstr ""
 #: followthemoney/schema/Company.yaml
 msgid ""
 "(RU, ПФР) Pension Fund Registration number. AAA-BBB-CCCCCC, where AAA is "
-"organisation region, BBB is district, CCCCCC number at a specific branch"
+"organisation region, BBB is district, and CCCCCC is the number at a "
+"specific branch."
 msgstr ""
 
 #. Company.properties.oksmCode.label
@@ -979,7 +891,7 @@ msgstr ""
 
 #. Company.properties.oksmCode.description
 #: followthemoney/schema/Company.yaml
-msgid "Russian (ОКСМ) countries classifier"
+msgid "(RU, ОКСМ) Russian countries classifier"
 msgstr ""
 
 #. Company.properties.isinCode.label
@@ -1025,8 +937,8 @@ msgstr ""
 #. Contract.description
 #: followthemoney/schema/Contract.yaml
 msgid ""
-"An contract or contract lot issued by an authority. Multiple lots may be "
-"awarded to different suppliers (see ContractAward).\n"
+"A contract or contract lot issued by an authority. Multiple lots may be "
+"awarded to different suppliers (see `ContractAward`).\n"
 msgstr ""
 
 #. Contract.properties.authority.label
@@ -1067,7 +979,7 @@ msgstr ""
 
 #. Contract.properties.type.description
 #: followthemoney/schema/Contract.yaml
-msgid "Type of contract. Potentially W (Works), U (Supplies), S (Services).\n"
+msgid "Type of contract"
 msgstr ""
 
 #. Contract.properties.contractDate.label
@@ -1101,11 +1013,12 @@ msgstr ""
 #. LegalEntity.properties.status.label
 #. Occupancy.properties.status.label
 #. Project.properties.status.label
+#. Risk.properties.status.label
 #. Sanction.properties.status.label
 #: followthemoney/schema/Contract.yaml followthemoney/schema/CourtCase.yaml
 #: followthemoney/schema/Interest.yaml followthemoney/schema/LegalEntity.yaml
 #: followthemoney/schema/Occupancy.yaml followthemoney/schema/Project.yaml
-#: followthemoney/schema/Sanction.yaml
+#: followthemoney/schema/Risk.yaml followthemoney/schema/Sanction.yaml
 msgid "Status"
 msgstr ""
 
@@ -1135,7 +1048,7 @@ msgstr ""
 #. Contract.properties.language.label
 #. Document.properties.language.label
 #: followthemoney/schema/Contract.yaml followthemoney/schema/Document.yaml
-#: followthemoney/types/language.py:22
+#: followthemoney/types/language.py:23
 msgid "Language"
 msgstr ""
 
@@ -1231,6 +1144,81 @@ msgstr ""
 msgid "Was this award amended, modified or updated by a subsequent document?"
 msgstr ""
 
+#. Control.label
+#: followthemoney/schema/Control.yaml
+msgid "Control"
+msgstr ""
+
+#. Control.plural
+#: followthemoney/schema/Control.yaml
+msgid "Control relationships"
+msgstr ""
+
+#. Control.description
+#: followthemoney/schema/Control.yaml
+msgid ""
+"One entity exercising control over another, not necessarily by owning it:"
+" the power to direct the management, the right to appoint or remove "
+"directors, contractual or trust arrangements, or other significant "
+"influence.\n"
+msgstr ""
+
+#. Control.edge.label
+#: followthemoney/schema/Control.yaml
+msgid "controls"
+msgstr ""
+
+#. Control.properties.controller.label
+#: followthemoney/schema/Control.yaml
+msgid "Controller"
+msgstr ""
+
+#. Control.properties.controller.description
+#: followthemoney/schema/Control.yaml
+msgid "The entity exercising control"
+msgstr ""
+
+#. Control.properties.controller.reverse.label
+#: followthemoney/schema/Control.yaml
+msgid "Controlled entities"
+msgstr ""
+
+#. Control.properties.controlled.label
+#: followthemoney/schema/Control.yaml
+msgid "Controlled entity"
+msgstr ""
+
+#. Control.properties.controlled.description
+#: followthemoney/schema/Control.yaml
+msgid "The entity being controlled"
+msgstr ""
+
+#. Control.properties.controlled.reverse.label
+#: followthemoney/schema/Control.yaml
+msgid "Controlling entities"
+msgstr ""
+
+#. Control.properties.controlType.label
+#: followthemoney/schema/Control.yaml
+msgid "Type of control"
+msgstr ""
+
+#. Control.properties.controlType.description
+#: followthemoney/schema/Control.yaml
+msgid "The mechanism through which control is exercised"
+msgstr ""
+
+#. Control.properties.legalBasis.label
+#. Ownership.properties.legalBasis.label
+#: followthemoney/schema/Control.yaml followthemoney/schema/Ownership.yaml
+msgid "Legal basis"
+msgstr ""
+
+#. Control.properties.legalBasis.description
+#: followthemoney/schema/Control.yaml
+msgid "Statute, regulation or register rule under which the control is asserted"
+msgstr ""
+
 #. CourtCase.label
 #: followthemoney/schema/CourtCase.yaml
 msgid "Court case"
@@ -1321,9 +1309,29 @@ msgstr ""
 msgid "Public key used to identify the wallet"
 msgstr ""
 
+#. CryptoWallet.properties.cryptoAddress.label
+#: followthemoney/schema/CryptoWallet.yaml
+msgid "Crypto address"
+msgstr ""
+
+#. CryptoWallet.properties.cryptoAddress.description
+#: followthemoney/schema/CryptoWallet.yaml
+msgid "The crypto address of the wallet"
+msgstr ""
+
 #. CryptoWallet.properties.privateKey.label
 #: followthemoney/schema/CryptoWallet.yaml
 msgid "Private key"
+msgstr ""
+
+#. CryptoWallet.properties.accountId.label
+#: followthemoney/schema/CryptoWallet.yaml
+msgid "Account ID"
+msgstr ""
+
+#. CryptoWallet.properties.accountId.description
+#: followthemoney/schema/CryptoWallet.yaml
+msgid "Platform-specific user/account identifier"
 msgstr ""
 
 #. CryptoWallet.properties.creationDate.label
@@ -1336,7 +1344,17 @@ msgstr ""
 msgid "Currency short code"
 msgstr ""
 
-#. CryptoWallet.properties.mangingExchange.label
+#. CryptoWallet.properties.blockchain.label
+#: followthemoney/schema/CryptoWallet.yaml
+msgid "Blockchain"
+msgstr ""
+
+#. CryptoWallet.properties.blockchain.description
+#: followthemoney/schema/CryptoWallet.yaml
+msgid "The blockchain or distributed ledger system on which the wallet operates"
+msgstr ""
+
+#. CryptoWallet.properties.managingExchange.label
 #: followthemoney/schema/CryptoWallet.yaml
 msgid "Managing exchange"
 msgstr ""
@@ -1344,6 +1362,18 @@ msgstr ""
 #. CryptoWallet.properties.holder.label
 #: followthemoney/schema/CryptoWallet.yaml
 msgid "Wallet holder"
+msgstr ""
+
+#. CryptoWallet.properties.custodyType.label
+#: followthemoney/schema/CryptoWallet.yaml
+msgid "Custody type"
+msgstr ""
+
+#. CryptoWallet.properties.custodyType.description
+#: followthemoney/schema/CryptoWallet.yaml
+msgid ""
+"Type of custody arrangement for the wallet (e.g., self-custody, custodial"
+" service)"
 msgstr ""
 
 #. Debt.label
@@ -1403,15 +1433,18 @@ msgstr ""
 msgid "Director"
 msgstr ""
 
+#. Directorship.properties.director.description
+#: followthemoney/schema/Directorship.yaml
+msgid "The entity exercising control over another"
+msgstr ""
+
 #. Directorship.properties.organization.label
 #. Membership.properties.organization.label
 #. Organization.label
 #. Position.properties.organization.label
-#. Post.properties.organization.label
 #: followthemoney/schema/Directorship.yaml
 #: followthemoney/schema/Membership.yaml
 #: followthemoney/schema/Organization.yaml followthemoney/schema/Position.yaml
-#: followthemoney/schema/Post.yaml
 msgid "Organization"
 msgstr ""
 
@@ -1436,13 +1469,18 @@ msgid "Files"
 msgstr ""
 
 #. Document.properties.contentHash.label
-#: followthemoney/schema/Document.yaml followthemoney/types/checksum.py:18
+#: followthemoney/schema/Document.yaml followthemoney/types/checksum.py:17
 msgid "Checksum"
 msgstr ""
 
 #. Document.properties.contentHash.description
 #: followthemoney/schema/Document.yaml
 msgid "SHA1 hash of the data"
+msgstr ""
+
+#. Document.properties.author.label
+#: followthemoney/schema/Document.yaml
+msgid "Author"
 msgstr ""
 
 #. Document.properties.author.description
@@ -1597,6 +1635,59 @@ msgstr ""
 msgid "Date and time of the most recent ingestion of the Document"
 msgstr ""
 
+#. Documentation.label
+#: followthemoney/schema/Documentation.yaml
+msgid "Documentation"
+msgstr ""
+
+#. Documentation.plural
+#: followthemoney/schema/Documentation.yaml
+msgid "Documentations"
+msgstr ""
+
+#. Documentation.description
+#: followthemoney/schema/Documentation.yaml
+msgid ""
+"Links some entity to a document, which might provide further detail or "
+"evidence regarding the entity.\n"
+msgstr ""
+
+#. Documentation.edge.label
+#: followthemoney/schema/Documentation.yaml
+msgid "documents"
+msgstr ""
+
+#. Documentation.properties.document.label
+#. Mention.properties.document.label
+#. Page.properties.document.label
+#. Pages.label
+#: followthemoney/schema/Documentation.yaml followthemoney/schema/Mention.yaml
+#: followthemoney/schema/Page.yaml followthemoney/schema/Pages.yaml
+msgid "Document"
+msgstr ""
+
+#. Documentation.properties.document.reverse.label
+#: followthemoney/schema/Documentation.yaml
+msgid "Related entities"
+msgstr ""
+
+#. Documentation.properties.entity.label
+#. Mention.properties.resolved.label
+#. Note.properties.entity.label
+#. Risk.properties.entity.label
+#. Sanction.properties.entity.label
+#: followthemoney/schema/Documentation.yaml followthemoney/schema/Mention.yaml
+#: followthemoney/schema/Note.yaml followthemoney/schema/Risk.yaml
+#: followthemoney/schema/Sanction.yaml followthemoney/types/entity.py:26
+msgid "Entity"
+msgstr ""
+
+#. Documentation.properties.entity.reverse.label
+#. Pages.plural
+#: followthemoney/schema/Documentation.yaml followthemoney/schema/Pages.yaml
+msgid "Documents"
+msgstr ""
+
 #. EconomicActivity.label
 #: followthemoney/schema/EconomicActivity.yaml
 msgid "Customs declaration"
@@ -1612,7 +1703,7 @@ msgstr ""
 
 #. EconomicActivity.description
 #: followthemoney/schema/EconomicActivity.yaml
-msgid "A foreign economic activity"
+msgid "A foreign economic activity."
 msgstr ""
 
 #. EconomicActivity.properties.contract.reverse.label
@@ -1860,10 +1951,7 @@ msgid "Means of transportation"
 msgstr ""
 
 #. Email.label
-#. LegalEntity.properties.email.label
-#. UserAccount.properties.email.label
-#: followthemoney/schema/Email.yaml followthemoney/schema/LegalEntity.yaml
-#: followthemoney/schema/UserAccount.yaml
+#: followthemoney/schema/Email.yaml
 msgid "E-Mail"
 msgstr ""
 
@@ -2056,7 +2144,7 @@ msgstr ""
 
 #. Family.description
 #: followthemoney/schema/Family.yaml
-msgid "Family relationship between two people"
+msgid "Family relationship between two people."
 msgstr ""
 
 #. Family.edge.label
@@ -2066,7 +2154,7 @@ msgstr ""
 
 #. Family.properties.person.description
 #: followthemoney/schema/Family.yaml
-msgid "The subject of the familial relation."
+msgid "The subject of the familial relation"
 msgstr ""
 
 #. Family.properties.relative.label
@@ -2081,14 +2169,14 @@ msgstr ""
 
 #. Family.properties.relative.description
 #: followthemoney/schema/Family.yaml
-msgid "The relative of the subject person."
+msgid "The relative of the subject person"
 msgstr ""
 
 #. Family.properties.relationship.description
 #: followthemoney/schema/Family.yaml
 msgid ""
-"Nature of the relationship, from the person's perspective eg. 'mother', "
-"where 'relative' is mother of 'person'."
+"Nature of the relationship from the `person`'s perspective, e.g. "
+"'mother', where `relative` is the mother of `person`"
 msgstr ""
 
 #. Folder.plural
@@ -2125,8 +2213,8 @@ msgstr ""
 #. Identification.description
 #: followthemoney/schema/Identification.yaml
 msgid ""
-"An form of identification associated with its holder and some issuing "
-"country. This can be used for national ID cards, voter enrollments and "
+"A form of identification associated with its holder and some issuing "
+"country. This can be used for national ID cards, voter enrollments, and "
 "similar instruments.\n"
 msgstr ""
 
@@ -2135,11 +2223,28 @@ msgstr ""
 msgid "Identification holder"
 msgstr ""
 
+#. Identification.properties.country.label
+#. Risk.properties.country.label
+#. Sanction.properties.country.label
+#. TaxRoll.properties.country.label
+#. Thing.properties.country.label
+#: followthemoney/schema/Identification.yaml followthemoney/schema/Risk.yaml
+#: followthemoney/schema/Sanction.yaml followthemoney/schema/TaxRoll.yaml
+#: followthemoney/schema/Thing.yaml followthemoney/types/country.py:27
+msgid "Country"
+msgstr ""
+
 #. Identification.properties.authority.label
+#. Risk.properties.authority.label
 #. Sanction.properties.authority.label
-#: followthemoney/schema/Identification.yaml
+#: followthemoney/schema/Identification.yaml followthemoney/schema/Risk.yaml
 #: followthemoney/schema/Sanction.yaml
 msgid "Authority"
+msgstr ""
+
+#. Identification.properties.authority.description
+#: followthemoney/schema/Identification.yaml
+msgid "Government body issuing the identification document"
 msgstr ""
 
 #. Image.label
@@ -2161,6 +2266,16 @@ msgstr ""
 #. Image.properties.pictured.label
 #: followthemoney/schema/Image.yaml
 msgid "Pictured"
+msgstr ""
+
+#. Image.properties.credit.label
+#: followthemoney/schema/Image.yaml
+msgid "Credit"
+msgstr ""
+
+#. Image.properties.credit.description
+#: followthemoney/schema/Image.yaml
+msgid "The credit or attribution for the image"
 msgstr ""
 
 #. Interest.label
@@ -2188,9 +2303,30 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
+#. Interval.properties.startDate.description
+#: followthemoney/schema/Interval.yaml
+msgid ""
+"The date of issue of a document, or on which a relationship, sanctioned "
+"status, occupation, etc. started"
+msgstr ""
+
 #. Interval.properties.endDate.label
 #: followthemoney/schema/Interval.yaml
 msgid "End date"
+msgstr ""
+
+#. Interval.properties.endDate.description
+#: followthemoney/schema/Interval.yaml
+msgid ""
+"The date of expiry of a document, or on which a relationship, sanctioned "
+"status, occupation, etc. ended"
+msgstr ""
+
+#. Interval.properties.date.description
+#: followthemoney/schema/Interval.yaml
+msgid ""
+"Date associated with an Interval that isn't explicitly its `startDate` or"
+" `endDate` (prefer those when available)"
 msgstr ""
 
 #. Interval.properties.summary.label
@@ -2210,10 +2346,32 @@ msgstr ""
 msgid "Record ID"
 msgstr ""
 
+#. Interval.properties.recordId.description
+#: followthemoney/schema/Interval.yaml
+msgid "Identifier of a record upon which this link is based"
+msgstr ""
+
 #. Interval.properties.sourceUrl.label
 #. Thing.properties.sourceUrl.label
 #: followthemoney/schema/Interval.yaml followthemoney/schema/Thing.yaml
 msgid "Source link"
+msgstr ""
+
+#. Interval.properties.sourceUrl.description
+#. Thing.properties.sourceUrl.description
+#: followthemoney/schema/Interval.yaml followthemoney/schema/Thing.yaml
+msgid "A deep link to a source website for the profile"
+msgstr ""
+
+#. Interval.properties.proof.label
+#. Thing.properties.proof.label
+#: followthemoney/schema/Interval.yaml followthemoney/schema/Thing.yaml
+msgid "Source document"
+msgstr ""
+
+#. Interval.properties.proof.reverse.label
+#: followthemoney/schema/Interval.yaml
+msgid "Derived relationships"
 msgstr ""
 
 #. Interval.properties.publisher.label
@@ -2248,10 +2406,25 @@ msgstr ""
 msgid "Modified on"
 msgstr ""
 
+#. Interval.properties.modifiedAt.description
+#: followthemoney/schema/Interval.yaml
+msgid ""
+"The date on which the entity (like the ID document) was modified, not to "
+"be confused with an internal 'last updated'-style metadata field"
+msgstr ""
+
 #. Interval.properties.retrievedAt.label
 #. Thing.properties.retrievedAt.label
 #: followthemoney/schema/Interval.yaml followthemoney/schema/Thing.yaml
 msgid "Retrieved on"
+msgstr ""
+
+#. Interval.properties.retrievedAt.description
+#. Thing.properties.retrievedAt.description
+#: followthemoney/schema/Interval.yaml followthemoney/schema/Thing.yaml
+msgid ""
+"Retrieval date generated by a data gathering system, not to be confused "
+"with an internal 'first found'-style metadata field"
 msgstr ""
 
 #. LegalEntity.label
@@ -2269,21 +2442,44 @@ msgstr ""
 msgid ""
 "Any party to legal proceedings, such as asset ownership, corporate "
 "governance or social interactions. Often used when raw data does not "
-"specify if something is a person or company.\n"
+"specify if something is a person, organization or company.\n"
+msgstr ""
+
+#. LegalEntity.properties.abbreviation.label
+#: followthemoney/schema/LegalEntity.yaml
+msgid "Abbreviation"
+msgstr ""
+
+#. LegalEntity.properties.abbreviation.description
+#: followthemoney/schema/LegalEntity.yaml
+msgid "Abbreviated name or acronym"
+msgstr ""
+
+#. LegalEntity.properties.email.label
+#. UserAccount.properties.email.label
+#: followthemoney/schema/LegalEntity.yaml
+#: followthemoney/schema/UserAccount.yaml
+msgid "Email"
 msgstr ""
 
 #. LegalEntity.properties.email.description
+#. UserAccount.properties.email.description
 #: followthemoney/schema/LegalEntity.yaml
+#: followthemoney/schema/UserAccount.yaml
 msgid "Email address"
 msgstr ""
 
 #. LegalEntity.properties.phone.label
+#. UserAccount.properties.phone.label
 #: followthemoney/schema/LegalEntity.yaml
+#: followthemoney/schema/UserAccount.yaml
 msgid "Phone"
 msgstr ""
 
 #. LegalEntity.properties.phone.description
-#: followthemoney/schema/LegalEntity.yaml followthemoney/types/phone.py:35
+#. UserAccount.properties.phone.description
+#: followthemoney/schema/LegalEntity.yaml
+#: followthemoney/schema/UserAccount.yaml followthemoney/types/phone.py:66
 msgid "Phone number"
 msgstr ""
 
@@ -2300,6 +2496,11 @@ msgstr ""
 #. LegalEntity.properties.legalForm.label
 #: followthemoney/schema/LegalEntity.yaml
 msgid "Legal form"
+msgstr ""
+
+#. LegalEntity.properties.legalForm.description
+#: followthemoney/schema/LegalEntity.yaml
+msgid "Company or organization type"
 msgstr ""
 
 #. LegalEntity.properties.incorporationDate.label
@@ -2328,9 +2529,35 @@ msgstr ""
 msgid "Tax status"
 msgstr ""
 
+#. LegalEntity.properties.status.description
+#: followthemoney/schema/LegalEntity.yaml
+msgid "A short string describing how 'active' (broadly defined) an entity is"
+msgstr ""
+
 #. LegalEntity.properties.sector.label
 #: followthemoney/schema/LegalEntity.yaml
 msgid "Sector"
+msgstr ""
+
+#. LegalEntity.properties.sector.description
+#: followthemoney/schema/LegalEntity.yaml
+msgid "Industrial or trade sector as provided by the data source"
+msgstr ""
+
+#. LegalEntity.properties.classification.description
+#: followthemoney/schema/LegalEntity.yaml
+msgid ""
+"Classification as provided by the data source or inferred based on other "
+"provided data; prefer `sector` if relevant"
+msgstr ""
+
+#. LegalEntity.properties.registrationNumber.label
+#. RealEstate.properties.registrationNumber.label
+#. Security.properties.registrationNumber.label
+#. Vehicle.properties.registrationNumber.label
+#: followthemoney/schema/LegalEntity.yaml followthemoney/schema/RealEstate.yaml
+#: followthemoney/schema/Security.yaml followthemoney/schema/Vehicle.yaml
+msgid "Registration number"
 msgstr ""
 
 #. LegalEntity.properties.registrationNumber.description
@@ -2345,7 +2572,9 @@ msgstr ""
 
 #. LegalEntity.properties.idNumber.description
 #: followthemoney/schema/LegalEntity.yaml
-msgid "ID number of any applicable ID"
+msgid ""
+"ID of any applicable personal identification document. Used mainly for "
+"people and their national ID cards."
 msgstr ""
 
 #. LegalEntity.properties.taxNumber.label
@@ -2378,14 +2607,23 @@ msgstr ""
 msgid "(EU) VAT number"
 msgstr ""
 
+#. LegalEntity.properties.jurisdiction.label
+#: followthemoney/schema/LegalEntity.yaml
+msgid "Jurisdiction"
+msgstr ""
+
 #. LegalEntity.properties.jurisdiction.description
 #: followthemoney/schema/LegalEntity.yaml
-msgid "Country or region in which this entity operates"
+msgid ""
+"Country or region in which this entity operates; prefer over broader "
+"`country` when relevant"
 msgstr ""
 
 #. LegalEntity.properties.mainCountry.description
 #: followthemoney/schema/LegalEntity.yaml
-msgid "Primary country of this entity"
+msgid ""
+"Primary country of this entity; prefer over broader `country` when "
+"relevant"
 msgstr ""
 
 #. LegalEntity.properties.opencorporatesUrl.label
@@ -2396,6 +2634,31 @@ msgstr ""
 #. LegalEntity.properties.bvdId.label
 #: followthemoney/schema/LegalEntity.yaml
 msgid "Bureau van Dijk ID"
+msgstr ""
+
+#. LegalEntity.properties.sayariId.label
+#: followthemoney/schema/LegalEntity.yaml
+msgid "Sayari Entity ID"
+msgstr ""
+
+#. LegalEntity.properties.brightQueryId.label
+#: followthemoney/schema/LegalEntity.yaml
+msgid "BrightQuery ID"
+msgstr ""
+
+#. LegalEntity.properties.brightQueryOrgId.label
+#: followthemoney/schema/LegalEntity.yaml
+msgid "BrightQuery Organization ID"
+msgstr ""
+
+#. LegalEntity.properties.uscCode.label
+#: followthemoney/schema/LegalEntity.yaml
+msgid "USCC"
+msgstr ""
+
+#. LegalEntity.properties.uscCode.description
+#: followthemoney/schema/LegalEntity.yaml
+msgid "Chinese Unified Social Credit Identifier"
 msgstr ""
 
 #. LegalEntity.properties.icijId.label
@@ -2425,7 +2688,9 @@ msgstr ""
 
 #. LegalEntity.properties.innCode.description
 #: followthemoney/schema/LegalEntity.yaml
-msgid "Russian company ID"
+msgid ""
+"(RU, ИНН) Russian tax identification number. Issued to businesses and "
+"individuals in Russia."
 msgstr ""
 
 #. LegalEntity.properties.ogrnCode.label
@@ -2435,7 +2700,19 @@ msgstr ""
 
 #. LegalEntity.properties.ogrnCode.description
 #: followthemoney/schema/LegalEntity.yaml
-msgid "Major State Registration Number"
+msgid ""
+"(RU, ОГРН) Registration number used in Russia's Unified State Register of"
+" Legal Entities (EGRUL)"
+msgstr ""
+
+#. LegalEntity.properties.okvedCode.label
+#: followthemoney/schema/LegalEntity.yaml
+msgid "OKVED"
+msgstr ""
+
+#. LegalEntity.properties.okvedCode.description
+#: followthemoney/schema/LegalEntity.yaml
+msgid "Russian industry classifier code for economic activities"
 msgstr ""
 
 #. LegalEntity.properties.leiCode.label
@@ -2446,6 +2723,18 @@ msgstr ""
 #. LegalEntity.properties.leiCode.description
 #: followthemoney/schema/LegalEntity.yaml
 msgid "Legal Entity Identifier"
+msgstr ""
+
+#. LegalEntity.properties.cikCode.label
+#: followthemoney/schema/LegalEntity.yaml
+msgid "SEC Central Index Key"
+msgstr ""
+
+#. LegalEntity.properties.cikCode.description
+#: followthemoney/schema/LegalEntity.yaml
+msgid ""
+"US SEC Central Index Key, assigned to companies, funds and individuals "
+"filing with the SEC"
 msgstr ""
 
 #. LegalEntity.properties.dunsCode.label
@@ -2475,7 +2764,9 @@ msgstr ""
 
 #. LegalEntity.properties.npiCode.description
 #: followthemoney/schema/LegalEntity.yaml
-msgid "National Provider Identifier"
+msgid ""
+"National Provider Identifier, issued to health care providers in the "
+"United States"
 msgstr ""
 
 #. LegalEntity.properties.swiftBic.label
@@ -2485,7 +2776,7 @@ msgstr ""
 
 #. LegalEntity.properties.swiftBic.description
 #: followthemoney/schema/LegalEntity.yaml
-msgid "Bank identifier code"
+msgid "SWIFT Bank identifier code from ISO9362"
 msgstr ""
 
 #. LegalEntity.properties.parent.label
@@ -2494,10 +2785,9 @@ msgid "Parent company"
 msgstr ""
 
 #. LegalEntity.properties.parent.description
-#: followthemoney/schema/LegalEntity.yaml
-msgid ""
-"If this entity is a subsidiary, another entity (company or organisation) "
-"is its parent"
+#. Vehicle.properties.owner.description
+#: followthemoney/schema/LegalEntity.yaml followthemoney/schema/Vehicle.yaml
+msgid "Deprecated, use `Ownership` link instead"
 msgstr ""
 
 #. LegalEntity.properties.parent.reverse.label
@@ -2517,13 +2807,18 @@ msgstr ""
 
 #. License.description
 #: followthemoney/schema/License.yaml
-msgid "A grant of land, rights or property. A type of Contract"
+msgid "A grant of land, rights or property. A type of `Contract`."
 msgstr ""
 
 #. License.properties.area.label
 #. RealEstate.properties.area.label
 #: followthemoney/schema/License.yaml followthemoney/schema/RealEstate.yaml
 msgid "Area"
+msgstr ""
+
+#. License.properties.area.description
+#: followthemoney/schema/License.yaml
+msgid "Spatial area of the license or concession"
 msgstr ""
 
 #. License.properties.commodities.label
@@ -2572,25 +2867,9 @@ msgstr ""
 msgid "Mentions"
 msgstr ""
 
-#. Mention.properties.document.label
-#. Page.properties.document.label
-#. Pages.label
-#: followthemoney/schema/Mention.yaml followthemoney/schema/Page.yaml
-#: followthemoney/schema/Pages.yaml
-msgid "Document"
-msgstr ""
-
 #. Mention.properties.document.reverse.label
 #: followthemoney/schema/Mention.yaml
 msgid "Extracted names"
-msgstr ""
-
-#. Mention.properties.resolved.label
-#. Note.properties.entity.label
-#. Sanction.properties.entity.label
-#: followthemoney/schema/Mention.yaml followthemoney/schema/Note.yaml
-#: followthemoney/schema/Sanction.yaml followthemoney/types/entity.py:27
-msgid "Entity"
 msgstr ""
 
 #. Mention.properties.resolved.reverse.label
@@ -2601,7 +2880,7 @@ msgstr ""
 #. Mention.properties.name.label
 #. Thing.properties.name.label
 #: followthemoney/schema/Mention.yaml followthemoney/schema/Thing.yaml
-#: followthemoney/types/name.py:27
+#: followthemoney/types/name.py:28
 msgid "Name"
 msgstr ""
 
@@ -2705,8 +2984,7 @@ msgid "holds"
 msgstr ""
 
 #. Occupancy.properties.holder.label
-#. Post.properties.holder.label
-#: followthemoney/schema/Occupancy.yaml followthemoney/schema/Post.yaml
+#: followthemoney/schema/Occupancy.yaml
 msgid "Holder"
 msgstr ""
 
@@ -2725,6 +3003,73 @@ msgstr ""
 msgid "Position holders"
 msgstr ""
 
+#. Occupancy.properties.declarationDate.label
+#: followthemoney/schema/Occupancy.yaml
+msgid "Declaration date"
+msgstr ""
+
+#. Occupancy.properties.declarationDate.description
+#: followthemoney/schema/Occupancy.yaml
+msgid "If established by an asset declaration"
+msgstr ""
+
+#. Occupancy.properties.electionDate.label
+#: followthemoney/schema/Occupancy.yaml
+msgid "Election date"
+msgstr ""
+
+#. Occupancy.properties.electionDate.description
+#: followthemoney/schema/Occupancy.yaml
+msgid "Election date for the position, if applicable"
+msgstr ""
+
+#. Occupancy.properties.periodStart.label
+#: followthemoney/schema/Occupancy.yaml
+msgid "Period start"
+msgstr ""
+
+#. Occupancy.properties.periodStart.description
+#: followthemoney/schema/Occupancy.yaml
+msgid ""
+"Start date of the fixed office term (e.g. a parliamentary session). "
+"Unlike `startDate`, which tracks when an individual's mandate begins, "
+"`periodStart` refers to the term itself and is the same for everyone "
+"holding the position during that period."
+msgstr ""
+
+#. Occupancy.properties.periodEnd.label
+#: followthemoney/schema/Occupancy.yaml
+msgid "Period end"
+msgstr ""
+
+#. Occupancy.properties.periodEnd.description
+#: followthemoney/schema/Occupancy.yaml
+msgid ""
+"End date of the fixed office term. Unlike `endDate`, which tracks when an"
+" individual's mandate ends, `periodEnd` refers to the term itself and is "
+"the same for everyone holding the position during that period."
+msgstr ""
+
+#. Occupancy.properties.constituency.label
+#: followthemoney/schema/Occupancy.yaml
+msgid "Constituency"
+msgstr ""
+
+#. Occupancy.properties.constituency.description
+#: followthemoney/schema/Occupancy.yaml
+msgid "The geographic area/district represented by the holder"
+msgstr ""
+
+#. Occupancy.properties.politicalGroup.label
+#: followthemoney/schema/Occupancy.yaml
+msgid "Political group"
+msgstr ""
+
+#. Occupancy.properties.politicalGroup.description
+#: followthemoney/schema/Occupancy.yaml
+msgid "Caucus, faction or parliamentary group of the holder"
+msgstr ""
+
 #. Organization.plural
 #: followthemoney/schema/Organization.yaml
 msgid "Organizations"
@@ -2734,7 +3079,7 @@ msgstr ""
 #: followthemoney/schema/Organization.yaml
 msgid ""
 "Any type of incorporated entity that cannot be owned by another (see "
-"Company). This might include charities, foundations or state-owned "
+"`Company`). This might include charities, foundations or state-owned "
 "enterprises, depending on their jurisdiction.\n"
 msgstr ""
 
@@ -2774,6 +3119,16 @@ msgstr ""
 msgid "Global Intermediary Identification Number"
 msgstr ""
 
+#. Organization.properties.irsCode.label
+#: followthemoney/schema/Organization.yaml
+msgid "US EIN"
+msgstr ""
+
+#. Organization.properties.irsCode.description
+#: followthemoney/schema/Organization.yaml
+msgid "US IRS Employer Identification Number (EIN)"
+msgstr ""
+
 #. Ownership.label
 #: followthemoney/schema/Ownership.yaml
 msgid "Ownership"
@@ -2804,7 +3159,7 @@ msgstr ""
 
 #. Ownership.properties.asset.reverse.label
 #: followthemoney/schema/Ownership.yaml
-msgid "Owners"
+msgid "Ownership and Control"
 msgstr ""
 
 #. Ownership.properties.percentage.label
@@ -2830,11 +3185,6 @@ msgstr ""
 #. Ownership.properties.sharesType.label
 #: followthemoney/schema/Ownership.yaml
 msgid "Type of shares"
-msgstr ""
-
-#. Ownership.properties.legalBasis.label
-#: followthemoney/schema/Ownership.yaml
-msgid "Legal basis"
 msgstr ""
 
 #. Ownership.properties.ownershipType.label
@@ -2882,11 +3232,6 @@ msgid ""
 "presentation.\n"
 msgstr ""
 
-#. Pages.plural
-#: followthemoney/schema/Pages.yaml
-msgid "Documents"
-msgstr ""
-
 #. Pages.properties.pdfHash.label
 #: followthemoney/schema/Pages.yaml
 msgid "PDF alternative version checksum"
@@ -2904,7 +3249,7 @@ msgstr ""
 
 #. Passport.description
 #: followthemoney/schema/Passport.yaml
-msgid "An passport held by a person.\n"
+msgid "A passport held by a person.\n"
 msgstr ""
 
 #. Passport.properties.passportNumber.label
@@ -2913,16 +3258,33 @@ msgstr ""
 msgid "Passport number"
 msgstr ""
 
+#. Passport.properties.passportNumber.description
+#: followthemoney/schema/Passport.yaml
+msgid "Deprecated, use `Identification:number` instead"
+msgstr ""
+
 #. Passport.properties.surname.label
 #. TaxRoll.properties.surname.label
 #: followthemoney/schema/Passport.yaml followthemoney/schema/TaxRoll.yaml
 msgid "Surname"
 msgstr ""
 
+#. Passport.properties.surname.description
+#: followthemoney/schema/Passport.yaml
+msgid "Deprecated, use `Identification:holder` link's `lastName` instead"
+msgstr ""
+
 #. Passport.properties.givenName.label
 #. TaxRoll.properties.givenName.label
 #: followthemoney/schema/Passport.yaml followthemoney/schema/TaxRoll.yaml
 msgid "Given name"
+msgstr ""
+
+#. Passport.properties.givenName.description
+#: followthemoney/schema/Passport.yaml
+msgid ""
+"Deprecated, use `Identification:holder` link's `firstName` / `middleName`"
+" instead"
 msgstr ""
 
 #. Passport.properties.birthDate.label
@@ -2942,7 +3304,7 @@ msgstr ""
 #. Passport.properties.gender.label
 #. Person.properties.gender.label
 #: followthemoney/schema/Passport.yaml followthemoney/schema/Person.yaml
-#: followthemoney/types/gender.py:40
+#: followthemoney/types/gender.py:43
 msgid "Gender"
 msgstr ""
 
@@ -3049,9 +3411,21 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
+#. Person.properties.firstName.description
+#: followthemoney/schema/Person.yaml
+msgid ""
+"The part of a name that indicates the person, also often called given "
+"name or forename"
+msgstr ""
+
 #. Person.properties.secondName.label
 #: followthemoney/schema/Person.yaml
 msgid "Second name"
+msgstr ""
+
+#. Person.properties.secondName.description
+#: followthemoney/schema/Person.yaml
+msgid "Deprecated, use one of the other more specific name properties instead"
 msgstr ""
 
 #. Person.properties.middleName.label
@@ -3059,9 +3433,21 @@ msgstr ""
 msgid "Middle name"
 msgstr ""
 
+#. Person.properties.middleName.description
+#: followthemoney/schema/Person.yaml
+msgid ""
+"The part of name written between a person's given name and family name. "
+"Often abbreviated as a middle initial."
+msgstr ""
+
 #. Person.properties.fatherName.label
 #: followthemoney/schema/Person.yaml
 msgid "Patronymic"
+msgstr ""
+
+#. Person.properties.fatherName.description
+#: followthemoney/schema/Person.yaml
+msgid "The part of a name based on the given name of one's father"
 msgstr ""
 
 #. Person.properties.motherName.label
@@ -3069,9 +3455,21 @@ msgstr ""
 msgid "Matronymic"
 msgstr ""
 
+#. Person.properties.motherName.description
+#: followthemoney/schema/Person.yaml
+msgid "The part of a name based on the given name of one's mother"
+msgstr ""
+
 #. Person.properties.lastName.label
 #: followthemoney/schema/Person.yaml
 msgid "Last name"
+msgstr ""
+
+#. Person.properties.lastName.description
+#: followthemoney/schema/Person.yaml
+msgid ""
+"The part of a name that indicates one's family, also often called surname"
+" or family name"
 msgstr ""
 
 #. Person.properties.nameSuffix.label
@@ -3089,10 +3487,25 @@ msgstr ""
 msgid "Death date"
 msgstr ""
 
+#. Person.properties.deathDate.description
+#: followthemoney/schema/Person.yaml
+msgid "Joined the choir invisible."
+msgstr ""
+
 #. Person.properties.position.label
 #. Position.label
 #: followthemoney/schema/Person.yaml followthemoney/schema/Position.yaml
 msgid "Position"
+msgstr ""
+
+#. Person.properties.biography.label
+#: followthemoney/schema/Person.yaml
+msgid "Biography"
+msgstr ""
+
+#. Person.properties.biography.description
+#: followthemoney/schema/Person.yaml
+msgid "A biographical narrative of the person."
 msgstr ""
 
 #. Person.properties.nationality.label
@@ -3141,13 +3554,18 @@ msgid "Physical appearance"
 msgstr ""
 
 #. Person.properties.religion.label
-#: followthemoney/schema/Person.yaml followthemoney/types/topic.py:78
+#: followthemoney/schema/Person.yaml followthemoney/types/topic.py:90
 msgid "Religion"
 msgstr ""
 
 #. Person.properties.political.label
 #: followthemoney/schema/Person.yaml
 msgid "Political association"
+msgstr ""
+
+#. Person.properties.profession.label
+#: followthemoney/schema/Person.yaml
+msgid "Profession"
 msgstr ""
 
 #. Person.properties.education.label
@@ -3186,11 +3604,8 @@ msgstr ""
 msgid ""
 "A post, role or position within an organization or body. This describes a"
 " position one or more people may occupy and not the occupation of the "
-"post by a specific individual at a specific point in time.\n"
-"'subnationalArea' should be used to further restrict the scope of the "
-"position. It should not simply represent some regional aspect of the role"
-" - e.g. the constituency of a national member of parliament - when their "
-"legislative jurisdiction is nationwide.\n"
+"post by a specific individual at a specific point in time (see "
+"`Occupancy`).\n"
 msgstr ""
 
 #. Position.properties.inceptionDate.label
@@ -3200,41 +3615,19 @@ msgstr ""
 
 #. Position.properties.subnationalArea.label
 #: followthemoney/schema/Position.yaml
-msgid "Subnational jurisdiction name or code"
+msgid "Subnational area"
+msgstr ""
+
+#. Position.properties.subnationalArea.description
+#: followthemoney/schema/Position.yaml
+msgid ""
+"The name or code of a subnational jurisdiction, only when the position is"
+" geographically limited. Prefer `Occupancy:constituency` where relevant."
 msgstr ""
 
 #. Position.properties.numberOfSeats.label
 #: followthemoney/schema/Position.yaml
 msgid "Total number of seats"
-msgstr ""
-
-#. Post.label
-#: followthemoney/schema/Post.yaml
-msgid "Post"
-msgstr ""
-
-#. Post.plural
-#: followthemoney/schema/Post.yaml
-msgid "Posts"
-msgstr ""
-
-#. Post.description
-#: followthemoney/schema/Post.yaml
-msgid ""
-"A post, role or position held by an individual within an organization or "
-"body. This describes the period for which the position is held, not the "
-"abstract concept of the post.\n"
-msgstr ""
-
-#. Post.properties.holder.reverse.label
-#: followthemoney/schema/Post.yaml
-msgid "Posts held"
-msgstr ""
-
-#. Post.properties.wikidataId.label
-#. Thing.properties.wikidataId.label
-#: followthemoney/schema/Post.yaml followthemoney/schema/Thing.yaml
-msgid "Wikidata ID"
 msgstr ""
 
 #. Project.plural
@@ -3245,10 +3638,8 @@ msgid "Projects"
 msgstr ""
 
 #. Project.description
-#. ProjectParticipant.description
 #: followthemoney/schema/Project.yaml
-#: followthemoney/schema/ProjectParticipant.yaml
-msgid "An activity carried out by a group of participants.\n"
+msgid "An activity carried out by a group of `participants`.\n"
 msgstr ""
 
 #. Project.properties.projectId.label
@@ -3274,6 +3665,11 @@ msgstr ""
 #. ProjectParticipant.plural
 #: followthemoney/schema/ProjectParticipant.yaml
 msgid "Project participants"
+msgstr ""
+
+#. ProjectParticipant.description
+#: followthemoney/schema/ProjectParticipant.yaml
+msgid "A participant in a `Project`.\n"
 msgstr ""
 
 #. ProjectParticipant.edge.label
@@ -3426,6 +3822,78 @@ msgstr ""
 msgid "Agents"
 msgstr ""
 
+#. Risk.label
+#: followthemoney/schema/Risk.yaml
+msgid "Risk"
+msgstr ""
+
+#. Risk.plural
+#. Risk.properties.entity.reverse.label
+#: followthemoney/schema/Risk.yaml
+msgid "Risks"
+msgstr ""
+
+#. Risk.description
+#: followthemoney/schema/Risk.yaml
+msgid ""
+"A risk designation attached to an entity by an authority. Distinct from "
+"`Sanction`: a `Risk` flags heightened exposure or scrutiny, not a legally"
+" binding restriction.\n"
+msgstr ""
+
+#. Risk.properties.authority.description
+#: followthemoney/schema/Risk.yaml
+msgid ""
+"The body issuing the designation, e.g. FATF, European Commission, FinCEN,"
+" ONDCP"
+msgstr ""
+
+#. Risk.properties.program.label
+#. Sanction.properties.program.label
+#. Thing.properties.program.label
+#: followthemoney/schema/Risk.yaml followthemoney/schema/Sanction.yaml
+#: followthemoney/schema/Thing.yaml
+msgid "Program"
+msgstr ""
+
+#. Risk.properties.program.description
+#: followthemoney/schema/Risk.yaml
+msgid "The list or programme under which the designation is made"
+msgstr ""
+
+#. Risk.properties.programId.label
+#. Sanction.properties.programId.label
+#. Thing.properties.programId.label
+#: followthemoney/schema/Risk.yaml followthemoney/schema/Sanction.yaml
+#: followthemoney/schema/Thing.yaml
+msgid "Program ID"
+msgstr ""
+
+#. Risk.properties.programUrl.label
+#. Sanction.properties.programUrl.label
+#: followthemoney/schema/Risk.yaml followthemoney/schema/Sanction.yaml
+msgid "Program URL"
+msgstr ""
+
+#. Risk.properties.topics.label
+#. Thing.properties.topics.label
+#: followthemoney/schema/Risk.yaml followthemoney/schema/Thing.yaml
+#: followthemoney/types/topic.py:24
+msgid "Topics"
+msgstr ""
+
+#. Risk.properties.reason.label
+#. Sanction.properties.reason.label
+#: followthemoney/schema/Risk.yaml followthemoney/schema/Sanction.yaml
+msgid "Reason"
+msgstr ""
+
+#. Risk.properties.listingDate.label
+#. Sanction.properties.listingDate.label
+#: followthemoney/schema/Risk.yaml followthemoney/schema/Sanction.yaml
+msgid "Listing date"
+msgstr ""
+
 #. Sanction.label
 #: followthemoney/schema/Sanction.yaml
 msgid "Sanction"
@@ -3439,7 +3907,7 @@ msgstr ""
 
 #. Sanction.description
 #: followthemoney/schema/Sanction.yaml
-msgid "A sanction designation"
+msgid "A sanction designation."
 msgstr ""
 
 #. Sanction.properties.authorityId.label
@@ -3452,20 +3920,9 @@ msgstr ""
 msgid "UN SC identifier"
 msgstr ""
 
-#. Sanction.properties.program.label
-#. Thing.properties.program.label
-#: followthemoney/schema/Sanction.yaml followthemoney/schema/Thing.yaml
-msgid "Program"
-msgstr ""
-
-#. Sanction.properties.programId.label
+#. Sanction.properties.unscId.description
 #: followthemoney/schema/Sanction.yaml
-msgid "Program ID"
-msgstr ""
-
-#. Sanction.properties.programUrl.label
-#: followthemoney/schema/Sanction.yaml
-msgid "Program URL"
+msgid "Identifier issued by the UN Security Council for sanctions designations"
 msgstr ""
 
 #. Sanction.properties.provisions.label
@@ -3473,14 +3930,16 @@ msgstr ""
 msgid "Scope of sanctions"
 msgstr ""
 
-#. Sanction.properties.reason.label
+#. Sanction.properties.reason.description
 #: followthemoney/schema/Sanction.yaml
-msgid "Reason"
+msgid "An explanation of the designation's justification."
 msgstr ""
 
-#. Sanction.properties.listingDate.label
+#. Sanction.properties.listingDate.description
 #: followthemoney/schema/Sanction.yaml
-msgid "Listing date"
+msgid ""
+"The date on which the designation is listed; distinct from the "
+"`startDate`, which is the date on which the designation goes into effect"
 msgstr ""
 
 #. Security.label
@@ -3665,7 +4124,7 @@ msgstr ""
 
 #. TaxRoll.description
 #: followthemoney/schema/TaxRoll.yaml
-msgid "A tax declaration of an individual"
+msgid "A tax declaration of an individual."
 msgstr ""
 
 #. TaxRoll.properties.taxee.label
@@ -3688,9 +4147,101 @@ msgstr ""
 msgid "Registered wealth"
 msgstr ""
 
+#. Territory.label
+#: followthemoney/schema/Territory.yaml
+msgid "Territory"
+msgstr ""
+
+#. Territory.plural
+#: followthemoney/schema/Territory.yaml
+msgid "Territories"
+msgstr ""
+
+#. Territory.description
+#: followthemoney/schema/Territory.yaml
+msgid ""
+"A country, subnational division or other administrative area. Territories"
+" are reference data with deterministic identifiers, not a geospatial "
+"model.\n"
+msgstr ""
+
+#. Territory.properties.partOf.label
+#: followthemoney/schema/Territory.yaml
+msgid "Part of"
+msgstr ""
+
+#. Territory.properties.partOf.description
+#: followthemoney/schema/Territory.yaml
+msgid ""
+"The administrative unit this territory is part of, e.g. the country for a"
+" state, the state for a county"
+msgstr ""
+
+#. Territory.properties.partOf.reverse.label
+#: followthemoney/schema/Territory.yaml
+msgid "Subdivisions"
+msgstr ""
+
+#. Territory.properties.level.label
+#: followthemoney/schema/Territory.yaml
+msgid "Level"
+msgstr ""
+
+#. Territory.properties.level.description
+#: followthemoney/schema/Territory.yaml
+msgid "Administrative level of the territory"
+msgstr ""
+
+#. Territory.properties.territoryCode.label
+#: followthemoney/schema/Territory.yaml
+msgid "Territory code"
+msgstr ""
+
+#. Territory.properties.territoryCode.description
+#: followthemoney/schema/Territory.yaml
+msgid ""
+"ISO 3166-1 alpha-2 code, ISO 3166-2 subdivision, or FollowTheMoney "
+"political territory code"
+msgstr ""
+
+#. Territory.properties.fipsCode.label
+#: followthemoney/schema/Territory.yaml
+msgid "FIPS code"
+msgstr ""
+
+#. Territory.properties.fipsCode.description
+#: followthemoney/schema/Territory.yaml
+msgid "US Census / INCITS geocode for states or counties"
+msgstr ""
+
+#. Territory.properties.zipCode.label
+#: followthemoney/schema/Territory.yaml
+msgid "ZIP code"
+msgstr ""
+
+#. Territory.properties.zipCode.description
+#: followthemoney/schema/Territory.yaml
+msgid "US postal ZIP code"
+msgstr ""
+
+#. Territory.properties.nutsCode.description
+#: followthemoney/schema/Territory.yaml
+msgid "Eurostat regional statistics code"
+msgstr ""
+
+#. Thing.properties.name.description
+#: followthemoney/schema/Thing.yaml
+msgid "The primary name of the entity"
+msgstr ""
+
 #. Thing.properties.alias.label
 #: followthemoney/schema/Thing.yaml
-msgid "Other name"
+msgid "Alias"
+msgstr ""
+
+#. Thing.properties.alias.description
+#: followthemoney/schema/Thing.yaml
+msgid "An alternative or secondary name"
 msgstr ""
 
 #. Thing.properties.previousName.label
@@ -3698,9 +4249,46 @@ msgstr ""
 msgid "Previous name"
 msgstr ""
 
+#. Thing.properties.previousName.description
+#: followthemoney/schema/Thing.yaml
+msgid "A former name of the entity"
+msgstr ""
+
 #. Thing.properties.weakAlias.label
 #: followthemoney/schema/Thing.yaml
 msgid "Weak alias"
+msgstr ""
+
+#. Thing.properties.weakAlias.description
+#: followthemoney/schema/Thing.yaml
+msgid ""
+"A relatively broad or generic alias that should not be used for matching "
+"in screening systems. It may still may be useful for identification "
+"purposes, particularly in confirming a possible match triggered by other "
+"identifier information."
+msgstr ""
+
+#. Thing.properties.country.description
+#: followthemoney/schema/Thing.yaml
+msgid ""
+"An association between the entity and a country that is not covered by a "
+"more specific property (e.g. `jurisdiction`, `birthCountry`, "
+"`mainCountry`)"
+msgstr ""
+
+#. Thing.properties.summary.description
+#: followthemoney/schema/Thing.yaml
+msgid "A short one-liner description; see also `description`, `notes`"
+msgstr ""
+
+#. Thing.properties.notes.description
+#: followthemoney/schema/Thing.yaml
+msgid "Narrative description of the entity; see also `description`, `summary`"
+msgstr ""
+
+#. Thing.properties.description.description
+#: followthemoney/schema/Thing.yaml
+msgid "A longer description; see also `notes`, `summary`"
 msgstr ""
 
 #. Thing.properties.wikipediaUrl.label
@@ -3708,14 +4296,38 @@ msgstr ""
 msgid "Wikipedia Article"
 msgstr ""
 
+#. Thing.properties.wikidataId.label
+#: followthemoney/schema/Thing.yaml
+msgid "Wikidata ID"
+msgstr ""
+
 #. Thing.properties.keywords.label
 #: followthemoney/schema/Thing.yaml
 msgid "Keywords"
 msgstr ""
 
-#. Thing.properties.topics.label
-#: followthemoney/schema/Thing.yaml followthemoney/types/topic.py:22
-msgid "Topics"
+#. Thing.properties.keywords.description
+#: followthemoney/schema/Thing.yaml
+msgid ""
+"Plain text keywords provided for the entity; prefer more specific `type`,"
+" `status`, etc. as appropriate"
+msgstr ""
+
+#. Thing.properties.topics.description
+#: followthemoney/schema/Thing.yaml
+msgid ""
+"Controlled tags used to qualify the entity and associate it with a risk "
+"category"
+msgstr ""
+
+#. Thing.properties.address.description
+#: followthemoney/schema/Thing.yaml
+msgid "A textual description of an address linked to the entity"
+msgstr ""
+
+#. Thing.properties.addressEntity.description
+#: followthemoney/schema/Thing.yaml
+msgid "A reference to an `Address` entity with structured place information"
 msgstr ""
 
 #. Thing.properties.addressEntity.reverse.label
@@ -3723,9 +4335,9 @@ msgstr ""
 msgid "Located there"
 msgstr ""
 
-#. Thing.properties.proof.label
+#. Thing.properties.program.description
 #: followthemoney/schema/Thing.yaml
-msgid "Source document"
+msgid "Regulatory program or sanctions list on which an entity is listed"
 msgstr ""
 
 #. Thing.properties.proof.reverse.label
@@ -3733,9 +4345,36 @@ msgstr ""
 msgid "Derived entities"
 msgstr ""
 
+#. Thing.properties.riskSource.label
+#: followthemoney/schema/Thing.yaml
+msgid "Risk source"
+msgstr ""
+
+#. Thing.properties.riskSource.description
+#: followthemoney/schema/Thing.yaml
+msgid ""
+"The directly-designated entity from which this entity's risk "
+"classification ultimately derives, e.g. the sanctioned owner at the "
+"origin of an ownership chain. See also the `topics` property."
+msgstr ""
+
 #. Thing.properties.createdAt.label
 #: followthemoney/schema/Thing.yaml
 msgid "Created at"
+msgstr ""
+
+#. Thing.properties.createdAt.description
+#: followthemoney/schema/Thing.yaml
+msgid ""
+"The date on which the entity was created, not to be confused with an "
+"internal 'first saved'-style metadata field"
+msgstr ""
+
+#. Thing.properties.modifiedAt.description
+#: followthemoney/schema/Thing.yaml
+msgid ""
+"The date on which the entity was modified, not to be confused with an "
+"internal 'last updated'-style metadata field"
 msgstr ""
 
 #. Trip.label
@@ -3819,11 +4458,6 @@ msgstr ""
 #. UserAccount.properties.service.label
 #: followthemoney/schema/UserAccount.yaml
 msgid "Service"
-msgstr ""
-
-#. UserAccount.properties.number.label
-#: followthemoney/schema/UserAccount.yaml
-msgid "Phone Number"
 msgstr ""
 
 #. UserAccount.properties.username.label
@@ -3956,6 +4590,16 @@ msgstr ""
 msgid "Gross Registered Tonnage"
 msgstr ""
 
+#. Vessel.properties.deadweightTonnage.label
+#: followthemoney/schema/Vessel.yaml
+msgid "Deadweight Tonnage"
+msgstr ""
+
+#. Vessel.properties.deadweightTonnage.description
+#: followthemoney/schema/Vessel.yaml
+msgid "Weight of the vessel when not carrying freight"
+msgstr ""
+
 #. Vessel.properties.nameChangeDate.label
 #: followthemoney/schema/Vessel.yaml
 msgid "Date of Name Change"
@@ -4013,220 +4657,108 @@ msgid ""
 " a set of sheets that hold actual data.\n"
 msgstr ""
 
-#: followthemoney/types/checksum.py:19
+#: followthemoney/types/checksum.py:18
 msgid "Checksums"
 msgstr ""
 
-#: followthemoney/types/country.py:22
+#: followthemoney/types/country.py:28
 msgid "Countries"
-msgstr ""
-
-#: followthemoney/types/country.py:29
-msgid "Global"
-msgstr ""
-
-#: followthemoney/types/country.py:30
-msgid "European Union"
-msgstr ""
-
-#: followthemoney/types/country.py:31
-msgid "United Nations"
-msgstr ""
-
-#: followthemoney/types/country.py:32
-msgid "Zaire"
-msgstr ""
-
-#: followthemoney/types/country.py:34
-msgid "Czech Republic"
-msgstr ""
-
-#: followthemoney/types/country.py:35
-msgid "Kosovo"
-msgstr ""
-
-#: followthemoney/types/country.py:36
-msgid "East Germany"
-msgstr ""
-
-#: followthemoney/types/country.py:37
-msgid "Yugoslavia"
-msgstr ""
-
-#: followthemoney/types/country.py:38
-msgid "Serbia and Montenegro"
-msgstr ""
-
-#: followthemoney/types/country.py:39
-msgid "Czechoslovakia"
-msgstr ""
-
-#: followthemoney/types/country.py:40
-msgid "Soviet Union"
-msgstr ""
-
-#: followthemoney/types/country.py:41
-msgid "Abkhazia (Occupied Georgia)"
-msgstr ""
-
-#: followthemoney/types/country.py:42
-msgid "South Ossetia (Occupied Georgia)"
-msgstr ""
-
-#: followthemoney/types/country.py:43
-msgid "Luhansk (Occupied Ukraine)"
-msgstr ""
-
-#: followthemoney/types/country.py:44
-msgid "Donetsk (Occupied Ukraine)"
-msgstr ""
-
-#: followthemoney/types/country.py:45
-msgid "Crimea (Occupied Ukraine)"
-msgstr ""
-
-#: followthemoney/types/country.py:46
-msgid "Somaliland"
-msgstr ""
-
-#: followthemoney/types/country.py:47
-msgid "Northern Cyprus"
-msgstr ""
-
-#: followthemoney/types/country.py:48
-msgid "Nagorno-Karabakh"
-msgstr ""
-
-#: followthemoney/types/country.py:49
-msgid "Kurdistan"
-msgstr ""
-
-#: followthemoney/types/country.py:50
-msgid "Tibet"
-msgstr ""
-
-#: followthemoney/types/country.py:51
-msgid "Sark"
-msgstr ""
-
-#: followthemoney/types/country.py:52
-msgid "Wales"
-msgstr ""
-
-#: followthemoney/types/country.py:53
-msgid "Scotland"
-msgstr ""
-
-#: followthemoney/types/country.py:54
-msgid "Northern Ireland"
-msgstr ""
-
-#: followthemoney/types/country.py:55
-msgid "Transnistria (PMR)"
-msgstr ""
-
-#: followthemoney/types/country.py:56
-msgid "Kashmir"
 msgstr ""
 
 #: followthemoney/types/date.py:27
 msgid "Dates"
 msgstr ""
 
-#: followthemoney/types/email.py:25
+#: followthemoney/types/email.py:27
 msgid "E-Mail Address"
 msgstr ""
 
-#: followthemoney/types/email.py:26
+#: followthemoney/types/email.py:28
 msgid "E-Mail Addresses"
 msgstr ""
 
-#: followthemoney/types/entity.py:28
+#: followthemoney/types/entity.py:27
 msgid "Entities"
 msgstr ""
 
-#: followthemoney/types/entity.py:64
+#: followthemoney/types/entity.py:60
 #, python-format
 msgid "Self-relationship (%s): %s"
 msgstr ""
 
-#: followthemoney/types/gender.py:41
+#: followthemoney/types/gender.py:44
 msgid "Genders"
 msgstr ""
 
-#: followthemoney/types/gender.py:47
+#: followthemoney/types/gender.py:50
 msgid "male"
 msgstr ""
 
-#: followthemoney/types/gender.py:48
+#: followthemoney/types/gender.py:51
 msgid "female"
 msgstr ""
 
-#: followthemoney/types/gender.py:49
+#: followthemoney/types/gender.py:52
 msgid "other"
 msgstr ""
 
-#: followthemoney/types/iban.py:24
-msgid "IBANs"
-msgstr ""
-
-#: followthemoney/types/identifier.py:25
+#: followthemoney/types/identifier.py:26
 msgid "Identifier"
 msgstr ""
 
-#: followthemoney/types/identifier.py:26
+#: followthemoney/types/identifier.py:27
 msgid "Identifiers"
 msgstr ""
 
+#: followthemoney/types/ip.py:18
+msgid "IP Address"
+msgstr ""
+
 #: followthemoney/types/ip.py:19
-msgid "IP-Address"
+msgid "IP Addresses"
 msgstr ""
 
-#: followthemoney/types/ip.py:20
-msgid "IP-Addresses"
-msgstr ""
-
-#: followthemoney/types/json.py:19 followthemoney/types/json.py:20
+#: followthemoney/types/json.py:20 followthemoney/types/json.py:21
 msgid "Nested data"
 msgstr ""
 
-#: followthemoney/types/language.py:23
+#: followthemoney/types/language.py:24
 msgid "Languages"
 msgstr ""
 
-#: followthemoney/types/language.py:98
+#: followthemoney/types/language.py:110
 msgid "Arabic"
 msgstr ""
 
-#: followthemoney/types/language.py:99
+#: followthemoney/types/language.py:111
 msgid "Norwegian"
 msgstr ""
 
-#: followthemoney/types/language.py:100
+#: followthemoney/types/language.py:112
 msgid "Montenegrin"
 msgstr ""
 
-#: followthemoney/types/mimetype.py:24
+#: followthemoney/types/mimetype.py:23
 msgid "MIME-Type"
 msgstr ""
 
-#: followthemoney/types/mimetype.py:25
+#: followthemoney/types/mimetype.py:24
 msgid "MIME-Types"
 msgstr ""
 
-#: followthemoney/types/name.py:28
+#: followthemoney/types/name.py:29
 msgid "Names"
 msgstr ""
 
-#: followthemoney/types/number.py:18
+#: followthemoney/types/number.py:46
 msgid "Number"
 msgstr ""
 
-#: followthemoney/types/number.py:19
+#: followthemoney/types/number.py:47
 msgid "Numbers"
 msgstr ""
 
-#: followthemoney/types/phone.py:36
+#: followthemoney/types/phone.py:67
 msgid "Phone numbers"
 msgstr ""
 
@@ -4246,251 +4778,307 @@ msgstr ""
 msgid "HTMLs"
 msgstr ""
 
-#: followthemoney/types/topic.py:21
+#: followthemoney/types/topic.py:23
 msgid "Topic"
 msgstr ""
 
-#: followthemoney/types/topic.py:27
+#: followthemoney/types/topic.py:29
 msgid "Crime"
 msgstr ""
 
-#: followthemoney/types/topic.py:28
+#: followthemoney/types/topic.py:30
 msgid "Fraud"
 msgstr ""
 
-#: followthemoney/types/topic.py:29
+#: followthemoney/types/topic.py:31
 msgid "Cybercrime"
 msgstr ""
 
-#: followthemoney/types/topic.py:30
+#: followthemoney/types/topic.py:32
 msgid "Financial crime"
 msgstr ""
 
-#: followthemoney/types/topic.py:31
+#: followthemoney/types/topic.py:33
 msgid "Environmental violations"
 msgstr ""
 
-#: followthemoney/types/topic.py:32
+#: followthemoney/types/topic.py:34
 msgid "Theft"
 msgstr ""
 
-#: followthemoney/types/topic.py:33
+#: followthemoney/types/topic.py:35
 msgid "War crimes"
 msgstr ""
 
-#: followthemoney/types/topic.py:34
+#: followthemoney/types/topic.py:36
 msgid "Criminal leadership"
 msgstr ""
 
-#: followthemoney/types/topic.py:35
+#: followthemoney/types/topic.py:37
 msgid "Terrorism"
 msgstr ""
 
-#: followthemoney/types/topic.py:36
+#: followthemoney/types/topic.py:38
 msgid "Trafficking"
 msgstr ""
 
-#: followthemoney/types/topic.py:37
+#: followthemoney/types/topic.py:39
 msgid "Drug trafficking"
 msgstr ""
 
-#: followthemoney/types/topic.py:38
+#: followthemoney/types/topic.py:40
 msgid "Human trafficking"
 msgstr ""
 
-#: followthemoney/types/topic.py:39
-msgid "Wanted"
-msgstr ""
-
-#: followthemoney/types/topic.py:40
-msgid "Offshore"
-msgstr ""
-
 #: followthemoney/types/topic.py:41
-msgid "Shell company"
+msgid "Forced labor"
 msgstr ""
 
 #: followthemoney/types/topic.py:42
-msgid "Public listed company"
-msgstr ""
-
-#: followthemoney/types/topic.py:43
-msgid "Disqualified"
-msgstr ""
-
-#: followthemoney/types/topic.py:44
-msgid "Government"
-msgstr ""
-
-#: followthemoney/types/topic.py:45
-msgid "National government"
-msgstr ""
-
-#: followthemoney/types/topic.py:46
-msgid "State government"
-msgstr ""
-
-#: followthemoney/types/topic.py:47
-msgid "Municipal government"
-msgstr ""
-
-#: followthemoney/types/topic.py:48
-msgid "State-owned enterprise"
-msgstr ""
-
-#: followthemoney/types/topic.py:49
-msgid "Intergovernmental organization"
-msgstr ""
-
-#: followthemoney/types/topic.py:50
-msgid "Head of government or state"
-msgstr ""
-
-#: followthemoney/types/topic.py:51
-msgid "Civil service"
-msgstr ""
-
-#: followthemoney/types/topic.py:52
-msgid "Executive branch of government"
-msgstr ""
-
-#: followthemoney/types/topic.py:53
-msgid "Legislative branch of government"
-msgstr ""
-
-#: followthemoney/types/topic.py:54
-msgid "Judicial branch of government"
-msgstr ""
-
-#: followthemoney/types/topic.py:55
-msgid "Security services"
-msgstr ""
-
-#: followthemoney/types/topic.py:56
-msgid "Central banking and financial integrity"
-msgstr ""
-
-#: followthemoney/types/topic.py:57
-msgid "Financial services"
-msgstr ""
-
-#: followthemoney/types/topic.py:59
-msgid "Fund"
-msgstr ""
-
-#: followthemoney/types/topic.py:60
-msgid "Financial advisor"
-msgstr ""
-
-#: followthemoney/types/topic.py:61
-msgid "Regulator action"
-msgstr ""
-
-#: followthemoney/types/topic.py:62
-msgid "Regulator warning"
-msgstr ""
-
-#: followthemoney/types/topic.py:63
-msgid "Politician"
-msgstr ""
-
-#: followthemoney/types/topic.py:64
-msgid "Non-PEP"
-msgstr ""
-
-#: followthemoney/types/topic.py:65
-msgid "Close Associate"
-msgstr ""
-
-#: followthemoney/types/topic.py:66
-msgid "Judge"
-msgstr ""
-
-#: followthemoney/types/topic.py:67
-msgid "Civil servant"
-msgstr ""
-
-#: followthemoney/types/topic.py:68
-msgid "Diplomat"
-msgstr ""
-
-#: followthemoney/types/topic.py:69
-msgid "Lawyer"
-msgstr ""
-
-#: followthemoney/types/topic.py:70
-msgid "Accountant"
-msgstr ""
-
-#: followthemoney/types/topic.py:71
-msgid "Spy"
-msgstr ""
-
-#: followthemoney/types/topic.py:72
-msgid "Oligarch"
-msgstr ""
-
-#: followthemoney/types/topic.py:73
-msgid "Journalist"
-msgstr ""
-
-#: followthemoney/types/topic.py:74
-msgid "Activist"
-msgstr ""
-
-#: followthemoney/types/topic.py:75
-msgid "Lobbyist"
-msgstr ""
-
-#: followthemoney/types/topic.py:76
-msgid "Political party"
-msgstr ""
-
-#: followthemoney/types/topic.py:77
-msgid "Union"
-msgstr ""
-
-#: followthemoney/types/topic.py:79
-msgid "Military"
-msgstr ""
-
-#: followthemoney/types/topic.py:80
 msgid "Frozen asset"
 msgstr ""
 
+#: followthemoney/types/topic.py:43
+msgid "Wanted"
+msgstr ""
+
+#: followthemoney/types/topic.py:44
+msgid "Offshore"
+msgstr ""
+
+#: followthemoney/types/topic.py:45
+msgid "Shell company"
+msgstr ""
+
+#: followthemoney/types/topic.py:46
+msgid "Public listed company"
+msgstr ""
+
+#: followthemoney/types/topic.py:47
+msgid "Disqualified"
+msgstr ""
+
+#: followthemoney/types/topic.py:48
+msgid "Clone of real entity"
+msgstr ""
+
+#: followthemoney/types/topic.py:49
+msgid "Government"
+msgstr ""
+
+#: followthemoney/types/topic.py:50
+msgid "National government"
+msgstr ""
+
+#: followthemoney/types/topic.py:51
+msgid "State government"
+msgstr ""
+
+#: followthemoney/types/topic.py:52
+msgid "Municipal government"
+msgstr ""
+
+#: followthemoney/types/topic.py:53
+msgid "State-owned enterprise"
+msgstr ""
+
+#: followthemoney/types/topic.py:54
+msgid "Intergovernmental organization"
+msgstr ""
+
+#: followthemoney/types/topic.py:55
+msgid "Head of government or state"
+msgstr ""
+
+#: followthemoney/types/topic.py:56
+msgid "Civil service"
+msgstr ""
+
+#: followthemoney/types/topic.py:57
+msgid "Executive branch of government"
+msgstr ""
+
+#: followthemoney/types/topic.py:58
+msgid "Legislative branch of government"
+msgstr ""
+
+#: followthemoney/types/topic.py:59
+msgid "Judicial branch of government"
+msgstr ""
+
+#: followthemoney/types/topic.py:60
+msgid "Security services"
+msgstr ""
+
+#: followthemoney/types/topic.py:61
+msgid "Central banking and financial integrity"
+msgstr ""
+
+#: followthemoney/types/topic.py:62
+msgid "Religious leadership"
+msgstr ""
+
+#: followthemoney/types/topic.py:63
+msgid "Financial services"
+msgstr ""
+
+#: followthemoney/types/topic.py:65
+msgid "Fund"
+msgstr ""
+
+#: followthemoney/types/topic.py:66
+msgid "Financial advisor"
+msgstr ""
+
+#: followthemoney/types/topic.py:67
+msgid "Maritime detention"
+msgstr ""
+
+#: followthemoney/types/topic.py:68
+msgid "Shadow fleet"
+msgstr ""
+
+#: followthemoney/types/topic.py:69
+msgid "Ship-to-ship transfer"
+msgstr ""
+
+#: followthemoney/types/topic.py:70
+msgid "Regulator action"
+msgstr ""
+
+#: followthemoney/types/topic.py:71
+msgid "Regulator warning"
+msgstr ""
+
+#: followthemoney/types/topic.py:72
+msgid "PEP"
+msgstr ""
+
+#: followthemoney/types/topic.py:73
+msgid "Former PEP"
+msgstr ""
+
+#: followthemoney/types/topic.py:74
+msgid "International PEP"
+msgstr ""
+
+#: followthemoney/types/topic.py:75
+msgid "National PEP"
+msgstr ""
+
+#: followthemoney/types/topic.py:76
+msgid "Politician"
+msgstr ""
+
+#: followthemoney/types/topic.py:77
+msgid "Close Associate"
+msgstr ""
+
+#: followthemoney/types/topic.py:78
+msgid "Judge"
+msgstr ""
+
+#: followthemoney/types/topic.py:79
+msgid "Civil servant"
+msgstr ""
+
+#: followthemoney/types/topic.py:80
+msgid "Diplomat"
+msgstr ""
+
 #: followthemoney/types/topic.py:81
-msgid "Sanctioned entity"
+msgid "Lawyer"
 msgstr ""
 
 #: followthemoney/types/topic.py:82
-msgid "Sanction-linked entity"
+msgid "Accountant"
 msgstr ""
 
 #: followthemoney/types/topic.py:83
-msgid "Counter-sanctioned entity"
+msgid "Spy"
 msgstr ""
 
 #: followthemoney/types/topic.py:84
-msgid "Export controlled"
+msgid "Oligarch"
 msgstr ""
 
 #: followthemoney/types/topic.py:85
-msgid "Trade risk"
+msgid "Journalist"
 msgstr ""
 
 #: followthemoney/types/topic.py:86
-msgid "Debarred entity"
+msgid "Activist"
 msgstr ""
 
 #: followthemoney/types/topic.py:87
+msgid "Lobbyist"
+msgstr ""
+
+#: followthemoney/types/topic.py:88
+msgid "Political party"
+msgstr ""
+
+#: followthemoney/types/topic.py:89
+msgid "Union"
+msgstr ""
+
+#: followthemoney/types/topic.py:91
+msgid "Military"
+msgstr ""
+
+#: followthemoney/types/topic.py:92
+msgid "Sanctioned"
+msgstr ""
+
+#: followthemoney/types/topic.py:93
+msgid "Sanction-linked"
+msgstr ""
+
+#: followthemoney/types/topic.py:94
+msgid "Sanction ownership or control"
+msgstr ""
+
+#: followthemoney/types/topic.py:95
+msgid "Counter-sanctioned"
+msgstr ""
+
+#: followthemoney/types/topic.py:96
+msgid "Export controlled"
+msgstr ""
+
+#: followthemoney/types/topic.py:98
+msgid "Export control-linked"
+msgstr ""
+
+#: followthemoney/types/topic.py:99
+msgid "Trade risk"
+msgstr ""
+
+#: followthemoney/types/topic.py:100
+msgid "Investment risk"
+msgstr ""
+
+#: followthemoney/types/topic.py:101
+msgid "Investment ban"
+msgstr ""
+
+#: followthemoney/types/topic.py:102
+msgid "High-risk area"
+msgstr ""
+
+#: followthemoney/types/topic.py:103
+msgid "Debarred"
+msgstr ""
+
+#: followthemoney/types/topic.py:104
 msgid "Person of interest"
 msgstr ""
 
-#: followthemoney/types/url.py:22
+#: followthemoney/types/url.py:23
 msgid "URL"
 msgstr ""
 
-#: followthemoney/types/url.py:23
+#: followthemoney/types/url.py:24
 msgid "URLs"
 msgstr ""
 
