@@ -44,3 +44,8 @@ Organization:
       description: Global Intermediary Identification Number
       type: identifier
       maxLength: 20
+    irsCode:
+      label: "US EIN"
+      description: "US IRS Employer Identification Number (EIN)"
+      type: identifier
+      format: ein
