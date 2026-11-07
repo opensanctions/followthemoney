@@ -180,6 +180,10 @@ LegalEntity:
       type: identifier
       format: lei
       maxLength: 32
+    cikCode:
+      label: "SEC Central Index Key"
+      description: "US SEC Central Index Key, assigned to companies, funds and individuals filing with the SEC"
+      type: identifier
     dunsCode:
       label: "DUNS"
       description: "Data Universal Numbering System - Dun & Bradstreet identifier"

@@ -45,10 +45,6 @@ Company:
       label: "IPO"
       type: identifier
       matchable: false
-    cikCode:
-      label: "SEC Central Index Key"
-      description: "US SEC Central Index Key for listed companies"
-      type: identifier
     jibCode:
       label: "JIB"
       description: "Yugoslavia company ID"
