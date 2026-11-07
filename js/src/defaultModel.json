@@ -1153,15 +1153,6 @@
           "qname": "Company:ipoCode",
           "type": "identifier"
         },
-        "irsCode": {
-          "description": "US tax ID",
-          "label": "IRS Number",
-          "matchable": true,
-          "maxLength": 64,
-          "name": "irsCode",
-          "qname": "Company:irsCode",
-          "type": "identifier"
-        },
         "isinCode": {
           "deprecated": true,
           "description": "International Securities Identification Number",
@@ -4880,6 +4871,16 @@
           "maxLength": 16,
           "name": "imoNumber",
           "qname": "Organization:imoNumber",
+          "type": "identifier"
+        },
+        "irsCode": {
+          "description": "US IRS Employer Identification Number (EIN)",
+          "format": "ein",
+          "label": "US EIN",
+          "matchable": true,
+          "maxLength": 64,
+          "name": "irsCode",
+          "qname": "Organization:irsCode",
           "type": "identifier"
         },
         "membershipOrganization": {
