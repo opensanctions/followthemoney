@@ -9,7 +9,7 @@ from followthemoney.types import PropertyType, registry
 from followthemoney.util import set_model_locale
 from followthemoney.value import Value, Values
 
-__version__ = "4.11.2"
+__version__ = "4.11.3"
 
 # Data model singleton
 model = Model.instance()
