@@ -1,3 +1,7 @@
+import decimal
+
+import pytest
+
 from followthemoney.types import registry
 
 numbers = registry.number
@@ -123,3 +127,18 @@ def test_format_numbers():
     assert numbers.caption("-100000.234tonnes") == "-100,000.23 tonnes"
     assert numbers.caption("banana") == "banana"
     assert numbers.caption("1,00,000") == "100,000"
+    assert numbers.caption("-0.00") == "0"
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("9007199254740993", "9,007,199,254,740,993"),
+        ("-9007199254740993.01 kg", "-9,007,199,254,740,993.01 kg"),
+        ("12345678901234567890.135", "12,345,678,901,234,567,890.14"),
+    ],
+)
+def test_caption_decimal_precision(value: str, expected: str) -> None:
+    with decimal.localcontext() as context:
+        context.rounding = decimal.ROUND_DOWN
+        assert numbers.caption(value) == expected
