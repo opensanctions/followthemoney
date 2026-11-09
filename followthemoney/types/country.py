@@ -42,7 +42,9 @@ class CountryType(EnumType):
         right: Sequence[str],
         func: Callable[[Sequence[float]], float] = max,
     ) -> float:
-        """Compare two sets of values and select the highest-scored result."""
+        """Compare territory overlap using the given score reducer."""
+        if func is not max:
+            return super().compare_sets(left, right, func)
         overlap = territories_intersect(left, right)
         return 1.0 if len(overlap) else 0.0
 
