@@ -1,3 +1,5 @@
+from statistics import mean
+
 from followthemoney.types import registry
 
 
@@ -24,3 +26,15 @@ def test_country_names():
     assert countries.clean("Germany") == "de"
     # assert countries.clean('Germani') == 'de'
     assert countries.clean("Soviet Union") == "suhh"
+
+
+def test_country_set_reducers() -> None:
+    countries = registry.country
+    left = ["de", "fr"]
+    right = ["de", "fr"]
+    assert countries.compare_sets(left, right) == 1.0
+    assert countries.compare_sets(left, right, func=min) == 0.0
+    assert countries.compare_sets(left, right, func=mean) == 0.5
+    assert countries.compare_sets(left, right, func=sum) == 2.0
+    assert countries.compare_sets([], right, func=mean) == 0.0
+    assert countries.compare_sets(left, [], func=mean) == 0.0
