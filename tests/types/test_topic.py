@@ -23,6 +23,12 @@ def test_topic_risks():
     assert topics.RISKS.issubset(topics._TOPICS)
 
 
+def test_topic_to_dict_exports_risks():
+    data = registry.topic.to_dict()
+    assert data["risks"] == sorted(registry.topic.RISKS)
+    assert "risks" not in registry.country.to_dict()
+
+
 def test_topic_geo_risk():
     topics = registry.topic
     assert topics.clean("geo.risk") == "geo.risk"
