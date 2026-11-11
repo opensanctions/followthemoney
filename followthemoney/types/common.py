@@ -24,6 +24,7 @@ class PropertyTypeToDict(TypedDict, total=False):
     matchable: bool | None
     pivot: bool | None
     values: EnumValues | None
+    risks: list[str] | None
 
 
 class PropertyType:

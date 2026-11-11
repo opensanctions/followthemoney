@@ -8,6 +8,7 @@ export interface IPropertyTypeDatum {
   matchable?: boolean,
   pivot?: boolean,
   values?: { [name: string]: string }
+  risks?: string[]
 }
 
 /**

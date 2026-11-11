@@ -2,7 +2,7 @@ from typing import ClassVar
 
 from babel.core import Locale
 
-from followthemoney.types.common import EnumType, EnumValues
+from followthemoney.types.common import EnumType, EnumValues, PropertyTypeToDict
 from followthemoney.util import defer as _
 from followthemoney.util import gettext
 
@@ -140,3 +140,10 @@ class TopicType(EnumType):
 
     def _locale_names(self, locale: Locale) -> EnumValues:
         return {k: gettext(v) for (k, v) in self._TOPICS.items()}
+
+    def to_dict(self) -> PropertyTypeToDict:
+        """Include the risk topics, so model consumers can tell them apart
+        without a copy of this set."""
+        data = super().to_dict()
+        data["risks"] = sorted(self.RISKS)
+        return data
