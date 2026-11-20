@@ -9,9 +9,12 @@ CryptoWallet:
     on a blockchain / distributed ledger system.
   matchable: true
   featured:
-    - currency
+    - cryptoAddress
     - publicKey
+    - currency
+    - blockchain
   caption:
+    - cryptoAddress
     - publicKey
     - name
     - summary
@@ -20,9 +23,8 @@ CryptoWallet:
       - creationDate
   properties:
     publicKey:
-      # FIXME: this is a very unusual name for this. what do the bros call it???
-      label: Address
-      description: Public key used to identify the wallet
+      label: Public key
+      description: "Public key the wallet's addresses are derived from. Use cryptoAddress for the address itself"
       type: identifier
       maxLength: 512
     cryptoAddress:
@@ -43,7 +45,7 @@ CryptoWallet:
       label: Currency short code
     blockchain:
       label: Blockchain
-      description: "The blockchain or distributed ledger system on which the wallet operates"
+      description: "Network the address belongs to, e.g. bitcoin, ethereum, tron, bsc, solana. The asset held goes in currency"
     managingExchange:
       label: Managing exchange
     holder:
@@ -61,4 +63,4 @@ CryptoWallet:
       type: date
     custodyType:
       label: Custody type
-      description: "Type of custody arrangement for the wallet (e.g., self-custody, custodial service)"
+      description: "Who holds the funds: selfHosted (the holder controls the keys) or custodial (an exchange or other service holds them)"

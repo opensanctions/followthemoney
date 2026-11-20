@@ -1835,6 +1835,7 @@
     },
     "CryptoWallet": {
       "caption": [
+        "cryptoAddress",
         "publicKey",
         "name",
         "summary"
@@ -1845,8 +1846,10 @@
         "Value"
       ],
       "featured": [
+        "cryptoAddress",
+        "publicKey",
         "currency",
-        "publicKey"
+        "blockchain"
       ],
       "label": "Cryptocurrency wallet",
       "matchable": true,
@@ -1877,7 +1880,7 @@
           "type": "date"
         },
         "blockchain": {
-          "description": "The blockchain or distributed ledger system on which the wallet operates",
+          "description": "Network the address belongs to, e.g. bitcoin, ethereum, tron, bsc, solana. The asset held goes in currency",
           "label": "Blockchain",
           "maxLength": 1024,
           "name": "blockchain",
@@ -1909,7 +1912,7 @@
           "type": "string"
         },
         "custodyType": {
-          "description": "Type of custody arrangement for the wallet (e.g., self-custody, custodial service)",
+          "description": "Who holds the funds: selfHosted (the holder controls the keys) or custodial (an exchange or other service holds them)",
           "label": "Custody type",
           "maxLength": 1024,
           "name": "custodyType",
@@ -1941,8 +1944,8 @@
           "type": "string"
         },
         "publicKey": {
-          "description": "Public key used to identify the wallet",
-          "label": "Address",
+          "description": "Public key the wallet's addresses are derived from. Use cryptoAddress for the address itself",
+          "label": "Public key",
           "matchable": true,
           "maxLength": 512,
           "name": "publicKey",
@@ -7710,6 +7713,7 @@
           "type": "number"
         },
         "currency": {
+          "description": "Currency or asset code of the value, e.g. EUR, or BTC or USDT for crypto-assets. Not the network a crypto-asset runs on",
           "label": "Currency",
           "maxLength": 1024,
           "name": "currency",
