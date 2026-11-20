@@ -9,6 +9,7 @@ Value:
       type: number
     currency:
       label: "Currency"
+      description: "Currency or asset code of the value, e.g. EUR, or BTC or USDT for crypto-assets. Not the network a crypto-asset runs on"
     amountUsd:
       label: "Amount in USD"
       type: number
